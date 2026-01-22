@@ -1,8 +1,14 @@
 import { Routes } from '@angular/router';
-// Note : l'import pointe vers le dossier ou le fichier 'login' sans l'extension
-import { LoginComponent } from './pages/login/login'; 
+import { LoginComponent } from './pages/login/login'; // Import du composant Login (nom court)
+import { DashboardComponent } from './pages/dashboard/dashboard'; // Import du Dashboard (nom court corrigé)
 
 export const routes: Routes = [
+    // Redirection par défaut : redirige vers login
     { path: '', redirectTo: 'login', pathMatch: 'full' },
-    { path: 'login', component: LoginComponent }
+    
+    // Page de connexion
+    { path: 'login', component: LoginComponent },
+    
+    // Page d'accueil (Dashboard)
+    { path: 'home', component: DashboardComponent }
 ];
