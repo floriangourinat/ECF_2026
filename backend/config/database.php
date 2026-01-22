@@ -1,40 +1,27 @@
 <?php
-// backend/config/database.php
-
 class Database {
-    // Configuration de l'accès à la base de données
-    // Note : On pointe sur 127.0.0.1 pour cibler le conteneur Docker depuis Windows
-    private $host = "127.0.0.1";
-    private $port = "3307"; // Port défini dans le docker-compose.yml
-    private $db_name = "innovevents_db";
-    
-    // Identifiants de connexion
-    // Utilisation du compte 'root' pour l'environnement de développement local
+    // Configuration des paramètres de la base de données
+    // IMPORTANT : Dans l'environnement Docker, le "host" correspond au nom du service MySQL 
+    // défini dans le fichier docker-compose.yml (ici : "db"), et non "localhost".
+    private $host = "db";
+    private $db_name = "innovevents";
     private $username = "root";
     private $password = "root";
-    
     public $conn;
 
-    // Méthode pour récupérer l'instance de connexion PDO
+    // Méthode pour établir et retourner la connexion à la base de données
     public function getConnection() {
         $this->conn = null;
 
         try {
-            // Création de la chaîne de connexion (DSN) avec encodage UTF-8
-            $dsn = "mysql:host=" . $this->host . ";port=" . $this->port . ";dbname=" . $this->db_name . ";charset=utf8";
+            // Tentative de connexion via PDO avec les identifiants configurés
+            $this->conn = new PDO("mysql:host=" . $this->host . ";dbname=" . $this->db_name, $this->username, $this->password);
             
-            // Configuration des options PDO pour une meilleure gestion des erreurs
-            $options = [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, // Active les exceptions pour les erreurs SQL
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC, // Récupère les données en tableau associatif
-                PDO::ATTR_EMULATE_PREPARES => false, // Utilise les vraies requêtes préparées
-            ];
-
-            // Initialisation de la connexion
-            $this->conn = new PDO($dsn, $this->username, $this->password, $options);
-            
+            // Définition de l'encodage en UTF-8 pour gérer correctement les accents
+            $this->conn->exec("set names utf8");
         } catch(PDOException $exception) {
-            echo "Erreur critique de connexion BDD : " . $exception->getMessage();
+            // En cas d'échec, affichage de l'erreur
+            echo "Erreur de connexion : " . $exception->getMessage();
         }
 
         return $this->conn;

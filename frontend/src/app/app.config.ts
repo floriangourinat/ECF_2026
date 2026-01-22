@@ -1,12 +1,13 @@
-import { ApplicationConfig } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { provideHttpClient, withFetch } from '@angular/common/http'; // Import indispensable
 
 import { routes } from './app.routes';
-import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }), 
     provideRouter(routes),
-    provideHttpClient() // Activation du client HTTP pour les appels API vers le backend
+    provideHttpClient(withFetch()) // <-- C'est cette ligne qui active la connexion au backend
   ]
 };

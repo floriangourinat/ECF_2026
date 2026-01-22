@@ -1,57 +1,58 @@
-version: '3.8'
-
 services:
-  # Base de données SQL (MySQL)
+  backend:
+    build: ./backend
+    container_name: ecf_backend
+    ports:
+      - "8080:80"
+    volumes:
+      - ./backend:/var/www/html
+    depends_on:
+      - db
+      - mongo
+
   db:
     image: mysql:8.0
-    container_name: innovevents_mysql
+    container_name: ecf_db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: innovevents_db
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
-    ports:
-      - "3307:3306"
+      MYSQL_DATABASE: innovevents
     volumes:
       - db_data:/var/lib/mysql
 
-  # Interface graphique pour MySQL (phpMyAdmin)
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: innovevents_pma
-    links:
-      - db
+    container_name: ecf_pma
+    ports:
+      - "8081:80"
     environment:
       PMA_HOST: db
-      PMA_PORT: 3306
-    ports:
-      - "8080:80"
+      MYSQL_ROOT_PASSWORD: root
+    depends_on:
+      - db
 
-  # Base de données NoSQL (MongoDB)
   mongo:
-    image: mongo
-    container_name: innovevents_mongo
-    restart: always
+    image: mongo:latest
+    container_name: ecf_mongo
+    ports:
+      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
-    ports:
-      - "27017:27017"
     volumes:
       - mongo_data:/data/db
 
-  # Interface graphique pour MongoDB (Mongo Express)
   mongo-express:
     image: mongo-express
-    container_name: innovevents_mongo_express
-    restart: always
+    container_name: ecf_mongo_express
     ports:
-      - "8081:8081"
+      - "8082:8081"
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: root
       ME_CONFIG_MONGODB_URL: mongodb://root:root@mongo:27017/
+    depends_on:
+      - mongo
 
 volumes:
   db_data:

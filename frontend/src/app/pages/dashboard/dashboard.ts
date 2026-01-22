@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
+// L'import de User va marcher maintenant qu'on a mis "export" dans le service
 import { AuthService, User } from '../../_services/auth.service';
 import { Router } from '@angular/router';
 
@@ -12,20 +13,16 @@ import { Router } from '@angular/router';
 })
 export class DashboardComponent {
 
-  // Variable pour stocker les infos de l'utilisateur connecté
   currentUser: User | null = null;
 
   constructor(
-    private authService: AuthService, 
+    private authService: AuthService,
     private router: Router
   ) {
-    // Récupération de l'utilisateur au chargement de la page
-    this.currentUser = this.authService.getUser();
+    // CORRECTION ICI : On retire les parenthèses () et on utilise le bon nom
+    this.currentUser = this.authService.currentUserValue;
   }
 
-  /**
-   * Méthode de déconnexion
-   */
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);

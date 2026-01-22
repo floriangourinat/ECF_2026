@@ -1,73 +1,59 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 
-// Définition de l'interface User pour le typage strict des données
+// AJOUT DE 'export' ICI (Indispensable pour que le Dashboard puisse l'utiliser)
 export interface User {
-  id: number;
-  nom: string;
-  prenom: string;
-  role: 'ADMIN' | 'EMPLOYE' | 'CLIENT';
+    id: number;
+    email: string;
+    role: string;
+    token?: string;
+    nom?: string;
+    prenom?: string;
 }
 
 @Injectable({
-  providedIn: 'root' // Service accessible globalement dans l'application
+  providedIn: 'root'
 })
 export class AuthService {
+  // Vérifiez bien que le port est 8080
+  private apiUrl = 'http://localhost:8080/api/auth/login.php';
 
-  // URL de l'API d'authentification (Backend PHP)
-  private apiUrl = 'http://localhost/ECF_2026/backend/api/auth/login.php';
+  private currentUserSubject: BehaviorSubject<User | null>;
+  public currentUser: Observable<User | null>;
 
-  // Clé utilisée pour stocker les informations de l'utilisateur dans le localStorage
-  private userKey = 'current_user'; 
-
-  constructor(private http: HttpClient) { }
-
-  /**
-   * Envoi de la requête de connexion au serveur
-   * @param email Email de l'utilisateur
-   * @param mot_de_passe Mot de passe en clair
-   */
-  login(email: string, mot_de_passe: string): Observable<any> {
-    return this.http.post<any>(this.apiUrl, { email, mot_de_passe })
-      .pipe(
-        // Interception de la réponse pour sauvegarder l'utilisateur si la connexion réussit
-        tap(response => {
-          if (response && response.user) {
-            this.saveUser(response.user);
-          }
-        })
-      );
+  constructor(private http: HttpClient) {
+    const storedUser = localStorage.getItem('currentUser');
+    this.currentUserSubject = new BehaviorSubject<User | null>(storedUser ? JSON.parse(storedUser) : null);
+    this.currentUser = this.currentUserSubject.asObservable();
   }
 
-  /**
-   * Sauvegarde de l'objet utilisateur dans le stockage local du navigateur
-   * Permet de maintenir la session active après rafraîchissement
-   */
-  private saveUser(user: User): void {
-    localStorage.setItem(this.userKey, JSON.stringify(user));
+  // Voici la propriété que le Dashboard cherche (sans parenthèses)
+  public get currentUserValue(): User | null {
+    return this.currentUserSubject.value;
   }
 
-  /**
-   * Récupération des informations de l'utilisateur connecté
-   */
-  getUser(): User | null {
-    const userStr = localStorage.getItem(this.userKey);
-    if (userStr) return JSON.parse(userStr);
-    return null;
+  login(email: string, password: string): Observable<User> {
+    return this.http.post<any>(this.apiUrl, { email, password })
+      .pipe(map(response => {
+        // Adaptation selon ce que renvoie votre PHP
+        if (response && (response.token || response.user)) {
+            const userData = response.user || response; // Fallback sécurité
+            const user: User = {
+                ...userData,
+                token: response.token
+            };
+            
+            localStorage.setItem('currentUser', JSON.stringify(user));
+            this.currentUserSubject.next(user);
+            return user;
+        }
+        return response;
+      }));
   }
 
-  /**
-   * Vérification de l'état de connexion (retourne vrai si un utilisateur est stocké)
-   */
-  isLogged(): boolean {
-    return !!localStorage.getItem(this.userKey);
-  }
-
-  /**
-   * Déconnexion de l'utilisateur et nettoyage du stockage local
-   */
-  logout(): void {
-    localStorage.removeItem(this.userKey);
+  logout() {
+    localStorage.removeItem('currentUser');
+    this.currentUserSubject.next(null);
   }
 }
