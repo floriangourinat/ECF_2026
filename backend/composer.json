@@ -11,5 +11,7 @@
             "email": "florian.gourinat@gmail.com"
         }
     ],
-    "require": {}
+    "require": {
+        "mongodb/mongodb": "^2.1"
+    }
 }
