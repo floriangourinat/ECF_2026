@@ -1,0 +1,15 @@
+{
+    "name": "flori/backend",
+    "autoload": {
+        "psr-4": {
+            "Flori\\Backend\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "floriangourinat",
+            "email": "florian.gourinat@gmail.com"
+        }
+    ],
+    "require": {}
+}
