@@ -1,12 +1,12 @@
 <div style="padding: 20px; text-align: center;">
-    <h1>Tableau de bord</h1>
-    
-    <div *ngIf="currentUser">
-        <p>Bienvenue, <strong>{{ currentUser.prenom }} {{ currentUser.nom }}</strong> !</p>
-        <p>Rôle : {{ currentUser.role }}</p>
-    </div>
+  <h1>Tableau de bord</h1>
 
-    <button (click)="logout()" style="margin-top: 20px; padding: 10px 20px; cursor: pointer;">
-        Se déconnecter
-    </button>
+  <div *ngIf="currentUser">
+    <p>Bienvenue, <strong>{{ currentUser.first_name }} {{ currentUser.last_name }}</strong> !</p>
+    <p>Rôle : {{ currentUser.role }}</p>
+  </div>
+
+  <button (click)="logout()" style="margin-top: 20px; padding: 10px 20px; cursor: pointer;">
+    Se déconnecter
+  </button>
 </div>
