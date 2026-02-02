@@ -26,9 +26,9 @@ export class RegisterComponent {
     private router: Router
   ) {
     this.registerForm = this.fb.group({
-      last_name: ['', Validators.required],
-      first_name: ['', Validators.required],
-      username: ['', Validators.required],
+      last_name: ['', [Validators.required, Validators.minLength(2)]],
+      first_name: ['', [Validators.required, Validators.minLength(2)]],
+      username: ['', [Validators.required, Validators.minLength(3)]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.pattern(this.passwordPattern)]]
     });
@@ -39,17 +39,27 @@ export class RegisterComponent {
 
     this.loading = true;
     this.errorMessage = '';
+    this.successMessage = '';
 
     this.authService.register(this.registerForm.value).subscribe({
       next: (response) => {
         this.successMessage = response.message || 'Compte créé avec succès !';
         this.loading = false;
-        setTimeout(() => this.router.navigate(['/login']), 2000);
+        
+        // Redirection vers login après 2 secondes
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 2000);
       },
       error: (error) => {
-        this.errorMessage = error.error?.message || 'Erreur lors de la création';
+        this.errorMessage = error.error?.message || 'Erreur lors de la création du compte';
         this.loading = false;
       }
     });
+  }
+
+  // Getters pour les validations dans le template
+  get f() {
+    return this.registerForm.controls;
   }
 }

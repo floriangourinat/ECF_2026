@@ -1,0 +1,120 @@
+<div class="home-container">
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <h1>Innov'Events</h1>
+    </div>
+    <nav class="nav">
+      <a routerLink="/home" class="nav-link active">Accueil</a>
+      <a routerLink="/events" class="nav-link">Événements</a>
+      <a routerLink="/reviews" class="nav-link">Avis</a>
+      <a routerLink="/contact" class="nav-link">Contact</a>
+      <a routerLink="/quote-request" class="nav-link">Demande de devis</a>
+      
+      <ng-container *ngIf="!authService.isLoggedIn(); else loggedIn">
+        <a routerLink="/login" class="nav-link btn-login">Se connecter</a>
+      </ng-container>
+      <ng-template #loggedIn>
+        <a routerLink="/dashboard" class="nav-link btn-login">Mon espace</a>
+      </ng-template>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h2>Des événements d'exception, sur mesure</h2>
+      <p>
+        Innov'Events transforme vos idées en moments inoubliables. 
+        Séminaires, conférences, soirées d'entreprise... 
+        Faites confiance à notre expertise pour créer des événements qui marquent les esprits.
+      </p>
+      <a routerLink="/quote-request" class="btn-primary">Demander un Devis</a>
+    </div>
+  </section>
+
+  <!-- À propos -->
+  <section class="about">
+    <h2>Qui sommes-nous ?</h2>
+    <div class="about-content">
+      <div class="about-text">
+        <p>
+          Fondée par <strong>Chloé</strong> et <strong>José</strong>, deux passionnés issus de grandes écoles de communication, 
+          <strong>Innov'Events</strong> s'est rapidement imposée sur le marché des événements professionnels haut de gamme.
+        </p>
+        <p>
+          Notre crédo : des séminaires et conférences "cousus main" qui marquent les esprits. 
+          Avec une équipe de 8 personnes dévouées, nous mettons tout en œuvre pour que chaque événement 
+          soit unique et mémorable.
+        </p>
+        <h3>Nos valeurs</h3>
+        <ul>
+          <li><strong>Réactivité</strong> : Nous répondons à vos besoins dans les plus brefs délais</li>
+          <li><strong>Fiabilité</strong> : Chaque détail est vérifié pour garantir la perfection</li>
+          <li><strong>Personnalisation</strong> : Votre événement vous ressemble, à 100%</li>
+        </ul>
+      </div>
+      <div class="about-image">
+        <img src="assets/images/team.jpg" alt="L'équipe Innov'Events" onerror="this.src='https://via.placeholder.com/400x300?text=Innov%27Events'">
+      </div>
+    </div>
+  </section>
+
+  <!-- Services -->
+  <section class="services">
+    <h2>Nos services</h2>
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">🎯</div>
+        <h3>Séminaires</h3>
+        <p>Des séminaires d'entreprise qui allient travail et convivialité.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🎤</div>
+        <h3>Conférences</h3>
+        <p>Organisation complète de vos conférences, du concept à la réalisation.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🎉</div>
+        <h3>Soirées d'entreprise</h3>
+        <p>Des soirées mémorables pour célébrer vos succès.</p>
+      </div>
+      <div class="service-card">
+        <div class="service-icon">🤝</div>
+        <h3>Team Building</h3>
+        <p>Renforcez la cohésion de vos équipes avec nos activités sur mesure.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta">
+    <h2>Prêt à créer votre événement ?</h2>
+    <p>Contactez-nous dès maintenant pour discuter de votre projet.</p>
+    <a routerLink="/quote-request" class="btn-primary">Demander un Devis Gratuit</a>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>Innov'Events</h4>
+        <p>Votre partenaire événementiel de confiance.</p>
+      </div>
+      <div class="footer-section">
+        <h4>Contact</h4>
+        <p>Email : contact&#64;innovevents.com</p>
+        <p>Tél : 01 23 45 67 89</p>
+      </div>
+      <div class="footer-section">
+        <h4>Liens utiles</h4>
+        <a routerLink="/mentions-legales">Mentions légales</a>
+        <a routerLink="/cgu">CGU</a>
+        <a routerLink="/cgv">CGV</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 Innov'Events - Tous droits réservés</p>
+    </div>
+  </footer>
+</div>

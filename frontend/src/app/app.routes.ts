@@ -1,14 +1,38 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './pages/login/login'; // Import du composant Login (nom court)
-import { DashboardComponent } from './pages/dashboard/dashboard'; // Import du Dashboard (nom court corrigé)
+import { authGuard, guestGuard } from './_guards/auth.guard';
 
 export const routes: Routes = [
-    // Redirection par défaut : redirige vers login
-    { path: '', redirectTo: 'login', pathMatch: 'full' },
-    
-    // Page de connexion
-    { path: 'login', component: LoginComponent },
-    
-    // Page d'accueil (Dashboard)
-    { path: 'home', component: DashboardComponent }
+  { 
+    path: '', 
+    redirectTo: 'home', 
+    pathMatch: 'full' 
+  },
+  { 
+    path: 'home', 
+    loadComponent: () => import('./pages/home/home').then(m => m.HomeComponent)
+  },
+  { 
+    path: 'login', 
+    loadComponent: () => import('./pages/login/login').then(m => m.LoginComponent),
+    canActivate: [guestGuard]
+  },
+  { 
+    path: 'register', 
+    loadComponent: () => import('./pages/register/register').then(m => m.RegisterComponent),
+    canActivate: [guestGuard]
+  },
+  { 
+    path: 'forgot-password', 
+    loadComponent: () => import('./pages/forgot-password/forgot-password').then(m => m.ForgotPasswordComponent),
+    canActivate: [guestGuard]
+  },
+  { 
+    path: 'dashboard', 
+    loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.DashboardComponent),
+    canActivate: [authGuard]
+  },
+  { 
+    path: '**', 
+    redirectTo: 'home' 
+  }
 ];
