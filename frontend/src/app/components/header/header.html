@@ -5,7 +5,10 @@
   
   <nav class="nav" [class.active]="mobileMenuOpen">
     <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">Accueil</a>
-    <a routerLink="/quote-request" routerLinkActive="active" class="nav-link">Demande de devis</a>
+    <a routerLink="/events" routerLinkActive="active" class="nav-link">Événements</a>
+    <a routerLink="/reviews" routerLinkActive="active" class="nav-link">Avis</a>
+    <a routerLink="/contact" routerLinkActive="active" class="nav-link">Contact</a>
+    <a routerLink="/quote-request" routerLinkActive="active" class="nav-link btn-cta">Demande de devis</a>
     
     <ng-container *ngIf="!authService.isLoggedIn(); else loggedIn">
       <a routerLink="/login" routerLinkActive="active" class="nav-link btn-login">Se connecter</a>
