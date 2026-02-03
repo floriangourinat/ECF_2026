@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-mentions-legales',
+  selector: 'app-legal-notice',
   standalone: true,
   imports: [CommonModule, RouterLink],
-  templateUrl: './mentions-legales.html',
-  styleUrl: './mentions-legales.scss'
+  templateUrl: './legal-notice.html',
+  styleUrl: './legal-notice.scss'
 })
-export class MentionsLegalesComponent {}
+export class LegalNoticeComponent {}

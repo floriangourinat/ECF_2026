@@ -1,0 +1,131 @@
+.legal-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 50px;
+  background: #fff;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  .logo {
+    a { text-decoration: none; }
+    h1 { color: #e67e22; margin: 0; font-size: 1.8rem; }
+  }
+
+  .nav {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+
+    .nav-link {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 5px;
+      transition: all 0.3s;
+      &:hover { color: #e67e22; }
+      &.btn-login {
+        background: #e67e22;
+        color: white;
+        &:hover { background: #d35400; }
+      }
+    }
+  }
+}
+
+.content {
+  flex: 1;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 50px 20px;
+
+  h1 {
+    color: #2c3e50;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  .last-update {
+    text-align: center;
+    color: #888;
+    margin-bottom: 40px;
+  }
+
+  section {
+    margin-bottom: 35px;
+
+    h2 {
+      color: #667eea;
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    p {
+      color: #555;
+      line-height: 1.8;
+      margin-bottom: 10px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 15px 0;
+
+      li {
+        padding: 8px 0 8px 20px;
+        position: relative;
+        color: #555;
+        &::before {
+          content: '•';
+          color: #667eea;
+          position: absolute;
+          left: 0;
+        }
+      }
+    }
+  }
+
+  .back-link {
+    text-align: center;
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #eee;
+
+    a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 500;
+      &:hover { text-decoration: underline; }
+    }
+  }
+}
+
+.footer {
+  background: #2c3e50;
+  color: #7f8c8d;
+  text-align: center;
+  padding: 20px;
+  p { margin: 0; }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    padding: 15px 20px;
+    .nav { margin-top: 15px; }
+  }
+  .content {
+    padding: 30px 15px;
+    h1 { font-size: 1.8rem; }
+  }
+}
