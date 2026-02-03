@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { HeaderComponent } from '../../components/header/header';
+import { FooterComponent } from '../../components/footer/footer';
 
 @Component({
   selector: 'app-quote-request',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, HeaderComponent, FooterComponent],
   templateUrl: './quote-request.html',
   styleUrl: './quote-request.scss'
 })
@@ -30,11 +32,6 @@ export class QuoteRequestComponent {
     private fb: FormBuilder,
     private http: HttpClient
   ) {
-    // Date minimum = demain
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const minDate = tomorrow.toISOString().split('T')[0];
-
     this.quoteForm = this.fb.group({
       company_name: ['', [Validators.required, Validators.minLength(2)]],
       last_name: ['', [Validators.required, Validators.minLength(2)]],
@@ -51,7 +48,6 @@ export class QuoteRequestComponent {
 
   onSubmit(): void {
     if (this.quoteForm.invalid) {
-      // Marquer tous les champs comme touchés pour afficher les erreurs
       Object.keys(this.quoteForm.controls).forEach(key => {
         this.quoteForm.get(key)?.markAsTouched();
       });
@@ -77,7 +73,6 @@ export class QuoteRequestComponent {
       });
   }
 
-  // Getters pour faciliter l'accès aux contrôles dans le template
   get f() {
     return this.quoteForm.controls;
   }

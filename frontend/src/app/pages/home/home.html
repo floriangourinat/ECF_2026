@@ -1,24 +1,5 @@
 <div class="home-container">
-  <!-- Header -->
-  <header class="header">
-    <div class="logo">
-      <h1>Innov'Events</h1>
-    </div>
-    <nav class="nav">
-      <a routerLink="/home" class="nav-link active">Accueil</a>
-      <a routerLink="/events" class="nav-link">Événements</a>
-      <a routerLink="/reviews" class="nav-link">Avis</a>
-      <a routerLink="/contact" class="nav-link">Contact</a>
-      <a routerLink="/quote-request" class="nav-link">Demande de devis</a>
-      
-      <ng-container *ngIf="!authService.isLoggedIn(); else loggedIn">
-        <a routerLink="/login" class="nav-link btn-login">Se connecter</a>
-      </ng-container>
-      <ng-template #loggedIn>
-        <a routerLink="/dashboard" class="nav-link btn-login">Mon espace</a>
-      </ng-template>
-    </nav>
-  </header>
+  <app-header></app-header>
 
   <!-- Hero Section -->
   <section class="hero">
@@ -94,27 +75,5 @@
     <a routerLink="/quote-request" class="btn-primary">Demander un Devis Gratuit</a>
   </section>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-content">
-      <div class="footer-section">
-        <h4>Innov'Events</h4>
-        <p>Votre partenaire événementiel de confiance.</p>
-      </div>
-      <div class="footer-section">
-        <h4>Contact</h4>
-        <p>Email : contact&#64;innovevents.com</p>
-        <p>Tél : 01 23 45 67 89</p>
-      </div>
-      <div class="footer-section">
-        <h4>Liens utiles</h4>
-        <a routerLink="/legal-notice">Mentions légales</a>
-        <a routerLink="/cgu">CGU</a>
-        <a routerLink="/cgv">CGV</a>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>&copy; 2026 Innov'Events - Tous droits réservés</p>
-    </div>
-  </footer>
+  <app-footer></app-footer>
 </div>
