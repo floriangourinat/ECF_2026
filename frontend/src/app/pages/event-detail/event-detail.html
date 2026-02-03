@@ -1,0 +1,78 @@
+<div class="event-detail-container">
+  <app-header></app-header>
+
+  <main class="content">
+    <div *ngIf="loading" class="loading">
+      <p>Chargement...</p>
+    </div>
+
+    <div *ngIf="error" class="error">
+      <p>{{ error }}</p>
+      <a routerLink="/events" class="btn-back">← Retour aux événements</a>
+    </div>
+
+    <article *ngIf="event && !loading" class="event-detail">
+      <div class="event-header">
+        <img [src]="event.image_url || 'https://via.placeholder.com/1200x400?text=Événement'" [alt]="event.name" class="event-hero-image">
+        <div class="event-header-overlay">
+          <span class="event-type-badge">{{ eventTypeLabels[event.event_type] || event.event_type }}</span>
+          <h1>{{ event.name }}</h1>
+        </div>
+      </div>
+
+      <div class="event-body">
+        <div class="event-info-grid">
+          <div class="info-card">
+            <span class="icon">📅</span>
+            <div>
+              <strong>Date de début</strong>
+              <p>{{ formatDate(event.start_date) }}</p>
+              <p class="time">{{ formatTime(event.start_date) }}</p>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <span class="icon">🏁</span>
+            <div>
+              <strong>Date de fin</strong>
+              <p>{{ formatDate(event.end_date) }}</p>
+              <p class="time">{{ formatTime(event.end_date) }}</p>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <span class="icon">📍</span>
+            <div>
+              <strong>Lieu</strong>
+              <p>{{ event.location }}</p>
+            </div>
+          </div>
+
+          <div class="info-card" *ngIf="event.participant_count">
+            <span class="icon">👥</span>
+            <div>
+              <strong>Participants</strong>
+              <p>{{ event.participant_count }} personnes</p>
+            </div>
+          </div>
+        </div>
+
+        <section class="event-description-section">
+          <h2>Description</h2>
+          <p>{{ event.description }}</p>
+        </section>
+
+        <!-- Section Prestations et Devis (demandée dans l'énoncé) -->
+        <section class="cta-section">
+          <h2>Prestations et Devis</h2>
+          <p>Vous souhaitez organiser un événement similaire ? Notre équipe est à votre disposition pour créer un événement sur mesure.</p>
+          <a routerLink="/quote-request" class="btn-cta">Demander un Devis</a>
+        </section>
+
+        <a routerLink="/events" class="btn-back">← Retour aux événements</a>
+      </div>
+    </article>
+  </main>
+
+  <app-footer></app-footer>
+</div>

@@ -1,0 +1,120 @@
+<div class="contact-container">
+  <app-header></app-header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Contactez-nous</h1>
+    <p>Une question ? Un problème ? Notre équipe est là pour vous aider.</p>
+  </section>
+
+  <!-- Contenu -->
+  <section class="contact-section">
+    <div class="contact-grid">
+      
+      <!-- Informations de contact -->
+      <div class="contact-info">
+        <h2>Nos coordonnées</h2>
+        
+        <div class="info-item">
+          <span class="icon">📍</span>
+          <div>
+            <strong>Adresse</strong>
+            <p>123 Avenue des Champs-Élysées<br>75008 Paris, France</p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <span class="icon">📞</span>
+          <div>
+            <strong>Téléphone</strong>
+            <p><a href="tel:+33123456789">01 23 45 67 89</a></p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <span class="icon">✉️</span>
+          <div>
+            <strong>Email</strong>
+            <p><a href="mailto:contact@innovevents.com">contact&#64;innovevents.com</a></p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <span class="icon">🕐</span>
+          <div>
+            <strong>Horaires</strong>
+            <p>Lundi - Vendredi : 9h - 18h<br>Samedi : 10h - 16h</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formulaire -->
+      <div class="contact-form-wrapper">
+        
+        <!-- Message de succès -->
+        <div *ngIf="submitted" class="success-container">
+          <div class="success-icon">✅</div>
+          <h3>Message envoyé !</h3>
+          <p>{{ successMessage }}</p>
+          <a routerLink="/home" class="btn-primary">Retour à l'accueil</a>
+        </div>
+
+        <!-- Formulaire -->
+        <form *ngIf="!submitted" [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+          <h2>Envoyez-nous un message</h2>
+
+          <div *ngIf="errorMessage" class="alert alert-danger">
+            {{ errorMessage }}
+          </div>
+
+          <div class="form-group">
+            <label for="username">Nom d'utilisateur (facultatif)</label>
+            <input type="text" id="username" formControlName="username" class="form-control" 
+              placeholder="Si vous avez un compte">
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" formControlName="email" class="form-control"
+              [class.is-invalid]="f['email'].invalid && f['email'].touched"
+              placeholder="votre@email.com">
+            <small *ngIf="f['email'].errors?.['email'] && f['email'].touched" class="text-danger">
+              Format d'email invalide
+            </small>
+            <small class="hint">* Obligatoire si nom d'utilisateur non fourni</small>
+          </div>
+
+          <div class="form-group">
+            <label for="title">Titre de votre demande *</label>
+            <input type="text" id="title" formControlName="title" class="form-control"
+              [class.is-invalid]="f['title'].invalid && f['title'].touched"
+              placeholder="Ex: Question sur vos services">
+            <small *ngIf="f['title'].errors?.['required'] && f['title'].touched" class="text-danger">
+              Le titre est requis
+            </small>
+          </div>
+
+          <div class="form-group">
+            <label for="description">Votre message *</label>
+            <textarea id="description" formControlName="description" class="form-control" rows="6"
+              [class.is-invalid]="f['description'].invalid && f['description'].touched"
+              placeholder="Décrivez votre demande en détail..."></textarea>
+            <small class="char-count">{{ contactForm.get('description')?.value?.length || 0 }} / 2000</small>
+            <small *ngIf="f['description'].errors?.['required'] && f['description'].touched" class="text-danger">
+              Le message est requis
+            </small>
+            <small *ngIf="f['description'].errors?.['minlength'] && f['description'].touched" class="text-danger">
+              Minimum 20 caractères
+            </small>
+          </div>
+
+          <button type="submit" [disabled]="loading" class="btn-submit">
+            {{ loading ? '⏳ Envoi en cours...' : '📩 Envoyer le message' }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <app-footer></app-footer>
+</div>

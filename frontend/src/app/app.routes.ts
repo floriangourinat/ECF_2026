@@ -8,15 +8,33 @@ export const routes: Routes = [
     pathMatch: 'full' 
   },
 
-  // PAGES PUBLIQUES
+  // ========== PAGES PUBLIQUES ==========
   { 
     path: 'home', 
     loadComponent: () => import('./pages/home/home').then(m => m.HomeComponent)
   },
   { 
+    path: 'events', 
+    loadComponent: () => import('./pages/events/events').then(m => m.EventsComponent)
+  },
+  { 
+    path: 'events/:id', 
+    loadComponent: () => import('./pages/event-detail/event-detail').then(m => m.EventDetailComponent)
+  },
+  { 
+    path: 'reviews', 
+    loadComponent: () => import('./pages/reviews/reviews').then(m => m.ReviewsComponent)
+  },
+  { 
+    path: 'contact', 
+    loadComponent: () => import('./pages/contact/contact').then(m => m.ContactComponent)
+  },
+  { 
     path: 'quote-request', 
     loadComponent: () => import('./pages/quote-request/quote-request').then(m => m.QuoteRequestComponent)
   },
+
+  // ========== PAGES LÉGALES ==========
   { 
     path: 'legal-notice', 
     loadComponent: () => import('./pages/legal-notice/legal-notice').then(m => m.LegalNoticeComponent)
@@ -30,7 +48,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/cgv/cgv').then(m => m.CgvComponent)
   },
 
-  // AUTHENTIFICATION
+  // ========== AUTHENTIFICATION ==========
   { 
     path: 'login', 
     loadComponent: () => import('./pages/login/login').then(m => m.LoginComponent),
@@ -47,14 +65,14 @@ export const routes: Routes = [
     canActivate: [guestGuard]
   },
 
-  // ESPACE CONNECTÉ
+  // ========== ESPACE CONNECTÉ ==========
   { 
     path: 'dashboard', 
     loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.DashboardComponent),
     canActivate: [authGuard]
   },
 
-  // REDIRECTION 404
+  // ========== REDIRECTION 404 ==========
   { 
     path: '**', 
     redirectTo: 'home' 

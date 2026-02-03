@@ -1,0 +1,73 @@
+<div class="events-container">
+  <app-header></app-header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Nos Événements</h1>
+    <p>Découvrez les événements exceptionnels réalisés par Innov'Events</p>
+  </section>
+
+  <!-- Filtres -->
+  <section class="filters-section">
+    <div class="filters">
+      <div class="filter-group">
+        <label for="filterType">Type d'événement</label>
+        <select id="filterType" [(ngModel)]="filterType" (change)="applyFilters()">
+          <option *ngFor="let type of eventTypes" [value]="type.value">{{ type.label }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="filterTheme">Thème</label>
+        <select id="filterTheme" [(ngModel)]="filterTheme" (change)="applyFilters()">
+          <option *ngFor="let theme of themes" [value]="theme.value">{{ theme.label }}</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="filterDateStart">Date début</label>
+        <input type="date" id="filterDateStart" [(ngModel)]="filterDateStart" (change)="applyFilters()">
+      </div>
+
+      <div class="filter-group">
+        <label for="filterDateEnd">Date fin</label>
+        <input type="date" id="filterDateEnd" [(ngModel)]="filterDateEnd" (change)="applyFilters()">
+      </div>
+
+      <button class="btn-reset" (click)="resetFilters()">Réinitialiser</button>
+    </div>
+  </section>
+
+  <!-- Liste des événements -->
+  <section class="events-section">
+    <div *ngIf="loading" class="loading">
+      <p>Chargement des événements...</p>
+    </div>
+
+    <div *ngIf="error" class="error">
+      <p>{{ error }}</p>
+    </div>
+
+    <div *ngIf="!loading && filteredEvents.length === 0" class="no-events">
+      <p>Aucun événement trouvé avec ces critères.</p>
+    </div>
+
+    <div class="events-grid" *ngIf="!loading && filteredEvents.length > 0">
+      <article class="event-card" *ngFor="let event of filteredEvents">
+        <div class="event-image">
+          <img [src]="event.image_url || 'https://via.placeholder.com/400x250?text=Événement'" [alt]="event.name">
+          <span class="event-type-badge">{{ getEventTypeLabel(event.event_type) }}</span>
+        </div>
+        <div class="event-content">
+          <h3>{{ event.name }}</h3>
+          <p class="event-date">📅 {{ formatDate(event.start_date) }}</p>
+          <p class="event-location">📍 {{ event.location }}</p>
+          <p class="event-description">{{ event.description | slice:0:120 }}...</p>
+          <a [routerLink]="['/events', event.id]" class="btn-details">Voir les détails</a>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <app-footer></app-footer>
+</div>

@@ -1,0 +1,66 @@
+<div class="reviews-container">
+  <app-header></app-header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Avis Clients</h1>
+    <p>Découvrez ce que nos clients pensent de nos services</p>
+    <div class="average-rating" *ngIf="reviews.length > 0">
+      <span class="stars">
+        <span *ngFor="let star of getStars(getAverageRating())">{{ star }}</span>
+      </span>
+      <span class="score">{{ getAverageRating() }}/5</span>
+      <span class="count">({{ reviews.length }} avis)</span>
+    </div>
+  </section>
+
+  <!-- Liste des avis -->
+  <section class="reviews-section">
+    <div *ngIf="loading" class="loading">
+      <p>Chargement des avis...</p>
+    </div>
+
+    <div *ngIf="error" class="error">
+      <p>{{ error }}</p>
+    </div>
+
+    <div *ngIf="!loading && reviews.length === 0" class="no-reviews">
+      <p>Aucun avis pour le moment.</p>
+      <p>Soyez le premier à partager votre expérience avec Innov'Events !</p>
+    </div>
+
+    <div class="reviews-grid" *ngIf="!loading && reviews.length > 0">
+      <article class="review-card" *ngFor="let review of reviews">
+        <div class="review-header">
+          <div class="reviewer-info">
+            <div class="avatar">{{ review.first_name.charAt(0) }}{{ review.last_name.charAt(0) }}</div>
+            <div>
+              <h3>{{ review.first_name }} {{ review.last_name }}</h3>
+              <p class="company">{{ review.company_name }}</p>
+            </div>
+          </div>
+          <div class="rating">
+            <span *ngFor="let star of getStars(review.rating)" class="star">{{ star }}</span>
+          </div>
+        </div>
+        
+        <div class="review-event">
+          <span class="event-badge">{{ review.event_name }}</span>
+        </div>
+
+        <p class="review-comment">"{{ review.comment }}"</p>
+        
+        <p class="review-date">{{ formatDate(review.created_at) }}</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2>Prêt à vivre une expérience exceptionnelle ?</h2>
+    <p>Rejoignez nos clients satisfaits et créez votre événement sur mesure.</p>
+    <a routerLink="/quote-request" class="btn-cta">Demander un Devis</a>
+  </section>
+
+  <app-footer></app-footer>
+</div>
