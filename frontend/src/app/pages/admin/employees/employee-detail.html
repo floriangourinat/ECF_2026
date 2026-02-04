@@ -1,0 +1,99 @@
+<app-admin-layout>
+  <div class="employee-detail-page">
+    <a routerLink="/admin/employees" class="btn-back">← Retour à la liste</a>
+
+    <div *ngIf="loading" class="loading">Chargement...</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+
+    <div *ngIf="employee && !loading" class="employee-content">
+      <header class="employee-header">
+        <div class="header-info">
+          <div class="avatar">{{ employee.first_name[0] }}{{ employee.last_name[0] }}</div>
+          <div class="info">
+            <h1>{{ employee.first_name }} {{ employee.last_name }}</h1>
+            <p class="username" *ngIf="employee.username">&#64;{{ employee.username }}</p>
+            <div class="badges">
+              <span class="role-badge" [class.admin]="employee.role === 'admin'">
+                {{ getRoleLabel(employee.role) }}
+              </span>
+              <span class="status-badge" [class.active]="employee.is_active" [class.inactive]="!employee.is_active">
+                {{ employee.is_active ? 'Actif' : 'Inactif' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="details-grid">
+        <section class="detail-card">
+          <h3>📋 Informations</h3>
+          <div class="detail-row">
+            <span class="label">Email</span>
+            <span class="value"><a href="mailto:{{ employee.email }}">{{ employee.email }}</a></span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Rôle</span>
+            <span class="value">{{ getRoleLabel(employee.role) }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Membre depuis</span>
+            <span class="value">{{ formatDate(employee.created_at) }}</span>
+          </div>
+        </section>
+
+        <section class="detail-card">
+          <h3>📊 Statistiques</h3>
+          <div class="stats-grid">
+            <div class="stat">
+              <span class="stat-value">{{ tasks.length }}</span>
+              <span class="stat-label">Tâches assignées</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">{{ notes.length }}</span>
+              <span class="stat-label">Notes créées</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Tâches -->
+      <section class="section-table">
+        <h3>✅ Tâches assignées</h3>
+        <div *ngIf="tasks.length === 0" class="empty">Aucune tâche assignée</div>
+        <table *ngIf="tasks.length > 0">
+          <thead>
+            <tr>
+              <th>Tâche</th>
+              <th>Événement</th>
+              <th>Échéance</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let task of tasks">
+              <td>{{ task.title }}</td>
+              <td>{{ task.event_name }}</td>
+              <td>{{ formatDate(task.due_date) }}</td>
+              <td><span class="badge">{{ taskStatusLabels[task.status] }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Notes -->
+      <section class="section-table">
+        <h3>📝 Notes récentes</h3>
+        <div *ngIf="notes.length === 0" class="empty">Aucune note créée</div>
+        <div class="notes-list" *ngIf="notes.length > 0">
+          <div class="note-item" *ngFor="let note of notes">
+            <div class="note-header">
+              <strong>{{ note.event_name || 'Note globale' }}</strong>
+              <span class="note-date">{{ formatDateTime(note.created_at) }}</span>
+            </div>
+            <p class="note-content">{{ note.content }}</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</app-admin-layout>
