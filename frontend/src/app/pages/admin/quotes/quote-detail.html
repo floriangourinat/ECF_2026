@@ -1,0 +1,111 @@
+<app-admin-layout>
+  <div class="quote-detail-page">
+    <a routerLink="/admin/quotes" class="btn-back">← Retour à la liste</a>
+
+    <div *ngIf="loading" class="loading">Chargement...</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+
+    <div *ngIf="quote && !loading" class="quote-content">
+      <header class="quote-header">
+        <div class="header-info">
+          <span class="status-badge" [class]="getStatusClass(quote.status)">
+            {{ statusLabels[quote.status] }}
+          </span>
+          <h1>Devis #{{ quote.id }}</h1>
+          <p class="quote-date">Émis le {{ formatDate(quote.issue_date) }}</p>
+        </div>
+        <div class="header-actions">
+          <button (click)="downloadPdf()" class="btn btn-primary">📄 Télécharger PDF</button>
+          <button (click)="deleteQuote()" class="btn btn-danger">🗑️ Supprimer</button>
+        </div>
+      </header>
+
+      <!-- Infos client et événement -->
+      <div class="details-grid">
+        <section class="detail-card">
+          <h3>👤 Client</h3>
+          <div class="detail-row">
+            <span class="label">Nom</span>
+            <span class="value">{{ quote.company_name || quote.first_name + ' ' + quote.last_name }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Email</span>
+            <span class="value">{{ quote.client_email }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Téléphone</span>
+            <span class="value">{{ quote.client_phone || '-' }}</span>
+          </div>
+        </section>
+
+        <section class="detail-card">
+          <h3>🎉 Événement</h3>
+          <div class="detail-row">
+            <span class="label">Nom</span>
+            <span class="value">
+              <a [routerLink]="['/admin/events', quote.event_id]">{{ quote.event_name }}</a>
+            </span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Date</span>
+            <span class="value">{{ formatDate(quote.event_date) }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Lieu</span>
+            <span class="value">{{ quote.event_location || '-' }}</span>
+          </div>
+        </section>
+      </div>
+
+      <!-- Prestations -->
+      <section class="services-section">
+        <h3>📋 Prestations</h3>
+        <table class="services-table">
+          <thead>
+            <tr>
+              <th>Prestation</th>
+              <th>Description</th>
+              <th>Montant HT</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let service of services">
+              <td>{{ service.label }}</td>
+              <td>{{ service.description || '-' }}</td>
+              <td class="amount">{{ formatCurrency(service.unit_price_ht) }}</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="2" class="total-label">Total HT</td>
+              <td class="amount">{{ formatCurrency(quote.total_ht) }}</td>
+            </tr>
+            <tr>
+              <td colspan="2" class="total-label">TVA ({{ quote.tax_rate }}%)</td>
+              <td class="amount">{{ formatCurrency(quote.total_ttc - quote.total_ht) }}</td>
+            </tr>
+            <tr class="total-row">
+              <td colspan="2" class="total-label">Total TTC</td>
+              <td class="amount">{{ formatCurrency(quote.total_ttc) }}</td>
+            </tr>
+          </tfoot>
+        </table>
+      </section>
+
+      <!-- Motif de modification -->
+      <section class="modification-section" *ngIf="quote.modification_reason">
+        <h3>📝 Motif de modification demandée</h3>
+        <p>{{ quote.modification_reason }}</p>
+      </section>
+
+      <!-- Actions sur le statut -->
+      <section class="status-actions" *ngIf="quote.status === 'pending' || quote.status === 'modification'">
+        <h3>🔄 Actions</h3>
+        <div class="action-buttons">
+          <button (click)="updateStatus('accepted')" class="btn btn-success">✅ Marquer comme accepté</button>
+          <button (click)="updateStatus('refused')" class="btn btn-outline">❌ Marquer comme refusé</button>
+        </div>
+      </section>
+    </div>
+  </div>
+</app-admin-layout>

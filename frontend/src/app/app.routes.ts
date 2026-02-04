@@ -108,6 +108,21 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/admin/events/event-detail').then(m => m.AdminEventDetailComponent),
     canActivate: [adminGuard]
   },
+  { 
+    path: 'admin/quotes', 
+    loadComponent: () => import('./pages/admin/quotes/quotes-list').then(m => m.QuotesListComponent),
+    canActivate: [adminGuard]
+  },
+  { 
+    path: 'admin/quotes/create', 
+    loadComponent: () => import('./pages/admin/quotes/quote-create').then(m => m.QuoteCreateComponent),
+    canActivate: [adminGuard]
+  },
+  { 
+    path: 'admin/quotes/:id', 
+    loadComponent: () => import('./pages/admin/quotes/quote-detail').then(m => m.QuoteDetailComponent),
+    canActivate: [adminGuard]
+  },
 
   // ========== REDIRECTION 404 ==========
   { 

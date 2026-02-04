@@ -1,0 +1,66 @@
+<app-admin-layout>
+  <div class="quotes-page">
+    <header class="page-header">
+      <div class="header-title">
+        <h1>Gestion des Devis</h1>
+        <p>{{ quotes.length }} devis au total</p>
+      </div>
+      <a routerLink="/admin/quotes/create" class="btn-create">+ Nouveau devis</a>
+    </header>
+
+    <!-- Filtres -->
+    <section class="filters-section">
+      <div class="filter-box">
+        <select [(ngModel)]="filterStatus" (change)="onFilterChange()">
+          <option value="">Tous les statuts</option>
+          <option value="pending">En attente</option>
+          <option value="modification">Modification demandée</option>
+          <option value="accepted">Accepté</option>
+          <option value="refused">Refusé</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Liste -->
+    <section class="quotes-list">
+      <div *ngIf="loading" class="loading">Chargement...</div>
+      <div *ngIf="error" class="error">{{ error }}</div>
+      <div *ngIf="!loading && quotes.length === 0" class="empty">Aucun devis trouvé</div>
+
+      <table *ngIf="!loading && quotes.length > 0" class="quotes-table">
+        <thead>
+          <tr>
+            <th>N°</th>
+            <th>Client</th>
+            <th>Événement</th>
+            <th>Montant TTC</th>
+            <th>Statut</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let quote of quotes">
+            <td class="quote-id">#{{ quote.id }}</td>
+            <td>{{ quote.client_company || quote.first_name + ' ' + quote.last_name }}</td>
+            <td>
+              <a [routerLink]="['/admin/events', quote.event_id]">{{ quote.event_name }}</a>
+            </td>
+            <td class="amount">{{ formatCurrency(quote.total_ttc) }}</td>
+            <td>
+              <span class="status-badge" [class]="getStatusClass(quote.status)">
+                {{ statusLabels[quote.status] }}
+              </span>
+            </td>
+            <td>{{ formatDate(quote.issue_date) }}</td>
+            <td class="actions">
+              <a [routerLink]="['/admin/quotes', quote.id]" class="btn-icon" title="Voir">👁️</a>
+              <button (click)="downloadPdf(quote)" class="btn-icon" title="Télécharger PDF">📄</button>
+              <button (click)="deleteQuote(quote)" class="btn-icon btn-danger" title="Supprimer">🗑️</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</app-admin-layout>
