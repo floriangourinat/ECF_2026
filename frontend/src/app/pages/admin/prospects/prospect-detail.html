@@ -1,0 +1,106 @@
+<app-admin-layout>
+  <div class="prospect-detail-page">
+    <a routerLink="/admin/prospects" class="btn-back">← Retour à la liste</a>
+
+    <div *ngIf="loading" class="loading">
+      <p>Chargement...</p>
+    </div>
+
+    <div *ngIf="error" class="error">
+      <p>{{ error }}</p>
+    </div>
+
+    <div *ngIf="prospect && !loading" class="prospect-content">
+      <header class="prospect-header">
+        <div class="header-info">
+          <h1>{{ prospect.company_name || 'Sans entreprise' }}</h1>
+          <p class="contact-name">{{ prospect.first_name }} {{ prospect.last_name }}</p>
+          <span class="status-badge" [class]="getStatusClass(prospect.status)">
+            {{ statusLabels[prospect.status] }}
+          </span>
+        </div>
+
+        <div class="header-actions" *ngIf="prospect.status !== 'converted'">
+          <button *ngIf="prospect.status === 'to_contact'" 
+                  (click)="updateStatus('qualification')" 
+                  class="btn btn-primary">
+            Passer en qualification
+          </button>
+          <button *ngIf="prospect.status === 'qualification'" 
+                  (click)="convertToClient()" 
+                  class="btn btn-success">
+            ✅ Convertir en client
+          </button>
+          <button *ngIf="prospect.status !== 'failed'" 
+                  (click)="updateStatus('failed')" 
+                  class="btn btn-danger">
+            Marquer comme échoué
+          </button>
+        </div>
+      </header>
+
+      <div class="details-grid">
+        <section class="detail-card">
+          <h3>📋 Informations générales</h3>
+          <div class="detail-row">
+            <span class="label">Entreprise</span>
+            <span class="value">{{ prospect.company_name || '-' }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Nom</span>
+            <span class="value">{{ prospect.last_name }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Prénom</span>
+            <span class="value">{{ prospect.first_name }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Date de création</span>
+            <span class="value">{{ formatDate(prospect.created_at) }}</span>
+          </div>
+        </section>
+
+        <section class="detail-card">
+          <h3>📞 Contact</h3>
+          <div class="detail-row">
+            <span class="label">Email</span>
+            <span class="value">
+              <a href="mailto:{{ prospect.email }}">{{ prospect.email }}</a>
+            </span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Téléphone</span>
+            <span class="value">
+              <a href="tel:{{ prospect.phone }}">{{ prospect.phone || '-' }}</a>
+            </span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Lieu</span>
+            <span class="value">{{ prospect.location || '-' }}</span>
+          </div>
+        </section>
+
+        <section class="detail-card">
+          <h3>🎉 Projet événement</h3>
+          <div class="detail-row">
+            <span class="label">Type d'événement</span>
+            <span class="value">{{ prospect.event_type || '-' }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Date souhaitée</span>
+            <span class="value">{{ formatDate(prospect.planned_date) }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Participants estimés</span>
+            <span class="value">{{ prospect.estimated_participants || '-' }}</span>
+          </div>
+        </section>
+
+        <section class="detail-card full-width">
+          <h3>📝 Description du besoin</h3>
+          <p class="needs-description">{{ prospect.needs_description || 'Aucune description fournie.' }}</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</app-admin-layout>

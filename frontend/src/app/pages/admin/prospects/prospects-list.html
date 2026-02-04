@@ -1,0 +1,96 @@
+<app-admin-layout>
+  <div class="prospects-page">
+    <header class="page-header">
+      <div class="header-title">
+        <h1>Gestion des Prospects</h1>
+        <p>{{ prospects.length }} prospect(s) au total</p>
+      </div>
+    </header>
+
+    <!-- Filtres -->
+    <section class="filters-section">
+      <div class="search-box">
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm" 
+          (keyup.enter)="onSearch()"
+          placeholder="Rechercher par nom, entreprise, email..."
+        >
+        <button (click)="onSearch()">🔍</button>
+      </div>
+
+      <div class="filter-box">
+        <select [(ngModel)]="filterStatus" (change)="onFilterChange()">
+          <option value="">Tous les statuts</option>
+          <option value="to_contact">À contacter</option>
+          <option value="qualification">Qualification</option>
+          <option value="failed">Échoué</option>
+          <option value="converted">Converti</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Liste -->
+    <section class="prospects-list">
+      <div *ngIf="loading" class="loading">
+        <p>Chargement...</p>
+      </div>
+
+      <div *ngIf="error" class="error">
+        <p>{{ error }}</p>
+      </div>
+
+      <div *ngIf="!loading && prospects.length === 0" class="empty">
+        <p>Aucun prospect trouvé</p>
+      </div>
+
+      <table *ngIf="!loading && prospects.length > 0" class="prospects-table">
+        <thead>
+          <tr>
+            <th>Entreprise</th>
+            <th>Contact</th>
+            <th>Email</th>
+            <th>Type événement</th>
+            <th>Date souhaitée</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let prospect of prospects">
+            <td class="company">
+              <strong>{{ prospect.company_name || '-' }}</strong>
+            </td>
+            <td>{{ prospect.first_name }} {{ prospect.last_name }}</td>
+            <td>{{ prospect.email }}</td>
+            <td>{{ prospect.event_type || '-' }}</td>
+            <td>{{ formatDate(prospect.planned_date) }}</td>
+            <td>
+              <span class="status-badge" [class]="getStatusClass(prospect.status)">
+                {{ statusLabels[prospect.status] }}
+              </span>
+            </td>
+            <td class="actions">
+              <a [routerLink]="['/admin/prospects', prospect.id]" class="btn-view" title="Voir détails">👁️</a>
+              
+              <div class="dropdown" *ngIf="prospect.status !== 'converted'">
+                <button class="btn-action">⚙️</button>
+                <div class="dropdown-content">
+                  <button *ngIf="prospect.status === 'to_contact'" (click)="updateStatus(prospect, 'qualification')">
+                    Passer en qualification
+                  </button>
+                  <button *ngIf="prospect.status !== 'converted' && prospect.status !== 'failed'" (click)="updateStatus(prospect, 'failed')">
+                    Marquer comme échoué
+                  </button>
+                  <button *ngIf="prospect.status === 'qualification'" (click)="convertToClient(prospect)" class="btn-convert">
+                    ✅ Convertir en client
+                  </button>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+</app-admin-layout>
