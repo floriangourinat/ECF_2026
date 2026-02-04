@@ -74,29 +74,39 @@ export const routes: Routes = [
 
   // ========== ESPACE ADMIN ==========
   { 
-  path: 'admin/dashboard', 
-  loadComponent: () => import('./pages/admin/dashboard/admin-dashboard').then(m => m.AdminDashboardComponent),
-  canActivate: [adminGuard]
+    path: 'admin/dashboard', 
+    loadComponent: () => import('./pages/admin/dashboard/admin-dashboard').then(m => m.AdminDashboardComponent),
+    canActivate: [adminGuard]
   },
   { 
-  path: 'admin/prospects', 
-  loadComponent: () => import('./pages/admin/prospects/prospects-list').then(m => m.ProspectsListComponent),
-  canActivate: [adminGuard]
+    path: 'admin/prospects', 
+    loadComponent: () => import('./pages/admin/prospects/prospects-list').then(m => m.ProspectsListComponent),
+    canActivate: [adminGuard]
   },
   { 
-  path: 'admin/prospects/:id', 
-  loadComponent: () => import('./pages/admin/prospects/prospect-detail').then(m => m.ProspectDetailComponent),
-  canActivate: [adminGuard]
+    path: 'admin/prospects/:id', 
+    loadComponent: () => import('./pages/admin/prospects/prospect-detail').then(m => m.ProspectDetailComponent),
+    canActivate: [adminGuard]
   },
   { 
-  path: 'admin/clients', 
-  loadComponent: () => import('./pages/admin/clients/clients-list').then(m => m.ClientsListComponent),
-  canActivate: [adminGuard]
+    path: 'admin/clients', 
+    loadComponent: () => import('./pages/admin/clients/clients-list').then(m => m.ClientsListComponent),
+    canActivate: [adminGuard]
   },
   { 
-  path: 'admin/clients/:id', 
-  loadComponent: () => import('./pages/admin/clients/client-detail').then(m => m.ClientDetailComponent),
-  canActivate: [adminGuard]
+    path: 'admin/clients/:id', 
+    loadComponent: () => import('./pages/admin/clients/client-detail').then(m => m.ClientDetailComponent),
+    canActivate: [adminGuard]
+  },
+  { 
+    path: 'admin/events', 
+    loadComponent: () => import('./pages/admin/events/events-list').then(m => m.EventsListComponent),
+    canActivate: [adminGuard]
+  },
+  { 
+    path: 'admin/events/:id', 
+    loadComponent: () => import('./pages/admin/events/event-detail').then(m => m.AdminEventDetailComponent),
+    canActivate: [adminGuard]
   },
 
   // ========== REDIRECTION 404 ==========

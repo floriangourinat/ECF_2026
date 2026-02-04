@@ -1,0 +1,163 @@
+<app-admin-layout>
+  <div class="event-detail-page">
+    <a routerLink="/admin/events" class="btn-back">← Retour à la liste</a>
+
+    <div *ngIf="loading" class="loading">Chargement...</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+
+    <div *ngIf="event && !loading" class="event-content">
+      <header class="event-header">
+        <div class="header-info">
+          <span class="status-badge" [class]="getStatusClass(event.status)">
+            {{ statusLabels[event.status] }}
+          </span>
+          <h1>{{ event.name }}</h1>
+          <p class="client-info">
+            Client : <a [routerLink]="['/admin/clients', event.client_id]">
+              {{ event.client_company || event.client_first_name + ' ' + event.client_last_name }}
+            </a>
+          </p>
+        </div>
+        <div class="header-actions">
+          <a [routerLink]="['/admin/events', event.id, 'edit']" class="btn btn-primary">✏️ Modifier</a>
+          <button (click)="deleteEvent()" class="btn btn-danger">🗑️ Supprimer</button>
+        </div>
+      </header>
+
+      <!-- Infos principales -->
+      <div class="details-grid">
+        <section class="detail-card">
+          <h3>📅 Dates</h3>
+          <div class="detail-row">
+            <span class="label">Début</span>
+            <span class="value">{{ formatDate(event.start_date) }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Fin</span>
+            <span class="value">{{ formatDate(event.end_date) }}</span>
+          </div>
+        </section>
+
+        <section class="detail-card">
+          <h3>📍 Lieu & Type</h3>
+          <div class="detail-row">
+            <span class="label">Lieu</span>
+            <span class="value">{{ event.location || '-' }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Type</span>
+            <span class="value">{{ event.event_type || '-' }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Thème</span>
+            <span class="value">{{ event.theme || '-' }}</span>
+          </div>
+        </section>
+
+        <section class="detail-card">
+          <h3>⚙️ Paramètres</h3>
+          <div class="detail-row">
+            <span class="label">Visible au public</span>
+            <span class="value">{{ event.is_visible ? 'Oui ✅' : 'Non ❌' }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Créé le</span>
+            <span class="value">{{ formatDate(event.created_at) }}</span>
+          </div>
+        </section>
+      </div>
+
+      <!-- Actions rapides sur le statut -->
+      <section class="status-actions" *ngIf="event.status !== 'completed' && event.status !== 'cancelled'">
+        <h3>🔄 Changer le statut</h3>
+        <div class="status-buttons">
+          <button *ngIf="event.status === 'draft'" (click)="updateStatus('client_review')" class="btn">
+            → En attente client
+          </button>
+          <button *ngIf="event.status === 'client_review'" (click)="updateStatus('accepted')" class="btn btn-success">
+            ✅ Marquer comme accepté
+          </button>
+          <button *ngIf="event.status === 'accepted'" (click)="updateStatus('in_progress')" class="btn btn-primary">
+            🚀 Démarrer l'événement
+          </button>
+          <button *ngIf="event.status === 'in_progress'" (click)="updateStatus('completed')" class="btn btn-success">
+            🏁 Terminer l'événement
+          </button>
+          <button *ngIf="event.status !== 'cancelled'" (click)="updateStatus('cancelled')" class="btn btn-outline">
+            ❌ Annuler
+          </button>
+        </div>
+      </section>
+
+      <!-- Devis -->
+      <section class="section-table">
+        <div class="section-header">
+          <h3>📄 Devis</h3>
+          <a [routerLink]="['/admin/quotes/create']" [queryParams]="{event_id: event.id}" class="btn btn-sm">+ Créer un devis</a>
+        </div>
+        <div *ngIf="quotes.length === 0" class="empty">Aucun devis pour cet événement</div>
+        <table *ngIf="quotes.length > 0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Montant TTC</th>
+              <th>Statut</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let quote of quotes">
+              <td><a [routerLink]="['/admin/quotes', quote.id]">#{{ quote.id }}</a></td>
+              <td>{{ formatCurrency(quote.total_ttc) }}</td>
+              <td><span class="badge">{{ quoteStatusLabels[quote.status] }}</span></td>
+              <td>{{ formatDate(quote.created_at) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Tâches -->
+      <section class="section-table">
+        <div class="section-header">
+          <h3>✅ Tâches</h3>
+        </div>
+        <div *ngIf="tasks.length === 0" class="empty">Aucune tâche pour cet événement</div>
+        <table *ngIf="tasks.length > 0">
+          <thead>
+            <tr>
+              <th>Tâche</th>
+              <th>Assigné à</th>
+              <th>Échéance</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let task of tasks">
+              <td>{{ task.title }}</td>
+              <td>{{ task.assigned_first_name ? task.assigned_first_name + ' ' + task.assigned_last_name : '-' }}</td>
+              <td>{{ formatDate(task.due_date) }}</td>
+              <td><span class="badge">{{ taskStatusLabels[task.status] }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Notes -->
+      <section class="section-table">
+        <div class="section-header">
+          <h3>📝 Notes</h3>
+        </div>
+        <div *ngIf="notes.length === 0" class="empty">Aucune note pour cet événement</div>
+        <div class="notes-list" *ngIf="notes.length > 0">
+          <div class="note-item" *ngFor="let note of notes">
+            <div class="note-header">
+              <strong>{{ note.first_name }} {{ note.last_name }}</strong>
+              <span class="note-date">{{ formatDate(note.created_at) }}</span>
+            </div>
+            <p class="note-content">{{ note.content }}</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</app-admin-layout>

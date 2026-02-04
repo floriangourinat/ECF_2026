@@ -1,0 +1,169 @@
+<app-admin-layout>
+  <div class="events-page">
+    <header class="page-header">
+      <div class="header-title">
+        <h1>Gestion des Événements</h1>
+        <p>{{ events.length }} événement(s) au total</p>
+      </div>
+      <button class="btn-create" (click)="openCreateModal()">+ Nouvel événement</button>
+    </header>
+
+    <!-- Filtres -->
+    <section class="filters-section">
+      <div class="search-box">
+        <input 
+          type="text" 
+          [(ngModel)]="searchTerm" 
+          (keyup.enter)="onSearch()"
+          placeholder="Rechercher par nom, lieu, client..."
+        >
+        <button (click)="onSearch()">🔍</button>
+      </div>
+
+      <div class="filter-box">
+        <select [(ngModel)]="filterStatus" (change)="onFilterChange()">
+          <option value="">Tous les statuts</option>
+          <option value="draft">Brouillon</option>
+          <option value="client_review">En attente client</option>
+          <option value="accepted">Accepté</option>
+          <option value="in_progress">En cours</option>
+          <option value="completed">Terminé</option>
+          <option value="cancelled">Annulé</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- Liste -->
+    <section class="events-list">
+      <div *ngIf="loading" class="loading">Chargement...</div>
+      <div *ngIf="error" class="error">{{ error }}</div>
+      <div *ngIf="!loading && events.length === 0" class="empty">Aucun événement trouvé</div>
+
+      <table *ngIf="!loading && events.length > 0" class="events-table">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Client</th>
+            <th>Date</th>
+            <th>Lieu</th>
+            <th>Type</th>
+            <th>Statut</th>
+            <th>Visible</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let event of events">
+            <td class="event-name">
+              <strong>{{ event.name }}</strong>
+            </td>
+            <td>{{ event.client_company || event.client_first_name + ' ' + event.client_last_name }}</td>
+            <td>{{ formatDate(event.start_date) }}</td>
+            <td>{{ event.location || '-' }}</td>
+            <td>{{ event.event_type || '-' }}</td>
+            <td>
+              <span class="status-badge" [class]="getStatusClass(event.status)">
+                {{ statusLabels[event.status] }}
+              </span>
+            </td>
+            <td>
+              <span [class.visible]="event.is_visible" [class.hidden]="!event.is_visible">
+                {{ event.is_visible ? '✅' : '❌' }}
+              </span>
+            </td>
+            <td class="actions">
+              <a [routerLink]="['/admin/events', event.id]" class="btn-icon" title="Voir">👁️</a>
+              <a [routerLink]="['/admin/events', event.id, 'edit']" class="btn-icon" title="Modifier">✏️</a>
+              <button (click)="deleteEvent(event)" class="btn-icon btn-danger" title="Supprimer">🗑️</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Modal Création -->
+    <div class="modal-overlay" *ngIf="showCreateModal" (click)="closeCreateModal()">
+      <div class="modal modal-large" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>Nouvel Événement</h2>
+          <button class="btn-close" (click)="closeCreateModal()">×</button>
+        </div>
+        <div class="modal-body">
+          <div *ngIf="createError" class="alert alert-danger">{{ createError }}</div>
+
+          <div class="form-group">
+            <label>Nom de l'événement *</label>
+            <input type="text" [(ngModel)]="newEvent.name" placeholder="Ex: Séminaire annuel 2026">
+          </div>
+
+          <div class="form-group">
+            <label>Client *</label>
+            <select [(ngModel)]="newEvent.client_id">
+              <option value="">Sélectionner un client</option>
+              <option *ngFor="let client of clients" [value]="client.id">
+                {{ client.company_name || client.first_name + ' ' + client.last_name }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Date et heure de début *</label>
+              <input type="datetime-local" [(ngModel)]="newEvent.start_date">
+            </div>
+            <div class="form-group">
+              <label>Date et heure de fin *</label>
+              <input type="datetime-local" [(ngModel)]="newEvent.end_date">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Lieu</label>
+            <input type="text" [(ngModel)]="newEvent.location" placeholder="Ex: Paris, Palais des Congrès">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Type d'événement</label>
+              <select [(ngModel)]="newEvent.event_type">
+                <option value="">Sélectionner</option>
+                <option *ngFor="let type of eventTypes" [value]="type">{{ type }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Thème</label>
+              <select [(ngModel)]="newEvent.theme">
+                <option value="">Sélectionner</option>
+                <option *ngFor="let theme of themes" [value]="theme">{{ theme }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Statut</label>
+              <select [(ngModel)]="newEvent.status">
+                <option value="draft">Brouillon</option>
+                <option value="client_review">En attente client</option>
+                <option value="accepted">Accepté</option>
+                <option value="in_progress">En cours</option>
+              </select>
+            </div>
+            <div class="form-group checkbox-group">
+              <label>
+                <input type="checkbox" [(ngModel)]="newEvent.is_visible">
+                Visible sur le site public
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeCreateModal()">Annuler</button>
+          <button class="btn btn-primary" (click)="createEvent()" [disabled]="createLoading">
+            {{ createLoading ? 'Création...' : 'Créer l\'événement' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-admin-layout>
