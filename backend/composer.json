@@ -12,6 +12,7 @@
         }
     ],
     "require": {
-        "mongodb/mongodb": "^2.1"
+        "mongodb/mongodb": "^2.1",
+        "tecnickcom/tcpdf": "^6.6"
     }
 }
