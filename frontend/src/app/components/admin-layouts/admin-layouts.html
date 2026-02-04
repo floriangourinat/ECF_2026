@@ -1,0 +1,63 @@
+<div class="admin-container" [class.sidebar-collapsed]="sidebarCollapsed">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2 *ngIf="!sidebarCollapsed">Innov'Events</h2>
+      <span *ngIf="sidebarCollapsed" class="logo-mini">IE</span>
+      <button class="toggle-btn" (click)="toggleSidebar()">
+        {{ sidebarCollapsed ? '→' : '←' }}
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-item">
+        <span class="icon">📊</span>
+        <span class="label" *ngIf="!sidebarCollapsed">Dashboard</span>
+      </a>
+      <a routerLink="/admin/prospects" routerLinkActive="active" class="nav-item">
+        <span class="icon">🎯</span>
+        <span class="label" *ngIf="!sidebarCollapsed">Prospects</span>
+      </a>
+      <a routerLink="/admin/clients" routerLinkActive="active" class="nav-item">
+        <span class="icon">👥</span>
+        <span class="label" *ngIf="!sidebarCollapsed">Clients</span>
+      </a>
+      <a routerLink="/admin/events" routerLinkActive="active" class="nav-item">
+        <span class="icon">🎉</span>
+        <span class="label" *ngIf="!sidebarCollapsed">Événements</span>
+      </a>
+      <a routerLink="/admin/quotes" routerLinkActive="active" class="nav-item">
+        <span class="icon">📄</span>
+        <span class="label" *ngIf="!sidebarCollapsed">Devis</span>
+      </a>
+      <a routerLink="/admin/employees" routerLinkActive="active" class="nav-item">
+        <span class="icon">👔</span>
+        <span class="label" *ngIf="!sidebarCollapsed">Employés</span>
+      </a>
+      <a routerLink="/admin/reviews" routerLinkActive="active" class="nav-item">
+        <span class="icon">⭐</span>
+        <span class="label" *ngIf="!sidebarCollapsed">Avis</span>
+      </a>
+      <a routerLink="/admin/logs" routerLinkActive="active" class="nav-item">
+        <span class="icon">📋</span>
+        <span class="label" *ngIf="!sidebarCollapsed">Journalisation</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info" *ngIf="!sidebarCollapsed">
+        <p class="user-name">{{ currentUser?.first_name }} {{ currentUser?.last_name }}</p>
+        <p class="user-role">Administrateur</p>
+      </div>
+      <button class="logout-btn" (click)="logout()">
+        <span class="icon">🚪</span>
+        <span class="label" *ngIf="!sidebarCollapsed">Déconnexion</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <ng-content></ng-content>
+  </main>
+</div>

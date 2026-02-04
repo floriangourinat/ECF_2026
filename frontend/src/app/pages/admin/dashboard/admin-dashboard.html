@@ -1,0 +1,125 @@
+<app-admin-layout>
+  <div class="dashboard">
+    <header class="dashboard-header">
+      <h1>Tableau de bord</h1>
+      <p>Bienvenue sur votre espace d'administration</p>
+    </header>
+
+    <div *ngIf="loading" class="loading">
+      <p>Chargement...</p>
+    </div>
+
+    <div *ngIf="error" class="error">
+      <p>{{ error }}</p>
+    </div>
+
+    <div *ngIf="data && !loading" class="dashboard-content">
+      
+      <!-- Indicateurs clés -->
+      <section class="stats-section">
+        <div class="stat-card highlight">
+          <div class="stat-icon">🎯</div>
+          <div class="stat-info">
+            <span class="stat-value">{{ data.stats.prospects_to_contact }}</span>
+            <span class="stat-label">Prospects à contacter</span>
+          </div>
+          <a routerLink="/admin/prospects" class="stat-link">Voir →</a>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">📝</div>
+          <div class="stat-info">
+            <span class="stat-value">{{ data.stats.draft_events }}</span>
+            <span class="stat-label">Événements brouillon</span>
+          </div>
+          <a routerLink="/admin/events" class="stat-link">Voir →</a>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-info">
+            <span class="stat-value">{{ data.stats.active_clients }}</span>
+            <span class="stat-label">Clients actifs</span>
+          </div>
+          <a routerLink="/admin/clients" class="stat-link">Voir →</a>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">📄</div>
+          <div class="stat-info">
+            <span class="stat-value">{{ data.stats.pending_quotes }}</span>
+            <span class="stat-label">Devis en attente</span>
+          </div>
+          <a routerLink="/admin/quotes" class="stat-link">Voir →</a>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">🏢</div>
+          <div class="stat-info">
+            <span class="stat-value">{{ data.stats.total_clients }}</span>
+            <span class="stat-label">Total clients</span>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon">🎉</div>
+          <div class="stat-info">
+            <span class="stat-value">{{ data.stats.total_events }}</span>
+            <span class="stat-label">Total événements</span>
+          </div>
+        </div>
+      </section>
+
+      <div class="widgets-grid">
+        <!-- Widget Prochains événements -->
+        <section class="widget">
+          <div class="widget-header">
+            <h2>🗓️ Prochains événements</h2>
+            <a routerLink="/admin/events" class="widget-link">Voir tout</a>
+          </div>
+          <div class="widget-content">
+            <div *ngIf="data.upcoming_events.length === 0" class="empty-state">
+              <p>Aucun événement à venir</p>
+            </div>
+            <div *ngFor="let event of data.upcoming_events" class="event-item">
+              <div class="event-date">
+                <span class="day">{{ event.start_date | date:'dd' }}</span>
+                <span class="month">{{ event.start_date | date:'MMM' }}</span>
+              </div>
+              <div class="event-info">
+                <h4>{{ event.name }}</h4>
+                <p class="event-client">{{ event.client_company || 'Client non assigné' }}</p>
+                <p class="event-location">📍 {{ event.location }}</p>
+              </div>
+              <span class="status-badge" [class]="getStatusClass(event.status)">
+                {{ getStatusLabel(event.status) }}
+              </span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Widget Notes récentes -->
+        <section class="widget">
+          <div class="widget-header">
+            <h2>📝 Notes récentes</h2>
+          </div>
+          <div class="widget-content">
+            <div *ngIf="data.recent_notes.length === 0" class="empty-state">
+              <p>Aucune note récente</p>
+            </div>
+            <div *ngFor="let note of data.recent_notes" class="note-item">
+              <div class="note-header">
+                <span class="note-author">{{ note.first_name }} {{ note.last_name }}</span>
+                <span class="note-date">{{ formatDateTime(note.created_at) }}</span>
+              </div>
+              <p class="note-content">{{ note.content | slice:0:100 }}{{ note.content.length > 100 ? '...' : '' }}</p>
+              <span *ngIf="note.event_name" class="note-event">📌 {{ note.event_name }}</span>
+              <span *ngIf="note.is_global" class="note-global">🌐 Note globale</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+    </div>
+  </div>
+</app-admin-layout>

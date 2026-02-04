@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard } from './_guards/auth.guard';
+import { authGuard, guestGuard, adminGuard } from './_guards/auth.guard';
 
 export const routes: Routes = [
   { 
@@ -65,11 +65,18 @@ export const routes: Routes = [
     canActivate: [guestGuard]
   },
 
-  // ========== ESPACE CONNECTÉ ==========
+  // ========== ESPACE CONNECTÉ (Redirection selon rôle) ==========
   { 
     path: 'dashboard', 
     loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.DashboardComponent),
     canActivate: [authGuard]
+  },
+
+  // ========== ESPACE ADMIN ==========
+  { 
+    path: 'admin/dashboard', 
+    loadComponent: () => import('./pages/admin/dashboard/admin-dashboard').then(m => m.AdminDashboardComponent),
+    canActivate: [adminGuard]
   },
 
   // ========== REDIRECTION 404 ==========
