@@ -74,19 +74,29 @@ export const routes: Routes = [
 
   // ========== ESPACE ADMIN ==========
   { 
-    path: 'admin/dashboard', 
-    loadComponent: () => import('./pages/admin/dashboard/admin-dashboard').then(m => m.AdminDashboardComponent),
-    canActivate: [adminGuard]
+  path: 'admin/dashboard', 
+  loadComponent: () => import('./pages/admin/dashboard/admin-dashboard').then(m => m.AdminDashboardComponent),
+  canActivate: [adminGuard]
   },
   { 
-    path: 'admin/prospects', 
-    loadComponent: () => import('./pages/admin/prospects/prospects-list').then(m => m.ProspectsListComponent),
-    canActivate: [adminGuard]
+  path: 'admin/prospects', 
+  loadComponent: () => import('./pages/admin/prospects/prospects-list').then(m => m.ProspectsListComponent),
+  canActivate: [adminGuard]
   },
   { 
-    path: 'admin/prospects/:id', 
-    loadComponent: () => import('./pages/admin/prospects/prospect-detail').then(m => m.ProspectDetailComponent),
-    canActivate: [adminGuard]
+  path: 'admin/prospects/:id', 
+  loadComponent: () => import('./pages/admin/prospects/prospect-detail').then(m => m.ProspectDetailComponent),
+  canActivate: [adminGuard]
+  },
+  { 
+  path: 'admin/clients', 
+  loadComponent: () => import('./pages/admin/clients/clients-list').then(m => m.ClientsListComponent),
+  canActivate: [adminGuard]
+  },
+  { 
+  path: 'admin/clients/:id', 
+  loadComponent: () => import('./pages/admin/clients/client-detail').then(m => m.ClientDetailComponent),
+  canActivate: [adminGuard]
   },
 
   // ========== REDIRECTION 404 ==========

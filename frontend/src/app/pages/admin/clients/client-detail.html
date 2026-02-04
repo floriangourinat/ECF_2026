@@ -1,0 +1,107 @@
+<app-admin-layout>
+  <div class="client-detail-page">
+    <a routerLink="/admin/clients" class="btn-back">← Retour à la liste</a>
+
+    <div *ngIf="loading" class="loading">Chargement...</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+
+    <div *ngIf="client && !loading" class="client-content">
+      <header class="client-header">
+        <div class="header-info">
+          <h1>{{ client.company_name || client.first_name + ' ' + client.last_name }}</h1>
+          <p *ngIf="client.company_name">{{ client.first_name }} {{ client.last_name }}</p>
+          <span class="status-badge" [class.active]="client.is_active" [class.suspended]="!client.is_active">
+            {{ client.is_active ? 'Actif' : 'Suspendu' }}
+          </span>
+        </div>
+        <div class="header-actions">
+          <a [routerLink]="['/admin/clients', client.id, 'edit']" class="btn btn-primary">✏️ Modifier</a>
+        </div>
+      </header>
+
+      <div class="details-grid">
+        <section class="detail-card">
+          <h3>📋 Informations</h3>
+          <div class="detail-row">
+            <span class="label">Email</span>
+            <span class="value"><a href="mailto:{{ client.email }}">{{ client.email }}</a></span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Téléphone</span>
+            <span class="value">{{ client.phone || '-' }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Adresse</span>
+            <span class="value">{{ client.address || '-' }}</span>
+          </div>
+          <div class="detail-row">
+            <span class="label">Client depuis</span>
+            <span class="value">{{ formatDate(client.created_at) }}</span>
+          </div>
+        </section>
+
+        <section class="detail-card">
+          <h3>📊 Statistiques</h3>
+          <div class="stats-grid">
+            <div class="stat">
+              <span class="stat-value">{{ events.length }}</span>
+              <span class="stat-label">Événements</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">{{ quotes.length }}</span>
+              <span class="stat-label">Devis</span>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- Événements -->
+      <section class="section-table">
+        <h3>🎉 Événements</h3>
+        <div *ngIf="events.length === 0" class="empty">Aucun événement</div>
+        <table *ngIf="events.length > 0">
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Date</th>
+              <th>Lieu</th>
+              <th>Statut</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let event of events">
+              <td><a [routerLink]="['/admin/events', event.id]">{{ event.name }}</a></td>
+              <td>{{ formatDate(event.start_date) }}</td>
+              <td>{{ event.location || '-' }}</td>
+              <td><span class="badge">{{ statusLabels[event.status] || event.status }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Devis -->
+      <section class="section-table">
+        <h3>📄 Devis</h3>
+        <div *ngIf="quotes.length === 0" class="empty">Aucun devis</div>
+        <table *ngIf="quotes.length > 0">
+          <thead>
+            <tr>
+              <th>Événement</th>
+              <th>Montant TTC</th>
+              <th>Statut</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let quote of quotes">
+              <td>{{ quote.event_name }}</td>
+              <td>{{ formatCurrency(quote.total_ttc) }}</td>
+              <td><span class="badge">{{ quoteStatusLabels[quote.status] || quote.status }}</span></td>
+              <td>{{ formatDate(quote.created_at) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+  </div>
+</app-admin-layout>
