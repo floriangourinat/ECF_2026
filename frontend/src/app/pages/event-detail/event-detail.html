@@ -13,9 +13,9 @@
 
     <article *ngIf="event && !loading" class="event-detail">
       <div class="event-header">
-        <img [src]="event.image_url || 'https://via.placeholder.com/1200x400?text=Événement'" [alt]="event.name" class="event-hero-image">
+        <img [src]="event.image_path || 'https://via.placeholder.com/1200x400?text=Événement'" [alt]="event.name" class="event-hero-image">
         <div class="event-header-overlay">
-          <span class="event-type-badge">{{ eventTypeLabels[event.event_type] || event.event_type }}</span>
+          <span class="event-type-badge">{{ event.event_type }}</span>
           <h1>{{ event.name }}</h1>
         </div>
       </div>
@@ -48,21 +48,15 @@
             </div>
           </div>
 
-          <div class="info-card" *ngIf="event.participant_count">
-            <span class="icon">👥</span>
+          <div class="info-card" *ngIf="event.theme">
+            <span class="icon">🎨</span>
             <div>
-              <strong>Participants</strong>
-              <p>{{ event.participant_count }} personnes</p>
+              <strong>Thème</strong>
+              <p>{{ event.theme }}</p>
             </div>
           </div>
         </div>
 
-        <section class="event-description-section">
-          <h2>Description</h2>
-          <p>{{ event.description }}</p>
-        </section>
-
-        <!-- Section Prestations et Devis (demandée dans l'énoncé) -->
         <section class="cta-section">
           <h2>Prestations et Devis</h2>
           <p>Vous souhaitez organiser un événement similaire ? Notre équipe est à votre disposition pour créer un événement sur mesure.</p>

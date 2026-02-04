@@ -22,12 +22,13 @@ try {
 
     $stmt = $db->prepare("
         SELECT r.id, r.rating, r.comment, r.created_at,
-               c.company_name, c.first_name, c.last_name,
+               c.company_name, u.first_name, u.last_name,
                e.name as event_name, e.event_type
         FROM reviews r
         JOIN clients c ON r.client_id = c.id
+        JOIN users u ON c.user_id = u.id
         JOIN events e ON r.event_id = e.id
-        WHERE r.status = 'validated'
+        WHERE r.status = 'approved'
         ORDER BY r.created_at DESC
     ");
     $stmt->execute();
@@ -43,5 +44,5 @@ try {
 
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Erreur serveur']);
+    echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);
 }

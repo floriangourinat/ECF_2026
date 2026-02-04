@@ -8,14 +8,13 @@ import { FooterComponent } from '../../components/footer/footer';
 interface Event {
   id: number;
   name: string;
-  description: string;
   event_type: string;
   theme: string;
   location: string;
   start_date: string;
   end_date: string;
-  image_url: string;
-  participant_count: number;
+  image_path: string;
+  status: string;
   client_company: string;
 }
 
@@ -24,20 +23,12 @@ interface Event {
   standalone: true,
   imports: [CommonModule, RouterLink, HeaderComponent, FooterComponent],
   templateUrl: './event-detail.html',
-  styleUrl: './event-detail.scss'
+  styleUrls: ['./event-detail.scss']
 })
 export class EventDetailComponent implements OnInit {
   event: Event | null = null;
   loading = true;
   error = '';
-
-  eventTypeLabels: { [key: string]: string } = {
-    'seminaire': 'Séminaire',
-    'conference': 'Conférence',
-    'soiree': 'Soirée d\'entreprise',
-    'team_building': 'Team Building',
-    'autre': 'Autre'
-  };
 
   constructor(
     private route: ActivatedRoute,

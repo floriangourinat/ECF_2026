@@ -27,12 +27,12 @@ try {
     $db = $database->getConnection();
 
     $stmt = $db->prepare("
-        SELECT e.id, e.name, e.description, e.event_type, e.theme, e.location,
-               e.start_date, e.end_date, e.image_url, e.status, e.participant_count,
+        SELECT e.id, e.name, e.event_type, e.theme, e.location,
+               e.start_date, e.end_date, e.image_path, e.status,
                c.company_name as client_company
         FROM events e
         LEFT JOIN clients c ON e.client_id = c.id
-        WHERE e.id = :id AND e.is_public = 1 AND e.status != 'brouillon'
+        WHERE e.id = :id AND e.is_visible = 1 AND e.status != 'draft'
     ");
     $stmt->execute([':id' => $_GET['id']]);
 
@@ -52,5 +52,5 @@ try {
 
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Erreur serveur']);
+    echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);
 }

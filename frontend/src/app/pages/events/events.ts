@@ -9,13 +9,13 @@ import { FooterComponent } from '../../components/footer/footer';
 interface Event {
   id: number;
   name: string;
-  description: string;
   event_type: string;
   theme: string;
   location: string;
   start_date: string;
   end_date: string;
-  image_url: string;
+  image_path: string;
+  status: string;
   client_company: string;
 }
 
@@ -24,7 +24,7 @@ interface Event {
   standalone: true,
   imports: [CommonModule, RouterLink, FormsModule, HeaderComponent, FooterComponent],
   templateUrl: './events.html',
-  styleUrl: './events.scss'
+  styleUrls: ['./events.scss']
 })
 export class EventsComponent implements OnInit {
   events: Event[] = [];
@@ -32,7 +32,6 @@ export class EventsComponent implements OnInit {
   loading = true;
   error = '';
 
-  // Filtres
   filterType = '';
   filterTheme = '';
   filterDateStart = '';
@@ -40,20 +39,21 @@ export class EventsComponent implements OnInit {
 
   eventTypes = [
     { value: '', label: 'Tous les types' },
-    { value: 'seminaire', label: 'Séminaire' },
-    { value: 'conference', label: 'Conférence' },
-    { value: 'soiree', label: 'Soirée d\'entreprise' },
-    { value: 'team_building', label: 'Team Building' },
-    { value: 'autre', label: 'Autre' }
+    { value: 'Séminaire', label: 'Séminaire' },
+    { value: 'Conférence', label: 'Conférence' },
+    { value: 'Soirée d\'entreprise', label: 'Soirée d\'entreprise' },
+    { value: 'Team Building', label: 'Team Building' },
+    { value: 'Autre', label: 'Autre' }
   ];
 
   themes = [
     { value: '', label: 'Tous les thèmes' },
-    { value: 'corporate', label: 'Corporate' },
-    { value: 'luxe', label: 'Luxe' },
-    { value: 'decontracte', label: 'Décontracté' },
-    { value: 'nature', label: 'Nature' },
-    { value: 'tech', label: 'Tech' }
+    { value: 'Élégant', label: 'Élégant' },
+    { value: 'Tropical', label: 'Tropical' },
+    { value: 'Rétro', label: 'Rétro' },
+    { value: 'High-Tech', label: 'High-Tech' },
+    { value: 'Nature', label: 'Nature' },
+    { value: 'Industriel', label: 'Industriel' }
   ];
 
   constructor(private http: HttpClient) {}
@@ -116,10 +116,5 @@ export class EventsComponent implements OnInit {
       month: 'long',
       year: 'numeric'
     });
-  }
-
-  getEventTypeLabel(type: string): string {
-    const found = this.eventTypes.find(t => t.value === type);
-    return found ? found.label : type;
   }
 }
