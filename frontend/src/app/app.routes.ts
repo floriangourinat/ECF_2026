@@ -133,7 +133,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/admin/employees/employee-detail').then(m => m.EmployeeDetailComponent),
     canActivate: [adminGuard]
   },
-
+  { 
+    path: 'admin/reviews', 
+    loadComponent: () => import('./pages/admin/reviews/reviews-list').then(m => m.AdminReviewsListComponent),
+    canActivate: [adminGuard]
+  },
   // ========== REDIRECTION 404 ==========
   { 
     path: '**', 

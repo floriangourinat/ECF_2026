@@ -1,0 +1,79 @@
+<app-admin-layout>
+  <div class="reviews-page">
+    <header class="page-header">
+      <div class="header-title">
+        <h1>Modération des Avis</h1>
+        <p>{{ reviews.length }} avis au total</p>
+      </div>
+    </header>
+
+    <!-- Filtres -->
+    <section class="filters-section">
+      <div class="filter-box">
+        <select [(ngModel)]="filterStatus" (change)="onFilterChange()">
+          <option value="">Tous les statuts</option>
+          <option value="pending">En attente</option>
+          <option value="approved">Approuvés</option>
+          <option value="rejected">Rejetés</option>
+        </select>
+      </div>
+
+      <div class="stats-badges">
+        <span class="stat-badge pending">
+          {{ (reviews | filter:'status':'pending').length || 0 }} en attente
+        </span>
+      </div>
+    </section>
+
+    <!-- Liste -->
+    <section class="reviews-list">
+      <div *ngIf="loading" class="loading">Chargement...</div>
+      <div *ngIf="error" class="error">{{ error }}</div>
+      <div *ngIf="!loading && reviews.length === 0" class="empty">Aucun avis trouvé</div>
+
+      <div class="reviews-grid" *ngIf="!loading && reviews.length > 0">
+        <div class="review-card" *ngFor="let review of reviews" [class]="getStatusClass(review.status)">
+          <div class="review-header">
+            <div class="client-info">
+              <div class="avatar">{{ review.first_name[0] }}{{ review.last_name[0] }}</div>
+              <div class="info">
+                <strong>{{ review.first_name }} {{ review.last_name }}</strong>
+                <span class="company">{{ review.company_name }}</span>
+              </div>
+            </div>
+            <span class="status-badge" [class]="getStatusClass(review.status)">
+              {{ statusLabels[review.status] }}
+            </span>
+          </div>
+
+          <div class="review-rating">
+            <span class="stars">{{ getStars(review.rating) }}</span>
+            <span class="rating-value">{{ review.rating }}/5</span>
+          </div>
+
+          <p class="review-comment">{{ review.comment }}</p>
+
+          <div class="review-meta">
+            <span class="event">🎉 {{ review.event_name }}</span>
+            <span class="date">{{ formatDate(review.created_at) }}</span>
+          </div>
+
+          <div class="review-actions">
+            <button *ngIf="review.status === 'pending'" (click)="approveReview(review)" class="btn btn-approve">
+              ✅ Approuver
+            </button>
+            <button *ngIf="review.status === 'pending'" (click)="rejectReview(review)" class="btn btn-reject">
+              ❌ Rejeter
+            </button>
+            <button *ngIf="review.status !== 'pending'" (click)="updateStatus(review, 'pending')" class="btn btn-reset">
+              🔄 Remettre en attente
+            </button>
+            <button (click)="deleteReview(review)" class="btn btn-delete">
+              🗑️
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</app-admin-layout>
