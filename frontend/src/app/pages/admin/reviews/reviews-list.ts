@@ -72,6 +72,10 @@ export class AdminReviewsListComponent implements OnInit {
     this.loadReviews();
   }
 
+  getPendingCount(): number {
+    return this.reviews.filter(r => r.status === 'pending').length;
+  }
+
   approveReview(review: Review): void {
     this.updateStatus(review, 'approved');
   }

@@ -20,7 +20,7 @@
 
       <div class="stats-badges">
         <span class="stat-badge pending">
-          {{ (reviews | filter:'status':'pending').length || 0 }} en attente
+          {{ getPendingCount() }} en attente
         </span>
       </div>
     </section>
