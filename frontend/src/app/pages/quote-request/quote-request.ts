@@ -20,6 +20,10 @@ export class QuoteRequestComponent {
   successMessage = '';
   submitted = false;
 
+  // Image upload
+  selectedImage: File | null = null;
+  imagePreview: string | null = null;
+
   eventTypes = [
     { value: 'seminaire', label: 'Séminaire' },
     { value: 'conference', label: 'Conférence' },
@@ -46,6 +50,39 @@ export class QuoteRequestComponent {
     });
   }
 
+  onImageSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      // Vérifier la taille (max 5 Mo)
+      if (file.size > 5 * 1024 * 1024) {
+        this.errorMessage = 'L\'image est trop volumineuse. Maximum 5 Mo.';
+        return;
+      }
+      
+      // Vérifier le type
+      if (!file.type.startsWith('image/')) {
+        this.errorMessage = 'Le fichier doit être une image.';
+        return;
+      }
+
+      this.selectedImage = file;
+      this.errorMessage = '';
+      
+      // Créer un aperçu
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagePreview = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removeImage(fileInput: any): void {
+    this.selectedImage = null;
+    this.imagePreview = null;
+    fileInput.value = '';
+  }
+
   onSubmit(): void {
     if (this.quoteForm.invalid) {
       Object.keys(this.quoteForm.controls).forEach(key => {
@@ -61,14 +98,48 @@ export class QuoteRequestComponent {
     this.http.post<any>('http://localhost:8080/api/prospects/create.php', this.quoteForm.value)
       .subscribe({
         next: (response) => {
-          this.successMessage = response.message;
-          this.loading = false;
-          this.submitted = true;
-          this.quoteForm.reset();
+          const prospectId = response.prospect_id;
+          
+          // Si une image est sélectionnée, l'uploader
+          if (this.selectedImage && prospectId) {
+            this.uploadImage(prospectId);
+          } else {
+            this.successMessage = response.message;
+            this.loading = false;
+            this.submitted = true;
+            this.quoteForm.reset();
+          }
         },
         error: (error) => {
           this.errorMessage = error.error?.message || 'Une erreur est survenue. Veuillez réessayer.';
           this.loading = false;
+        }
+      });
+  }
+
+  uploadImage(prospectId: number): void {
+    if (!this.selectedImage) return;
+
+    const formData = new FormData();
+    formData.append('image', this.selectedImage);
+    formData.append('prospect_id', prospectId.toString());
+
+    this.http.post<any>('http://localhost:8080/api/prospects/upload_image.php', formData)
+      .subscribe({
+        next: () => {
+          this.successMessage = 'Votre demande de devis a été envoyée avec succès !';
+          this.loading = false;
+          this.submitted = true;
+          this.quoteForm.reset();
+          this.selectedImage = null;
+          this.imagePreview = null;
+        },
+        error: () => {
+          // Le prospect est créé même si l'upload échoue
+          this.successMessage = 'Votre demande a été envoyée (image non uploadée).';
+          this.loading = false;
+          this.submitted = true;
+          this.quoteForm.reset();
         }
       });
   }

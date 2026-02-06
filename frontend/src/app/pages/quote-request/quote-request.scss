@@ -220,6 +220,63 @@
   }
 }
 
+// Image Upload
+.image-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  input[type="file"] {
+    display: none;
+  }
+
+  .upload-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    border: 2px dashed #ddd;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: #f8f9fa;
+    color: #666;
+    font-size: 1rem;
+
+    &:hover {
+      border-color: #667eea;
+      background: #f0f4ff;
+    }
+  }
+
+  .image-preview {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+  }
+
+  .btn-remove-image {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    align-self: flex-start;
+
+    &:hover {
+      background: #c0392b;
+    }
+  }
+}
+
+.hint {
+  color: #888;
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+
 // Success Container
 .success-container {
   text-align: center;

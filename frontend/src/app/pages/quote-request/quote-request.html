@@ -151,6 +151,20 @@
           </div>
         </div>
 
+        <!-- Image d'inspiration -->
+        <div class="form-group">
+          <label>Image d'inspiration (facultatif)</label>
+          <div class="image-upload">
+            <input type="file" id="inspirationImage" (change)="onImageSelected($event)" accept="image/*" #fileInput>
+            <label for="inspirationImage" class="upload-label">
+              <span *ngIf="!imagePreview">📷 Ajouter une image d'inspiration</span>
+              <img *ngIf="imagePreview" [src]="imagePreview" alt="Aperçu" class="image-preview">
+            </label>
+            <button *ngIf="imagePreview" type="button" class="btn-remove-image" (click)="removeImage(fileInput)">✕ Supprimer</button>
+          </div>
+          <small class="hint">JPG, PNG, WebP ou GIF. Max 5 Mo. Cette image nous aidera à comprendre vos attentes.</small>
+        </div>
+
         <div class="form-group">
           <label for="needs_description">Décrivez votre projet *</label>
           <textarea id="needs_description" formControlName="needs_description" class="form-control" rows="5"
