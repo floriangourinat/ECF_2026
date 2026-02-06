@@ -92,6 +92,9 @@
             <small *ngIf="f['title'].errors?.['required'] && f['title'].touched" class="text-danger">
               Le titre est requis
             </small>
+            <small *ngIf="f['title'].errors?.['minlength'] && f['title'].touched" class="text-danger">
+              Minimum 5 caractères
+            </small>
           </div>
 
           <div class="form-group">
@@ -105,6 +108,9 @@
             </small>
             <small *ngIf="f['description'].errors?.['minlength'] && f['description'].touched" class="text-danger">
               Minimum 20 caractères
+            </small>
+            <small *ngIf="f['description'].errors?.['maxlength'] && f['description'].touched" class="text-danger">
+              Maximum 2000 caractères
             </small>
           </div>
 
