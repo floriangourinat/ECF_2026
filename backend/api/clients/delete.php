@@ -34,10 +34,10 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
-    // Récupérer le user_id
-    $stmtClient = $db->prepare("SELECT user_id FROM clients WHERE id = :id");
-    $stmtClient->execute([':id' => $data['id']]);
-    $client = $stmtClient->fetch(PDO::FETCH_ASSOC);
+    // Récupérer le user_id avant suppression
+    $stmtCheck = $db->prepare("SELECT user_id FROM clients WHERE id = :id");
+    $stmtCheck->execute([':id' => $data['id']]);
+    $client = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
     if (!$client) {
         http_response_code(404);
@@ -47,15 +47,20 @@ try {
 
     $db->beginTransaction();
 
-    // Supprimer le client (cascade supprimera les événements liés)
-    $stmtDeleteClient = $db->prepare("DELETE FROM clients WHERE id = :id");
-    $stmtDeleteClient->execute([':id' => $data['id']]);
+    // Supprimer le client
+    $stmtClient = $db->prepare("DELETE FROM clients WHERE id = :id");
+    $stmtClient->execute([':id' => $data['id']]);
 
-    // Supprimer l'utilisateur
-    $stmtDeleteUser = $db->prepare("DELETE FROM users WHERE id = :user_id");
-    $stmtDeleteUser->execute([':user_id' => $client['user_id']]);
+    // Supprimer l'utilisateur associé
+    $stmtUser = $db->prepare("DELETE FROM users WHERE id = :user_id");
+    $stmtUser->execute([':user_id' => $client['user_id']]);
 
     $db->commit();
+
+    // Log MongoDB - Client supprimé
+    require_once '../../services/MongoLogger.php';
+    $logger = new MongoLogger();
+    $logger->log('delete', 'client', (int)$data['id'], null, null);
 
     http_response_code(200);
     echo json_encode([

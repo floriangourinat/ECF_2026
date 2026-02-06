@@ -1,6 +1,6 @@
 <?php
 /**
- * API: Activer/Désactiver un client
+ * API: Activer/Suspendre un client
  * PUT /api/clients/toggle_status.php
  */
 
@@ -34,10 +34,10 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
-    // Récupérer le user_id du client
-    $stmtClient = $db->prepare("SELECT user_id FROM clients WHERE id = :id");
-    $stmtClient->execute([':id' => $data['id']]);
-    $client = $stmtClient->fetch(PDO::FETCH_ASSOC);
+    // Récupérer le user_id
+    $stmtCheck = $db->prepare("SELECT user_id FROM clients WHERE id = :id");
+    $stmtCheck->execute([':id' => $data['id']]);
+    $client = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
     if (!$client) {
         http_response_code(404);
@@ -45,7 +45,7 @@ try {
         exit();
     }
 
-    // Toggle le statut
+    // Toggle le statut de l'utilisateur
     $stmt = $db->prepare("UPDATE users SET is_active = NOT is_active WHERE id = :user_id");
     $stmt->execute([':user_id' => $client['user_id']]);
 
@@ -53,6 +53,13 @@ try {
     $stmtStatus = $db->prepare("SELECT is_active FROM users WHERE id = :user_id");
     $stmtStatus->execute([':user_id' => $client['user_id']]);
     $newStatus = $stmtStatus->fetch(PDO::FETCH_ASSOC)['is_active'];
+
+    // Log MongoDB - Statut client modifié
+    require_once '../../services/MongoLogger.php';
+    $logger = new MongoLogger();
+    $logger->log('status_change', 'client', (int)$data['id'], null, [
+        'new_status' => $newStatus ? 'active' : 'suspended'
+    ]);
 
     http_response_code(200);
     echo json_encode([
