@@ -16,6 +16,9 @@
         </div>
         <div class="header-actions">
           <button (click)="downloadPdf()" class="btn btn-primary">📄 Télécharger PDF</button>
+          <button (click)="sendByEmail()" class="btn btn-success" [disabled]="sending">
+            {{ sending ? '📧 Envoi...' : '📧 Envoyer par email' }}
+          </button>
           <button (click)="deleteQuote()" class="btn btn-danger">🗑️ Supprimer</button>
         </div>
       </header>

@@ -54,6 +54,13 @@ services:
     depends_on:
       - mongo
 
+  mailhog:
+    image: mailhog/mailhog
+    container_name: ecf_mailhog
+    ports:
+      - "1025:1025"
+      - "8090:8025"
+
 volumes:
   db_data:
   mongo_data:

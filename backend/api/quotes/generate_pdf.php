@@ -7,7 +7,10 @@
 require_once '../../vendor/autoload.php';
 require_once '../../config/database.php';
 
-if (empty($_GET['id'])) {
+$quoteId = isset($_GET['id']) ? $_GET['id'] : null;
+$outputMode = isset($_GET['output']) ? $_GET['output'] : 'download';
+
+if (empty($quoteId)) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'ID devis requis']);
     exit();
@@ -28,7 +31,7 @@ try {
         LEFT JOIN users u ON c.user_id = u.id
         WHERE q.id = :id
     ");
-    $stmt->execute([':id' => $_GET['id']]);
+    $stmt->execute([':id' => $quoteId]);
     $quote = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$quote) {
@@ -39,7 +42,7 @@ try {
 
     // Récupérer les prestations
     $stmtServices = $db->prepare("SELECT * FROM services WHERE quote_id = :quote_id");
-    $stmtServices->execute([':quote_id' => $_GET['id']]);
+    $stmtServices->execute([':quote_id' => $quoteId]);
     $services = $stmtServices->fetchAll(PDO::FETCH_ASSOC);
 
     // Créer le PDF
@@ -169,8 +172,17 @@ try {
     $pdf->Cell(90, 7, '........................................', 0, 0, 'L');
     $pdf->Cell(90, 7, 'Chloé Dubois - Directrice', 0, 1, 'L');
 
-    // Output
-    $pdf->Output('Devis_' . str_pad($quote['id'], 5, '0', STR_PAD_LEFT) . '.pdf', 'D');
+    // Nom du fichier
+    $filename = 'Devis_' . str_pad($quote['id'], 5, '0', STR_PAD_LEFT) . '.pdf';
+
+    // Output selon le mode
+    if ($outputMode === 'string') {
+        // Retourner le contenu PDF en string (pour l'envoi par email)
+        echo $pdf->Output($filename, 'S');
+    } else {
+        // Téléchargement direct
+        $pdf->Output($filename, 'D');
+    }
 
 } catch (Exception $e) {
     http_response_code(500);

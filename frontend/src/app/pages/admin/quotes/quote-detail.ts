@@ -16,6 +16,7 @@ export class QuoteDetailComponent implements OnInit {
   services: any[] = [];
   loading = true;
   error = '';
+  sending = false;
 
   statusLabels: { [key: string]: string } = {
     'pending': 'En attente',
@@ -68,6 +69,24 @@ export class QuoteDetailComponent implements OnInit {
 
   downloadPdf(): void {
     window.open(`http://localhost:8080/api/quotes/generate_pdf.php?id=${this.quote.id}`, '_blank');
+  }
+
+  sendByEmail(): void {
+    if (!confirm('Envoyer ce devis par email au client ?')) return;
+
+    this.sending = true;
+    this.http.post<any>('http://localhost:8080/api/quotes/send_email.php', {
+      quote_id: this.quote.id
+    }).subscribe({
+      next: (response) => {
+        alert(response.message || 'Email envoyé avec succès !');
+        this.sending = false;
+      },
+      error: (err) => {
+        alert(err.error?.message || 'Erreur lors de l\'envoi');
+        this.sending = false;
+      }
+    });
   }
 
   deleteQuote(): void {
