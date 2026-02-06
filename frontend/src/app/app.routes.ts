@@ -114,6 +114,11 @@ export const routes: Routes = [
     canActivate: [adminGuard]
   },
   { 
+    path: 'admin/events/:id/edit', 
+    loadComponent: () => import('./pages/admin/events/event-edit').then(m => m.EventEditComponent),
+    canActivate: [adminGuard]
+  },
+  { 
     path: 'admin/quotes', 
     loadComponent: () => import('./pages/admin/quotes/quotes-list').then(m => m.QuotesListComponent),
     canActivate: [adminGuard]

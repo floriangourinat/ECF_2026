@@ -1,0 +1,84 @@
+<app-admin-layout>
+  <div class="event-edit-page">
+    <a routerLink="/admin/events" class="btn-back">← Retour à la liste</a>
+
+    <div *ngIf="loading" class="loading">Chargement...</div>
+    <div *ngIf="error && !event.id" class="error">{{ error }}</div>
+
+    <div *ngIf="!loading && event.id" class="edit-form">
+      <header class="page-header">
+        <h1>Modifier l'événement</h1>
+        <p>{{ event.name }}</p>
+      </header>
+
+      <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+      <div *ngIf="success" class="alert alert-success">{{ success }}</div>
+
+      <form (ngSubmit)="saveEvent()">
+        <section class="form-section">
+          <h3>Informations générales</h3>
+          
+          <div class="form-group">
+            <label>Nom de l'événement *</label>
+            <input type="text" [(ngModel)]="event.name" name="name" required>
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <textarea [(ngModel)]="event.description" name="description" rows="4"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Type d'événement</label>
+              <select [(ngModel)]="event.type_id" name="type_id">
+                <option value="">-- Sélectionner --</option>
+                <option *ngFor="let type of eventTypes" [value]="type.id">{{ type.name }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Thème</label>
+              <select [(ngModel)]="event.theme_id" name="theme_id">
+                <option value="">-- Sélectionner --</option>
+                <option *ngFor="let theme of themes" [value]="theme.id">{{ theme.name }}</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h3>Détails</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Date et heure</label>
+              <input type="datetime-local" [(ngModel)]="event.event_date" name="event_date">
+            </div>
+            <div class="form-group">
+              <label>Lieu</label>
+              <input type="text" [(ngModel)]="event.location" name="location">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nombre de participants</label>
+              <input type="number" [(ngModel)]="event.attendees_count" name="attendees_count" min="0">
+            </div>
+            <div class="form-group">
+              <label>Budget (€)</label>
+              <input type="number" [(ngModel)]="event.budget" name="budget" min="0" step="0.01">
+            </div>
+          </div>
+        </section>
+
+        <div class="form-actions">
+          <a routerLink="/admin/events/{{ eventId }}" class="btn btn-secondary">Annuler</a>
+          <button type="submit" class="btn btn-primary" [disabled]="saving">
+            {{ saving ? 'Enregistrement...' : 'Enregistrer les modifications' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</app-admin-layout>

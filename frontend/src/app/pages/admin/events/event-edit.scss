@@ -1,0 +1,145 @@
+.event-edit-page {
+  .btn-back {
+    display: inline-block;
+    color: #3498db;
+    text-decoration: none;
+    margin-bottom: 20px;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .loading, .error {
+    text-align: center;
+    padding: 60px;
+    color: #7f8c8d;
+  }
+
+  .page-header {
+    margin-bottom: 30px;
+
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      color: #2c3e50;
+    }
+
+    p {
+      margin: 5px 0 0;
+      color: #7f8c8d;
+    }
+  }
+
+  .alert {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+
+    &.alert-danger {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    &.alert-success {
+      background: #d4edda;
+      color: #155724;
+    }
+  }
+
+  .form-section {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+
+    h3 {
+      margin: 0 0 20px;
+      font-size: 1.1rem;
+      color: #2c3e50;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+  }
+
+  .form-row {
+    display: flex;
+    gap: 20px;
+
+    .form-group {
+      flex: 1;
+    }
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+      font-size: 0.9rem;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      transition: border-color 0.3s;
+
+      &:focus {
+        outline: none;
+        border-color: #3498db;
+      }
+    }
+
+    textarea {
+      resize: vertical;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 30px;
+
+    .btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-block;
+
+      &.btn-secondary {
+        background: #e0e0e0;
+        color: #333;
+      }
+
+      &.btn-primary {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .event-edit-page {
+    .form-row {
+      flex-direction: column;
+      gap: 0;
+    }
+  }
+}

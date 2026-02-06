@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AdminLayoutComponent } from '../../../components/admin-layout/admin-layout';
+import { AuthService } from '../../../_services/auth.service';
 
 @Component({
   selector: 'app-admin-event-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, AdminLayoutComponent],
+  imports: [CommonModule, FormsModule, RouterLink, AdminLayoutComponent],
   templateUrl: './event-detail.html',
   styleUrls: ['./event-detail.scss']
 })
@@ -18,6 +20,10 @@ export class AdminEventDetailComponent implements OnInit {
   tasks: any[] = [];
   loading = true;
   error = '';
+
+  // Pour ajouter une note
+  newNoteContent = '';
+  addingNote = false;
 
   statusLabels: { [key: string]: string } = {
     'draft': 'Brouillon',
@@ -44,7 +50,8 @@ export class AdminEventDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -94,6 +101,56 @@ export class AdminEventDetailComponent implements OnInit {
       .subscribe({
         next: () => {
           this.router.navigate(['/admin/events']);
+        },
+        error: () => {
+          alert('Erreur lors de la suppression');
+        }
+      });
+  }
+
+  // ===== GESTION DES NOTES =====
+
+  addNote(): void {
+    if (!this.newNoteContent.trim()) {
+      return;
+    }
+
+    const currentUser = this.authService.currentUserValue;
+    if (!currentUser) {
+      alert('Vous devez être connecté pour ajouter une note');
+      return;
+    }
+
+    this.addingNote = true;
+
+    this.http.post<any>('http://localhost:8080/api/notes/create.php', {
+      event_id: this.event.id,
+      author_id: currentUser.id,
+      content: this.newNoteContent
+    }).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.notes.unshift(response.data);
+          this.newNoteContent = '';
+        }
+        this.addingNote = false;
+      },
+      error: () => {
+        alert('Erreur lors de l\'ajout de la note');
+        this.addingNote = false;
+      }
+    });
+  }
+
+  deleteNote(note: any): void {
+    if (!confirm('Supprimer cette note ?')) {
+      return;
+    }
+
+    this.http.delete<any>('http://localhost:8080/api/notes/delete.php', { body: { id: note.id } })
+      .subscribe({
+        next: () => {
+          this.notes = this.notes.filter(n => n.id !== note.id);
         },
         error: () => {
           alert('Erreur lors de la suppression');

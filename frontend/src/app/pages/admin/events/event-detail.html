@@ -143,16 +143,36 @@
       </section>
 
       <!-- Notes -->
-      <section class="section-table">
+      <section class="section-notes">
         <div class="section-header">
-          <h3>📝 Notes</h3>
+          <h3>📝 Notes internes</h3>
         </div>
+        
+        <!-- Formulaire d'ajout -->
+        <div class="add-note-form">
+          <textarea 
+            [(ngModel)]="newNoteContent" 
+            placeholder="Ajouter une note interne..."
+            rows="3"
+          ></textarea>
+          <button (click)="addNote()" [disabled]="addingNote || !newNoteContent.trim()" class="btn btn-primary">
+            {{ addingNote ? 'Ajout...' : '+ Ajouter la note' }}
+          </button>
+        </div>
+
         <div *ngIf="notes.length === 0" class="empty">Aucune note pour cet événement</div>
+        
         <div class="notes-list" *ngIf="notes.length > 0">
           <div class="note-item" *ngFor="let note of notes">
             <div class="note-header">
-              <strong>{{ note.first_name }} {{ note.last_name }}</strong>
-              <span class="note-date">{{ formatDate(note.created_at) }}</span>
+              <div class="note-author">
+                <span class="avatar">{{ note.first_name?.[0] }}{{ note.last_name?.[0] }}</span>
+                <strong>{{ note.first_name }} {{ note.last_name }}</strong>
+              </div>
+              <div class="note-actions">
+                <span class="note-date">{{ formatDate(note.created_at) }}</span>
+                <button (click)="deleteNote(note)" class="btn-delete" title="Supprimer">🗑️</button>
+              </div>
             </div>
             <p class="note-content">{{ note.content }}</p>
           </div>
