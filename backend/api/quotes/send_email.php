@@ -64,18 +64,20 @@ try {
         exit();
     }
 
-    // Générer le PDF
-    ob_start();
-    $_GET['id'] = $data['quote_id'];
-    $_GET['output'] = 'string';
-    include 'generate_pdf.php';
-    $pdfContent = ob_get_clean();
+    // Générer le PDF via curl interne
+    $pdfUrl = 'http://localhost/api/quotes/generate_pdf.php?id=' . $data['quote_id'] . '&output=string';
+    
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $pdfUrl);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    $pdfContent = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
 
-    // Si generate_pdf retourne du JSON (erreur), on le gère
-    if (strpos($pdfContent, '{') === 0) {
-        $pdfError = json_decode($pdfContent, true);
+    if ($httpCode !== 200 || empty($pdfContent)) {
         http_response_code(500);
-        echo json_encode(['success' => false, 'message' => 'Erreur génération PDF: ' . ($pdfError['message'] ?? 'Inconnue')]);
+        echo json_encode(['success' => false, 'message' => 'Erreur génération PDF']);
         exit();
     }
 
@@ -148,7 +150,7 @@ try {
     try {
         require_once '../../services/MongoLogger.php';
         $logger = new MongoLogger();
-        $logger->log('quote_email_sent', 'quote', $quote['id'], [
+        $logger->log('quote_email_sent', 'quote', (int)$quote['id'], null, [
             'recipient' => $quote['client_email'],
             'event' => $quote['event_name']
         ]);
