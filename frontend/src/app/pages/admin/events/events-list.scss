@@ -121,6 +121,30 @@
     }
   }
 
+  .image-cell {
+    width: 60px;
+    
+    .event-thumbnail {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 2px solid #eee;
+    }
+    
+    .no-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      background: #f5f5f5;
+      border-radius: 8px;
+      font-size: 1.2rem;
+      color: #ccc;
+    }
+  }
+
   .status-badge {
     display: inline-block;
     padding: 5px 12px;

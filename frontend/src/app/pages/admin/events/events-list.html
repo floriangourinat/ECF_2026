@@ -42,6 +42,7 @@
       <table *ngIf="!loading && events.length > 0" class="events-table">
         <thead>
           <tr>
+            <th>Image</th>
             <th>Nom</th>
             <th>Client</th>
             <th>Date</th>
@@ -54,6 +55,14 @@
         </thead>
         <tbody>
           <tr *ngFor="let event of events">
+            <td class="image-cell">
+              <img *ngIf="event.image_path" 
+                   [src]="getImageUrl(event.image_path)" 
+                   [alt]="event.name"
+                   class="event-thumbnail"
+                   (error)="onImageError($event)">
+              <span *ngIf="!event.image_path" class="no-image">📷</span>
+            </td>
             <td class="event-name">
               <strong>{{ event.name }}</strong>
             </td>

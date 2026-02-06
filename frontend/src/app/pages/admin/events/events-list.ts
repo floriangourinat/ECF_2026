@@ -15,6 +15,7 @@ interface Event {
   theme: string;
   status: string;
   is_visible: boolean;
+  image_path: string;
   client_id: number;
   client_company: string;
   client_first_name: string;
@@ -147,13 +148,11 @@ export class EventsListComponent implements OnInit {
   onImageSelected(event: any): void {
     const file = event.target.files[0];
     if (file) {
-      // Vérifier la taille (max 5 Mo)
       if (file.size > 5 * 1024 * 1024) {
         this.createError = 'L\'image est trop volumineuse. Maximum 5 Mo.';
         return;
       }
       
-      // Vérifier le type
       if (!file.type.startsWith('image/')) {
         this.createError = 'Le fichier doit être une image.';
         return;
@@ -161,7 +160,6 @@ export class EventsListComponent implements OnInit {
 
       this.selectedImage = file;
       
-      // Créer un aperçu
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.imagePreview = e.target.result;
@@ -174,6 +172,17 @@ export class EventsListComponent implements OnInit {
     this.selectedImage = null;
     this.imagePreview = null;
     fileInput.value = '';
+  }
+
+  getImageUrl(path: string): string {
+    if (path && path.startsWith('/uploads/')) {
+      return 'http://localhost:8080' + path;
+    }
+    return path;
+  }
+
+  onImageError(event: any): void {
+    event.target.style.display = 'none';
   }
 
   createEvent(): void {
@@ -190,7 +199,6 @@ export class EventsListComponent implements OnInit {
         next: (response) => {
           const eventId = response.event_id;
           
-          // Si une image est sélectionnée, l'uploader
           if (this.selectedImage && eventId) {
             this.uploadImage(eventId);
           } else {
@@ -221,7 +229,6 @@ export class EventsListComponent implements OnInit {
           this.createLoading = false;
         },
         error: () => {
-          // L'événement est créé même si l'upload échoue
           this.closeCreateModal();
           this.loadEvents();
           this.createLoading = false;
