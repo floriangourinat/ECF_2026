@@ -99,6 +99,11 @@ export const routes: Routes = [
     canActivate: [adminGuard]
   },
   { 
+    path: 'admin/clients/:id/edit', 
+    loadComponent: () => import('./pages/admin/clients/client-edit').then(m => m.ClientEditComponent),
+    canActivate: [adminGuard]
+  },
+  { 
     path: 'admin/events', 
     loadComponent: () => import('./pages/admin/events/events-list').then(m => m.EventsListComponent),
     canActivate: [adminGuard]

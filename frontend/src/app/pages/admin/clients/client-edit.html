@@ -1,0 +1,67 @@
+<app-admin-layout>
+  <div class="client-edit-page">
+    <a routerLink="/admin/clients" class="btn-back">← Retour à la liste</a>
+
+    <div *ngIf="loading" class="loading">Chargement...</div>
+    <div *ngIf="error && !client.id" class="error">{{ error }}</div>
+
+    <div *ngIf="!loading && client.id" class="edit-form">
+      <header class="page-header">
+        <h1>Modifier le client</h1>
+        <p>{{ client.first_name }} {{ client.last_name }}</p>
+      </header>
+
+      <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+      <div *ngIf="success" class="alert alert-success">{{ success }}</div>
+
+      <form (ngSubmit)="saveClient()">
+        <section class="form-section">
+          <h3>Informations personnelles</h3>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label>Prénom *</label>
+              <input type="text" [(ngModel)]="client.first_name" name="first_name" required>
+            </div>
+            <div class="form-group">
+              <label>Nom *</label>
+              <input type="text" [(ngModel)]="client.last_name" name="last_name" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" [(ngModel)]="client.email" name="email" required>
+          </div>
+        </section>
+
+        <section class="form-section">
+          <h3>Informations entreprise</h3>
+          
+          <div class="form-group">
+            <label>Nom de l'entreprise</label>
+            <input type="text" [(ngModel)]="client.company_name" name="company_name">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Téléphone</label>
+              <input type="tel" [(ngModel)]="client.phone" name="phone">
+            </div>
+            <div class="form-group">
+              <label>Adresse</label>
+              <input type="text" [(ngModel)]="client.address" name="address">
+            </div>
+          </div>
+        </section>
+
+        <div class="form-actions">
+          <a routerLink="/admin/clients/{{ clientId }}" class="btn btn-secondary">Annuler</a>
+          <button type="submit" class="btn btn-primary" [disabled]="saving">
+            {{ saving ? 'Enregistrement...' : 'Enregistrer les modifications' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</app-admin-layout>
