@@ -52,7 +52,7 @@
     <div class="events-grid" *ngIf="!loading && filteredEvents.length > 0">
       <article class="event-card" *ngFor="let event of filteredEvents">
         <div class="event-image">
-          <img [src]="event.image_path || 'https://via.placeholder.com/400x250?text=Événement'" [alt]="event.name">
+          <img [src]="getEventImage(event.image_path)" [alt]="event.name" (error)="onImageError($event)">
           <span class="event-type-badge">{{ event.event_type }}</span>
         </div>
         <div class="event-content">

@@ -29,6 +29,7 @@ export class EventDetailComponent implements OnInit {
   event: Event | null = null;
   loading = true;
   error = '';
+  defaultImage = '/assets/images/event-default.jpg';
 
   constructor(
     private route: ActivatedRoute,
@@ -70,5 +71,19 @@ export class EventDetailComponent implements OnInit {
       hour: '2-digit',
       minute: '2-digit'
     });
+  }
+
+  getEventImage(imagePath: string | null): string {
+    if (imagePath && imagePath.trim() !== '') {
+      if (imagePath.startsWith('/uploads/')) {
+        return 'http://localhost:8080' + imagePath;
+      }
+      return imagePath;
+    }
+    return this.defaultImage;
+  }
+
+  onImageError(event: any): void {
+    event.target.src = this.defaultImage;
   }
 }

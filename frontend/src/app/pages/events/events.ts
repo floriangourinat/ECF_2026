@@ -6,29 +6,16 @@ import { HttpClient } from '@angular/common/http';
 import { HeaderComponent } from '../../components/header/header';
 import { FooterComponent } from '../../components/footer/footer';
 
-interface Event {
-  id: number;
-  name: string;
-  event_type: string;
-  theme: string;
-  location: string;
-  start_date: string;
-  end_date: string;
-  image_path: string;
-  status: string;
-  client_company: string;
-}
-
 @Component({
   selector: 'app-events',
   standalone: true,
   imports: [CommonModule, RouterLink, FormsModule, HeaderComponent, FooterComponent],
   templateUrl: './events.html',
-  styleUrls: ['./events.scss']
+  styleUrl: './events.scss'
 })
 export class EventsComponent implements OnInit {
-  events: Event[] = [];
-  filteredEvents: Event[] = [];
+  events: any[] = [];
+  filteredEvents: any[] = [];
   loading = true;
   error = '';
 
@@ -36,6 +23,8 @@ export class EventsComponent implements OnInit {
   filterTheme = '';
   filterDateStart = '';
   filterDateEnd = '';
+
+  defaultImage = 'assets/images/event-default.jpg';
 
   eventTypes = [
     { value: '', label: 'Tous les types' },
@@ -63,7 +52,6 @@ export class EventsComponent implements OnInit {
   }
 
   loadEvents(): void {
-    this.loading = true;
     this.http.get<any>('http://localhost:8080/api/events/read_public.php')
       .subscribe({
         next: (response) => {
@@ -90,11 +78,11 @@ export class EventsComponent implements OnInit {
         match = false;
       }
 
-      if (this.filterDateStart && event.start_date < this.filterDateStart) {
+      if (this.filterDateStart && new Date(event.start_date) < new Date(this.filterDateStart)) {
         match = false;
       }
 
-      if (this.filterDateEnd && event.end_date > this.filterDateEnd) {
+      if (this.filterDateEnd && new Date(event.end_date) > new Date(this.filterDateEnd)) {
         match = false;
       }
 
@@ -111,10 +99,26 @@ export class EventsComponent implements OnInit {
   }
 
   formatDate(dateString: string): string {
+    if (!dateString) return '';
     return new Date(dateString).toLocaleDateString('fr-FR', {
       day: 'numeric',
       month: 'long',
       year: 'numeric'
     });
+  }
+
+  getEventImage(imagePath: string | null): string {
+    if (imagePath && imagePath.trim() !== '') {
+      // Si c'est un chemin relatif du backend
+      if (imagePath.startsWith('/uploads/')) {
+        return 'http://localhost:8080' + imagePath;
+      }
+      return imagePath;
+    }
+    return this.defaultImage;
+  }
+
+  onImageError(event: any): void {
+    event.target.src = this.defaultImage;
   }
 }

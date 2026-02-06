@@ -13,7 +13,7 @@
 
     <article *ngIf="event && !loading" class="event-detail">
       <div class="event-header">
-        <img [src]="event.image_path || 'https://via.placeholder.com/1200x400?text=Événement'" [alt]="event.name" class="event-hero-image">
+        <img [src]="getEventImage(event.image_path)" [alt]="event.name" class="event-hero-image" (error)="onImageError($event)">
         <div class="event-header-overlay">
           <span class="event-type-badge">{{ event.event_type }}</span>
           <h1>{{ event.name }}</h1>
