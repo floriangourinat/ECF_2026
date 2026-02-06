@@ -11,7 +11,8 @@ class MongoLogger {
 
     public function __construct() {
         try {
-            $client = new MongoDB\Client("mongodb://root:root@localhost:27017");
+            // Utiliser 'mongo' (nom du service Docker) au lieu de localhost
+            $client = new MongoDB\Client("mongodb://root:root@mongo:27017");
             $database = $client->selectDatabase('innovevents_logs');
             $this->collection = $database->selectCollection('activity_logs');
         } catch (Exception $e) {
