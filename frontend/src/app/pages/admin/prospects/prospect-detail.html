@@ -39,6 +39,12 @@
         </div>
       </header>
 
+      <!-- Image d'inspiration -->
+      <section class="inspiration-image-section" *ngIf="prospect.image_path">
+        <h3>📷 Image d'inspiration</h3>
+        <img [src]="getImageUrl(prospect.image_path)" [alt]="'Image de ' + prospect.company_name" class="inspiration-image" (error)="onImageError($event)">
+      </section>
+
       <div class="details-grid">
         <section class="detail-card">
           <h3>📋 Informations générales</h3>

@@ -16,6 +16,7 @@ interface Prospect {
   planned_date: string;
   estimated_participants: number;
   needs_description: string;
+  image_path: string;
   status: string;
   created_at: string;
 }
@@ -64,6 +65,17 @@ export class ProspectDetailComponent implements OnInit {
           this.loading = false;
         }
       });
+  }
+
+  getImageUrl(path: string): string {
+    if (path && path.startsWith('/uploads/')) {
+      return 'http://localhost:8080' + path;
+    }
+    return path;
+  }
+
+  onImageError(event: any): void {
+    event.target.style.display = 'none';
   }
 
   updateStatus(newStatus: string): void {

@@ -47,6 +47,7 @@
       <table *ngIf="!loading && prospects.length > 0" class="prospects-table">
         <thead>
           <tr>
+            <th>Image</th>
             <th>Entreprise</th>
             <th>Contact</th>
             <th>Email</th>
@@ -58,6 +59,14 @@
         </thead>
         <tbody>
           <tr *ngFor="let prospect of prospects">
+            <td class="image-cell">
+              <img *ngIf="prospect.image_path" 
+                   [src]="getImageUrl(prospect.image_path)" 
+                   [alt]="prospect.company_name"
+                   class="prospect-thumbnail"
+                   (error)="onImageError($event)">
+              <span *ngIf="!prospect.image_path" class="no-image">📷</span>
+            </td>
             <td class="company">
               <strong>{{ prospect.company_name || '-' }}</strong>
             </td>

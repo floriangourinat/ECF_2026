@@ -17,6 +17,7 @@ interface Prospect {
   planned_date: string;
   estimated_participants: number;
   needs_description: string;
+  image_path: string;
   status: string;
   created_at: string;
 }
@@ -77,6 +78,17 @@ export class ProspectsListComponent implements OnInit {
 
   onFilterChange(): void {
     this.loadProspects();
+  }
+
+  getImageUrl(path: string): string {
+    if (path && path.startsWith('/uploads/')) {
+      return 'http://localhost:8080' + path;
+    }
+    return path;
+  }
+
+  onImageError(event: any): void {
+    event.target.style.display = 'none';
   }
 
   updateStatus(prospect: Prospect, newStatus: string): void {
