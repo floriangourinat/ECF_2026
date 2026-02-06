@@ -139,6 +139,20 @@
             </div>
           </div>
 
+          <!-- Upload Image -->
+          <div class="form-group">
+            <label>Image de l'événement</label>
+            <div class="image-upload">
+              <input type="file" id="eventImage" (change)="onImageSelected($event)" accept="image/*" #fileInput>
+              <label for="eventImage" class="upload-label">
+                <span *ngIf="!imagePreview">📷 Choisir une image</span>
+                <img *ngIf="imagePreview" [src]="imagePreview" alt="Aperçu" class="image-preview">
+              </label>
+              <button *ngIf="imagePreview" type="button" class="btn-remove-image" (click)="removeImage(fileInput)">✕ Supprimer</button>
+            </div>
+            <small class="hint">JPG, PNG, WebP ou GIF. Max 5 Mo.</small>
+          </div>
+
           <div class="form-row">
             <div class="form-group">
               <label>Statut</label>

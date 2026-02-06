@@ -24,7 +24,8 @@ export class EventEditComponent implements OnInit {
     budget: 0,
     status: 'draft',
     type_id: '',
-    theme_id: ''
+    theme_id: '',
+    image_path: ''
   };
   eventTypes: any[] = [];
   themes: any[] = [];
@@ -32,6 +33,10 @@ export class EventEditComponent implements OnInit {
   saving = false;
   error = '';
   success = '';
+
+  // Image upload
+  selectedImage: File | null = null;
+  imagePreview: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -80,7 +85,8 @@ export class EventEditComponent implements OnInit {
               budget: e.budget || 0,
               status: e.status || 'draft',
               type_id: e.type_id || '',
-              theme_id: e.theme_id || ''
+              theme_id: e.theme_id || '',
+              image_path: e.image_path || ''
             };
           }
           this.loading = false;
@@ -90,6 +96,46 @@ export class EventEditComponent implements OnInit {
           this.loading = false;
         }
       });
+  }
+
+  onImageSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        this.error = 'L\'image est trop volumineuse. Maximum 5 Mo.';
+        return;
+      }
+      
+      if (!file.type.startsWith('image/')) {
+        this.error = 'Le fichier doit être une image.';
+        return;
+      }
+
+      this.selectedImage = file;
+      
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagePreview = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removeImage(fileInput: any): void {
+    this.selectedImage = null;
+    this.imagePreview = null;
+    fileInput.value = '';
+  }
+
+  removeCurrentImage(): void {
+    this.event.image_path = '';
+  }
+
+  getImageUrl(path: string): string {
+    if (path && path.startsWith('/uploads/')) {
+      return 'http://localhost:8080' + path;
+    }
+    return path || '/assets/images/event-default.jpg';
   }
 
   saveEvent(): void {
@@ -106,17 +152,46 @@ export class EventEditComponent implements OnInit {
       .subscribe({
         next: (response) => {
           if (response.success) {
-            this.success = 'Événement modifié avec succès';
-            setTimeout(() => {
-              this.router.navigate(['/admin/events', this.eventId]);
-            }, 1500);
+            // Upload image si sélectionnée
+            if (this.selectedImage) {
+              this.uploadImage();
+            } else {
+              this.success = 'Événement modifié avec succès';
+              setTimeout(() => {
+                this.router.navigate(['/admin/events', this.eventId]);
+              }, 1500);
+              this.saving = false;
+            }
           } else {
             this.error = response.message || 'Erreur lors de la modification';
+            this.saving = false;
           }
-          this.saving = false;
         },
         error: (err) => {
           this.error = err.error?.message || 'Erreur serveur';
+          this.saving = false;
+        }
+      });
+  }
+
+  uploadImage(): void {
+    if (!this.selectedImage) return;
+
+    const formData = new FormData();
+    formData.append('image', this.selectedImage);
+    formData.append('event_id', this.eventId);
+
+    this.http.post<any>('http://localhost:8080/api/events/upload_image.php', formData)
+      .subscribe({
+        next: () => {
+          this.success = 'Événement et image modifiés avec succès';
+          setTimeout(() => {
+            this.router.navigate(['/admin/events', this.eventId]);
+          }, 1500);
+          this.saving = false;
+        },
+        error: () => {
+          this.success = 'Événement modifié (erreur upload image)';
           this.saving = false;
         }
       });

@@ -58,6 +58,10 @@ export class EventsListComponent implements OnInit {
     is_visible: false
   };
 
+  // Image upload
+  selectedImage: File | null = null;
+  imagePreview: string | null = null;
+
   eventTypes = ['Séminaire', 'Conférence', 'Soirée d\'entreprise', 'Team Building', 'Autre'];
   themes = ['Élégant', 'Tropical', 'Rétro', 'High-Tech', 'Nature', 'Industriel'];
   
@@ -119,6 +123,8 @@ export class EventsListComponent implements OnInit {
   openCreateModal(): void {
     this.showCreateModal = true;
     this.createError = '';
+    this.selectedImage = null;
+    this.imagePreview = null;
     this.newEvent = {
       name: '',
       client_id: '',
@@ -134,6 +140,40 @@ export class EventsListComponent implements OnInit {
 
   closeCreateModal(): void {
     this.showCreateModal = false;
+    this.selectedImage = null;
+    this.imagePreview = null;
+  }
+
+  onImageSelected(event: any): void {
+    const file = event.target.files[0];
+    if (file) {
+      // Vérifier la taille (max 5 Mo)
+      if (file.size > 5 * 1024 * 1024) {
+        this.createError = 'L\'image est trop volumineuse. Maximum 5 Mo.';
+        return;
+      }
+      
+      // Vérifier le type
+      if (!file.type.startsWith('image/')) {
+        this.createError = 'Le fichier doit être une image.';
+        return;
+      }
+
+      this.selectedImage = file;
+      
+      // Créer un aperçu
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagePreview = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
+  removeImage(fileInput: any): void {
+    this.selectedImage = null;
+    this.imagePreview = null;
+    fileInput.value = '';
   }
 
   createEvent(): void {
@@ -147,13 +187,43 @@ export class EventsListComponent implements OnInit {
 
     this.http.post<any>('http://localhost:8080/api/events/create.php', this.newEvent)
       .subscribe({
+        next: (response) => {
+          const eventId = response.event_id;
+          
+          // Si une image est sélectionnée, l'uploader
+          if (this.selectedImage && eventId) {
+            this.uploadImage(eventId);
+          } else {
+            this.closeCreateModal();
+            this.loadEvents();
+            this.createLoading = false;
+          }
+        },
+        error: (err) => {
+          this.createError = err.error?.message || 'Erreur lors de la création';
+          this.createLoading = false;
+        }
+      });
+  }
+
+  uploadImage(eventId: number): void {
+    if (!this.selectedImage) return;
+
+    const formData = new FormData();
+    formData.append('image', this.selectedImage);
+    formData.append('event_id', eventId.toString());
+
+    this.http.post<any>('http://localhost:8080/api/events/upload_image.php', formData)
+      .subscribe({
         next: () => {
           this.closeCreateModal();
           this.loadEvents();
           this.createLoading = false;
         },
-        error: (err) => {
-          this.createError = err.error?.message || 'Erreur lors de la création';
+        error: () => {
+          // L'événement est créé même si l'upload échoue
+          this.closeCreateModal();
+          this.loadEvents();
           this.createLoading = false;
         }
       });

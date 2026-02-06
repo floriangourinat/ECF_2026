@@ -24,6 +24,11 @@
         </div>
       </header>
 
+      <!-- Image de l'événement -->
+      <section class="event-image-section">
+        <img [src]="getEventImage(event.image_path)" [alt]="event.name" class="event-image" (error)="onImageError($event)">
+      </section>
+
       <!-- Infos principales -->
       <div class="details-grid">
         <section class="detail-card">

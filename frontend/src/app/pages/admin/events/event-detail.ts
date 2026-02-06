@@ -25,6 +25,9 @@ export class AdminEventDetailComponent implements OnInit {
   newNoteContent = '';
   addingNote = false;
 
+  // Image par défaut
+  defaultImage = '/assets/images/event-default.jpg';
+
   statusLabels: { [key: string]: string } = {
     'draft': 'Brouillon',
     'client_review': 'En attente client',
@@ -76,6 +79,20 @@ export class AdminEventDetailComponent implements OnInit {
           this.loading = false;
         }
       });
+  }
+
+  getEventImage(imagePath: string | null): string {
+    if (imagePath && imagePath.trim() !== '') {
+      if (imagePath.startsWith('/uploads/')) {
+        return 'http://localhost:8080' + imagePath;
+      }
+      return imagePath;
+    }
+    return this.defaultImage;
+  }
+
+  onImageError(event: any): void {
+    event.target.src = this.defaultImage;
   }
 
   updateStatus(newStatus: string): void {
