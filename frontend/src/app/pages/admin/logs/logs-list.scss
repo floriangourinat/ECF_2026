@@ -1,0 +1,220 @@
+.logs-page {
+  .page-header {
+    margin-bottom: 30px;
+
+    .header-title {
+      h1 {
+        margin: 0;
+        font-size: 1.8rem;
+        color: #2c3e50;
+      }
+
+      p {
+        margin: 5px 0 0;
+        color: #7f8c8d;
+      }
+    }
+  }
+
+  .stats-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+
+      .stat-icon {
+        font-size: 2rem;
+      }
+
+      .stat-info {
+        .stat-value {
+          display: block;
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: #2c3e50;
+        }
+
+        .stat-label {
+          color: #7f8c8d;
+          font-size: 0.85rem;
+        }
+      }
+    }
+  }
+
+  .filters-section {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
+
+    .filters-row {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+
+      .filter-group {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        label {
+          font-size: 0.85rem;
+          color: #7f8c8d;
+          font-weight: 500;
+        }
+
+        select, input {
+          padding: 10px 12px;
+          border: 1px solid #ddd;
+          border-radius: 6px;
+          font-size: 0.9rem;
+          min-width: 150px;
+
+          &:focus {
+            outline: none;
+            border-color: #667eea;
+          }
+        }
+      }
+
+      .btn-reset {
+        padding: 10px 20px;
+        background: #e9ecef;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+
+        &:hover {
+          background: #dee2e6;
+        }
+      }
+    }
+  }
+
+  .loading, .error, .empty {
+    text-align: center;
+    padding: 60px;
+    color: #7f8c8d;
+  }
+
+  .logs-timeline {
+    .log-item {
+      display: flex;
+      gap: 15px;
+      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      margin-bottom: 15px;
+      border-left: 4px solid #ddd;
+
+      &.action-create { border-left-color: #27ae60; }
+      &.action-update { border-left-color: #3498db; }
+      &.action-delete { border-left-color: #e74c3c; }
+      &.action-login { border-left-color: #9b59b6; }
+      &.action-logout { border-left-color: #95a5a6; }
+
+      .log-icon {
+        font-size: 1.5rem;
+        width: 40px;
+        text-align: center;
+      }
+
+      .log-content {
+        flex: 1;
+
+        .log-header {
+          display: flex;
+          gap: 10px;
+          margin-bottom: 10px;
+
+          .action-badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+
+            &.action-create { background: #d4edda; color: #155724; }
+            &.action-update { background: #cce5ff; color: #004085; }
+            &.action-delete { background: #f8d7da; color: #721c24; }
+            &.action-login { background: #e2d9f3; color: #5a3d8a; }
+            &.action-logout { background: #e9ecef; color: #6c757d; }
+          }
+
+          .entity-badge {
+            padding: 4px 10px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            color: #6c757d;
+          }
+        }
+
+        .log-details {
+          margin-bottom: 10px;
+          padding: 10px;
+          background: #f8f9fa;
+          border-radius: 6px;
+
+          .detail-item {
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 0.85rem;
+            color: #555;
+          }
+        }
+
+        .log-meta {
+          display: flex;
+          gap: 20px;
+          font-size: 0.85rem;
+          color: #95a5a6;
+
+          span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .logs-page {
+    .filters-section .filters-row {
+      flex-direction: column;
+
+      .filter-group {
+        width: 100%;
+
+        select, input {
+          width: 100%;
+        }
+      }
+    }
+
+    .logs-timeline .log-item {
+      flex-direction: column;
+
+      .log-content .log-meta {
+        flex-direction: column;
+        gap: 5px;
+      }
+    }
+  }
+}

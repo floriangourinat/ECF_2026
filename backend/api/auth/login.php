@@ -67,6 +67,14 @@ try {
         exit;
     }
 
+    // Log MongoDB - Connexion réussie
+    require_once '../../services/MongoLogger.php';
+    $logger = new MongoLogger();
+    $logger->log('login', 'user', $user['id'], $user['id'], [
+        'email' => $user['email'],
+        'role' => $user['role']
+    ]);
+
     // Création token
     $token_payload = [
         "id" => $user['id'],

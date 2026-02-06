@@ -83,6 +83,14 @@ try {
 
     $db->commit();
 
+    // Log MongoDB - Client créé
+    require_once '../../services/MongoLogger.php';
+    $logger = new MongoLogger();
+    $logger->log('create', 'client', $clientId, null, [
+        'company_name' => $data['company_name'] ?? null,
+        'email' => $data['email']
+    ]);
+
     http_response_code(201);
     echo json_encode([
         'success' => true,
