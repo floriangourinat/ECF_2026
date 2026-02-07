@@ -83,12 +83,12 @@ try {
 
     $db->commit();
 
-    // Log MongoDB - Client créé
+    // Log MongoDB -Client créé
     require_once '../../services/MongoLogger.php';
     $logger = new MongoLogger();
-    $logger->log('create', 'client', $clientId, null, [
-        'company_name' => $data['company_name'] ?? null,
-        'email' => $data['email']
+    $logger->log('CREATION_CLIENT', 'client', $clientId, null, [
+        'id' => (int)$clientId,
+        'nom' => $data['company_name'] ?? null
     ]);
 
     http_response_code(201);

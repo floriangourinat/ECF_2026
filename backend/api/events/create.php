@@ -60,6 +60,14 @@ try {
 
     $eventId = $db->lastInsertId();
 
+    // Log MongoDB -Création événement
+    require_once '../../services/MongoLogger.php';
+    $logger = new MongoLogger();
+    $logger->log('CREATION_EVENEMENT', 'event', (int)$eventId, null, [
+        'id' => (int)$eventId,
+        'name' => $data['name']
+    ]);
+
     http_response_code(201);
     echo json_encode([
         'success' => true,

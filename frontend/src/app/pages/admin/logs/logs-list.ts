@@ -42,22 +42,21 @@ export class LogsListComponent implements OnInit {
   filterDateTo = '';
 
   actionLabels: { [key: string]: string } = {
-    'create': 'Création',
-    'update': 'Modification',
-    'delete': 'Suppression',
-    'login': 'Connexion',
-    'logout': 'Déconnexion',
-    'status_change': 'Changement statut'
+    'CONNEXION_REUSSIE': 'Connexion réussie',
+    'CONNEXION_ECHOUEE': 'Connexion échouée',
+    'CREATION_CLIENT': 'Création client',
+    'MODIFICATION_CLIENT': 'Modification client',
+    'SUPPRESSION_CLIENT': 'Suppression client',
+    'CREATION_EVENEMENT': 'Création événement',
+    'MODIFICATION_STATUT_EVENEMENT': 'Modification statut événement',
+    'GENERATION_DEVIS_PDF': 'Génération PDF devis'
   };
 
   entityLabels: { [key: string]: string } = {
     'user': 'Utilisateur',
     'client': 'Client',
     'event': 'Événement',
-    'quote': 'Devis',
-    'prospect': 'Prospect',
-    'review': 'Avis',
-    'employee': 'Employé'
+    'quote': 'Devis'
   };
 
   constructor(private http: HttpClient) {}
@@ -119,23 +118,28 @@ export class LogsListComponent implements OnInit {
 
   getActionClass(action: string): string {
     const classes: { [key: string]: string } = {
-      'create': 'action-create',
-      'update': 'action-update',
-      'delete': 'action-delete',
-      'login': 'action-login',
-      'logout': 'action-logout'
+      'CREATION_CLIENT': 'action-create',
+      'MODIFICATION_CLIENT': 'action-update',
+      'SUPPRESSION_CLIENT': 'action-delete',
+      'CONNEXION_REUSSIE': 'action-login',
+      'CONNEXION_ECHOUEE': 'action-delete',
+      'CREATION_EVENEMENT': 'action-create',
+      'MODIFICATION_STATUT_EVENEMENT': 'action-update',
+      'GENERATION_DEVIS_PDF': 'action-create'
     };
     return classes[action] || '';
   }
 
   getActionIcon(action: string): string {
     const icons: { [key: string]: string } = {
-      'create': '➕',
-      'update': '✏️',
-      'delete': '🗑️',
-      'login': '🔑',
-      'logout': '🚪',
-      'status_change': '🔄'
+      'CONNEXION_REUSSIE': '🔑',
+      'CONNEXION_ECHOUEE': '🚫',
+      'CREATION_CLIENT': '➕',
+      'MODIFICATION_CLIENT': '✏️',
+      'SUPPRESSION_CLIENT': '🗑️',
+      'CREATION_EVENEMENT': '🎉',
+      'MODIFICATION_STATUT_EVENEMENT': '🔄',
+      'GENERATION_DEVIS_PDF': '📄'
     };
     return icons[action] || '📝';
   }

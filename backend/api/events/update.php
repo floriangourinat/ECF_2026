@@ -121,6 +121,18 @@ try {
     ]);
 
     http_response_code(200);
+
+    // Log MongoDB -Modification du statut si changé
+    if (isset($data['status']) && $data['status'] !== $currentEvent['status']) {
+        require_once '../../services/MongoLogger.php';
+        $logger = new MongoLogger();
+        $logger->log('MODIFICATION_STATUT_EVENEMENT', 'event', (int)$data['id'], null, [
+            'id' => (int)$data['id'],
+            'ancien_statut' => $currentEvent['status'],
+            'nouveau_statut' => $data['status']
+        ]);
+    }
+
     echo json_encode([
         'success' => true,
         'message' => 'Événement modifié avec succès'

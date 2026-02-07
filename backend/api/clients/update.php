@@ -75,12 +75,11 @@ try {
 
     $db->commit();
 
-    // Log MongoDB - Client modifié
+    // Log MongoDB -Client modifié
     require_once '../../services/MongoLogger.php';
     $logger = new MongoLogger();
-    $logger->log('update', 'client', (int)$data['id'], null, [
-        'company_name' => $data['company_name'] ?? null,
-        'email' => $data['email']
+    $logger->log('MODIFICATION_CLIENT', 'client', (int)$data['id'], null, [
+        'id' => (int)$data['id']
     ]);
 
     http_response_code(200);

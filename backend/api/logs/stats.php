@@ -22,13 +22,16 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
-    // Stats par action
+    // Stats par action.
     $actionStats = [
-        'create' => $logger->countLogs(['action' => 'create']),
-        'update' => $logger->countLogs(['action' => 'update']),
-        'delete' => $logger->countLogs(['action' => 'delete']),
-        'login' => $logger->countLogs(['action' => 'login']),
-        'logout' => $logger->countLogs(['action' => 'logout'])
+        'CONNEXION_REUSSIE' => $logger->countLogs(['action' => 'CONNEXION_REUSSIE']),
+        'CONNEXION_ECHOUEE' => $logger->countLogs(['action' => 'CONNEXION_ECHOUEE']),
+        'CREATION_CLIENT' => $logger->countLogs(['action' => 'CREATION_CLIENT']),
+        'MODIFICATION_CLIENT' => $logger->countLogs(['action' => 'MODIFICATION_CLIENT']),
+        'SUPPRESSION_CLIENT' => $logger->countLogs(['action' => 'SUPPRESSION_CLIENT']),
+        'CREATION_EVENEMENT' => $logger->countLogs(['action' => 'CREATION_EVENEMENT']),
+        'MODIFICATION_STATUT_EVENEMENT' => $logger->countLogs(['action' => 'MODIFICATION_STATUT_EVENEMENT']),
+        'GENERATION_DEVIS_PDF' => $logger->countLogs(['action' => 'GENERATION_DEVIS_PDF'])
     ];
 
     // Stats par entité
@@ -36,9 +39,7 @@ try {
         'user' => $logger->countLogs(['entity' => 'user']),
         'client' => $logger->countLogs(['entity' => 'client']),
         'event' => $logger->countLogs(['entity' => 'event']),
-        'quote' => $logger->countLogs(['entity' => 'quote']),
-        'prospect' => $logger->countLogs(['entity' => 'prospect']),
-        'review' => $logger->countLogs(['entity' => 'review'])
+        'quote' => $logger->countLogs(['entity' => 'quote'])
     ];
 
     // Récupérer les noms des utilisateurs pour les logs récents

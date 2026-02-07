@@ -175,6 +175,13 @@ try {
     // Nom du fichier
     $filename = 'Devis_' . str_pad($quote['id'], 5, '0', STR_PAD_LEFT) . '.pdf';
 
+    // Log MongoDB -Génération PDF devis
+    require_once '../../services/MongoLogger.php';
+    $logger = new MongoLogger();
+    $logger->log('GENERATION_DEVIS_PDF', 'quote', (int)$quote['id'], null, [
+        'id_evenement' => (int)$quote['event_id']
+    ]);
+
     // Output selon le mode
     if ($outputMode === 'string') {
         // Retourner le contenu PDF en string (pour l'envoi par email)

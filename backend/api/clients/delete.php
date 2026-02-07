@@ -34,8 +34,8 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
-    // Récupérer le user_id avant suppression
-    $stmtCheck = $db->prepare("SELECT user_id FROM clients WHERE id = :id");
+    // Récupérer le user_id et le nom avant suppression
+    $stmtCheck = $db->prepare("SELECT c.user_id, c.company_name FROM clients c WHERE c.id = :id");
     $stmtCheck->execute([':id' => $data['id']]);
     $client = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
@@ -57,10 +57,13 @@ try {
 
     $db->commit();
 
-    // Log MongoDB - Client supprimé
+    // Log MongoDB -Client supprimé
     require_once '../../services/MongoLogger.php';
     $logger = new MongoLogger();
-    $logger->log('delete', 'client', (int)$data['id'], null, null);
+    $logger->log('SUPPRESSION_CLIENT', 'client', (int)$data['id'], null, [
+        'id' => (int)$data['id'],
+        'nom' => $client['company_name']
+    ]);
 
     http_response_code(200);
     echo json_encode([
