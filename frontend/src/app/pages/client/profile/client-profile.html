@@ -32,6 +32,27 @@
         <button class="btn">Enregistrer</button>
       </form>
 
+      <div class="password-card">
+        <h3>Modifier mon mot de passe</h3>
+        <div *ngIf="passwordSuccess" class="success">{{ passwordSuccess }}</div>
+        <div *ngIf="passwordError" class="error">{{ passwordError }}</div>
+
+        <form (ngSubmit)="changePassword()" class="form">
+          <label>Mot de passe actuel</label>
+          <input type="password" [(ngModel)]="currentPassword" name="currentPassword" required />
+
+          <label>Nouveau mot de passe</label>
+          <input type="password" [(ngModel)]="newPassword" name="newPassword" required />
+
+          <label>Confirmer le nouveau mot de passe</label>
+          <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required />
+
+          <p class="hint">8 caractères min, 1 majuscule, 1 minuscule, 1 chiffre, 1 spécial.</p>
+
+          <button class="btn">Changer le mot de passe</button>
+        </form>
+      </div>
+
       <div class="danger-zone">
         <h3>Suppression du compte</h3>
         <p>Cette action supprimera définitivement toutes vos informations.</p>

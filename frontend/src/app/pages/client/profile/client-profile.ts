@@ -17,6 +17,8 @@ export class ClientProfileComponent implements OnInit {
   loading = true;
   success = '';
   error = '';
+  passwordSuccess = '';
+  passwordError = '';
   profile: any = {
     first_name: '',
     last_name: '',
@@ -25,6 +27,11 @@ export class ClientProfileComponent implements OnInit {
     phone: '',
     address: ''
   };
+  currentPassword = '';
+  newPassword = '';
+  confirmPassword = '';
+
+  private passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   constructor(private http: HttpClient, private authService: AuthService, private router: Router) {}
 
@@ -64,6 +71,40 @@ export class ClientProfileComponent implements OnInit {
       },
       error: (err) => {
         this.error = err?.error?.message || 'Erreur lors de la mise à jour';
+      }
+    });
+  }
+
+  changePassword(): void {
+    const userId = this.authService.currentUserValue?.id;
+    if (!userId) return;
+
+    this.passwordSuccess = '';
+    this.passwordError = '';
+
+    if (this.newPassword !== this.confirmPassword) {
+      this.passwordError = 'Les mots de passe ne correspondent pas.';
+      return;
+    }
+
+    if (!this.passwordPattern.test(this.newPassword)) {
+      this.passwordError = 'Le mot de passe ne respecte pas les règles.';
+      return;
+    }
+
+    this.http.post<any>('http://localhost:8080/api/auth/change-password.php', {
+      user_id: userId,
+      current_password: this.currentPassword,
+      new_password: this.newPassword
+    }).subscribe({
+      next: (response) => {
+        this.passwordSuccess = response.message || 'Mot de passe modifié.';
+        this.currentPassword = '';
+        this.newPassword = '';
+        this.confirmPassword = '';
+      },
+      error: (err) => {
+        this.passwordError = err?.error?.message || 'Erreur lors de la modification.';
       }
     });
   }

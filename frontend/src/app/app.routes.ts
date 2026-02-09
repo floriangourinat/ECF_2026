@@ -71,7 +71,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.DashboardComponent),
     canActivate: [authGuard]
   },
-  
+
   // ========== ESPACE CLIENT ==========
   { 
     path: 'client/dashboard', 
@@ -91,6 +91,11 @@ export const routes: Routes = [
   { 
     path: 'client/profile', 
     loadComponent: () => import('./pages/client/profile/client-profile').then(m => m.ClientProfileComponent),
+    canActivate: [clientGuard]
+  },
+  { 
+    path: 'client/quote-request', 
+    loadComponent: () => import('./pages/quote-request/quote-request').then(m => m.QuoteRequestComponent),
     canActivate: [clientGuard]
   },
 
