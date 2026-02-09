@@ -8,12 +8,10 @@ export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
 
   if (authService.currentUserValue) {
-    // Vérifier le rôle si spécifié dans la route
     const expectedRoles = route.data?.['roles'] as string[];
     if (expectedRoles && expectedRoles.length > 0) {
       const userRole = authService.currentUserValue.role;
       if (!expectedRoles.includes(userRole)) {
-        // Pas le bon rôle, redirection vers dashboard
         router.navigate(['/dashboard']);
         return false;
       }
@@ -21,12 +19,11 @@ export const authGuard: CanActivateFn = (route, state) => {
     return true;
   }
 
-  // Non connecté, redirection vers login avec URL de retour
   router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
   return false;
 };
 
-// Guard pour les pages invités (login, register) - redirige si déjà connecté
+// Guard pour les pages invités (login, register)
 export const guestGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
@@ -35,7 +32,6 @@ export const guestGuard: CanActivateFn = () => {
     return true;
   }
 
-  // Déjà connecté, redirection vers dashboard
   router.navigate(['/dashboard']);
   return false;
 };
@@ -50,10 +46,26 @@ export const adminGuard: CanActivateFn = (route, state) => {
   }
 
   if (authService.currentUserValue) {
-    // Connecté mais pas admin
     router.navigate(['/dashboard']);
   } else {
-    // Non connecté
+    router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+  }
+  return false;
+};
+
+// Guard spécifique pour les employés (employé OU admin)
+export const employeeGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  const user = authService.currentUserValue;
+  if (user && (user.role === 'employee' || user.role === 'admin')) {
+    return true;
+  }
+
+  if (user) {
+    router.navigate(['/dashboard']);
+  } else {
     router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
   }
   return false;

@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard, adminGuard } from './_guards/auth.guard';
+import { authGuard, guestGuard, adminGuard, employeeGuard } from './_guards/auth.guard';
 
 export const routes: Routes = [
   { 
@@ -70,6 +70,38 @@ export const routes: Routes = [
     path: 'dashboard', 
     loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.DashboardComponent),
     canActivate: [authGuard]
+  },
+
+  // ========== ESPACE EMPLOYÉ ==========
+  { 
+    path: 'employee/dashboard', 
+    loadComponent: () => import('./pages/employee/dashboard/employee-dashboard').then(m => m.EmployeeDashboardComponent),
+    canActivate: [employeeGuard]
+  },
+  { 
+    path: 'employee/clients', 
+    loadComponent: () => import('./pages/employee/clients/employee-clients').then(m => m.EmployeeClientsComponent),
+    canActivate: [employeeGuard]
+  },
+  { 
+    path: 'employee/clients/:id', 
+    loadComponent: () => import('./pages/employee/clients/employee-client-detail').then(m => m.EmployeeClientDetailComponent),
+    canActivate: [employeeGuard]
+  },
+  { 
+    path: 'employee/events', 
+    loadComponent: () => import('./pages/employee/events/employee-events').then(m => m.EmployeeEventsComponent),
+    canActivate: [employeeGuard]
+  },
+  { 
+    path: 'employee/events/:id', 
+    loadComponent: () => import('./pages/employee/events/employee-event-detail').then(m => m.EmployeeEventDetailComponent),
+    canActivate: [employeeGuard]
+  },
+  { 
+    path: 'employee/reviews', 
+    loadComponent: () => import('./pages/employee/reviews/employee-reviews').then(m => m.EmployeeReviewsComponent),
+    canActivate: [employeeGuard]
   },
 
   // ========== ESPACE ADMIN ==========

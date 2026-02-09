@@ -1,0 +1,98 @@
+.page {
+  .btn-back { color: #3498db; text-decoration: none; display: inline-block; margin-bottom: 20px; &:hover { text-decoration: underline; } }
+  .loading, .empty { text-align: center; padding: 40px; color: #999; }
+}
+
+.event-detail {
+  .detail-header {
+    display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 30px;
+    background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    h1 { margin: 0; font-size: 1.6rem; color: #2c3e50; }
+    .meta { margin: 5px 0 0; color: #999; font-size: 0.9rem; }
+  }
+
+  .info-section {
+    background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    h3 { margin: 0 0 10px; color: #2c3e50; }
+    p { color: #555; line-height: 1.6; }
+  }
+
+  .section {
+    background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    h3 { margin: 0 0 20px; color: #2c3e50; font-size: 1.1rem; }
+  }
+}
+
+.status-badge {
+  padding: 5px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; white-space: nowrap;
+  &.status-draft { background: #e0e0e0; color: #666; }
+  &.status-client_review, &.status-todo { background: #fff3cd; color: #856404; }
+  &.status-accepted { background: #d4edda; color: #155724; }
+  &.status-in_progress, &.status-in-progress { background: #cce5ff; color: #004085; }
+  &.status-completed, &.status-done { background: #d4edda; color: #155724; }
+  &.status-cancelled { background: #f8d7da; color: #721c24; }
+}
+
+// Tâches
+.tasks-list {
+  display: flex; flex-direction: column; gap: 10px;
+
+  .task-card {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 15px; border: 1px solid #eee; border-radius: 10px; gap: 15px;
+    &.my-task { border-left: 4px solid #3498db; background: #f8fbff; }
+    .task-info { flex: 1; display: flex; flex-direction: column; gap: 4px;
+      strong { color: #2c3e50; }
+      small { color: #999; font-size: 0.8rem; }
+    }
+    .task-actions { display: flex; align-items: center; gap: 10px; }
+    .btn-advance {
+      padding: 6px 14px; background: #3498db; color: white; border: none; border-radius: 6px;
+      cursor: pointer; font-size: 0.8rem; white-space: nowrap;
+      &:hover { background: #2980b9; }
+    }
+  }
+}
+
+// Notes
+.add-note {
+  margin-bottom: 20px;
+  textarea {
+    width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px;
+    font-size: 0.9rem; resize: vertical; box-sizing: border-box; font-family: inherit;
+    &:focus { outline: none; border-color: #3498db; }
+  }
+  .btn-add {
+    margin-top: 8px; padding: 8px 20px; background: #3498db; color: white; border: none;
+    border-radius: 6px; cursor: pointer; &:hover { background: #2980b9; } &:disabled { background: #ccc; }
+  }
+}
+
+.notes-list {
+  display: flex; flex-direction: column; gap: 12px;
+
+  .note-card {
+    padding: 15px; border: 1px solid #eee; border-radius: 10px; position: relative;
+    .note-header {
+      display: flex; justify-content: space-between; margin-bottom: 8px;
+      strong { color: #2c3e50; font-size: 0.9rem; }
+      .note-date { color: #bbb; font-size: 0.8rem; }
+    }
+    .note-content { color: #555; line-height: 1.5; margin: 0; }
+    .note-actions {
+      position: absolute; top: 12px; right: 50px; display: flex; gap: 5px;
+      button { background: none; border: none; cursor: pointer; font-size: 0.85rem; padding: 4px;
+        &:hover { opacity: 0.7; }
+      }
+    }
+    .note-edit {
+      textarea { width: 100%; padding: 10px; border: 1px solid #3498db; border-radius: 6px; font-family: inherit; box-sizing: border-box; }
+      .edit-actions { display: flex; gap: 8px; margin-top: 8px;
+        .btn-save { padding: 6px 16px; background: #27ae60; color: white; border: none; border-radius: 6px; cursor: pointer; }
+        .btn-cancel { padding: 6px 16px; background: #e0e0e0; color: #333; border: none; border-radius: 6px; cursor: pointer; }
+      }
+    }
+  }
+}
