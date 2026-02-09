@@ -103,6 +103,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/employee/reviews/employee-reviews').then(m => m.EmployeeReviewsComponent),
     canActivate: [employeeGuard]
   },
+  { 
+    path: 'employee/change-password', 
+    loadComponent: () => import('./pages/employee/change-password/employee-change-password').then(m => m.EmployeeChangePasswordComponent),
+    canActivate: [employeeGuard]
+  },
 
   // ========== ESPACE ADMIN ==========
   { 
@@ -183,6 +188,11 @@ export const routes: Routes = [
   { 
     path: 'admin/logs', 
     loadComponent: () => import('./pages/admin/logs/logs-list').then(m => m.LogsListComponent),
+    canActivate: [adminGuard]
+  },
+  { 
+    path: 'admin/change-password', 
+    loadComponent: () => import('./pages/admin/change-password/admin-change-password').then(m => m.AdminChangePasswordComponent),
     canActivate: [adminGuard]
   },
 
