@@ -1,0 +1,42 @@
+<app-client-layout>
+  <div class="page">
+    <header class="page-header">
+      <h1>👤 Mon profil</h1>
+      <p>Mettez à jour vos informations personnelles.</p>
+    </header>
+
+    <div *ngIf="loading" class="empty">Chargement...</div>
+    <div *ngIf="!loading" class="form-card">
+      <div *ngIf="success" class="success">{{ success }}</div>
+      <div *ngIf="error" class="error">{{ error }}</div>
+
+      <form (ngSubmit)="saveProfile()" class="form">
+        <label>Prénom</label>
+        <input type="text" [(ngModel)]="profile.first_name" name="first_name" required />
+
+        <label>Nom</label>
+        <input type="text" [(ngModel)]="profile.last_name" name="last_name" required />
+
+        <label>Email</label>
+        <input type="email" [(ngModel)]="profile.email" name="email" required />
+
+        <label>Société</label>
+        <input type="text" [(ngModel)]="profile.company_name" name="company_name" />
+
+        <label>Téléphone</label>
+        <input type="text" [(ngModel)]="profile.phone" name="phone" />
+
+        <label>Adresse</label>
+        <input type="text" [(ngModel)]="profile.address" name="address" />
+
+        <button class="btn">Enregistrer</button>
+      </form>
+
+      <div class="danger-zone">
+        <h3>Suppression du compte</h3>
+        <p>Cette action supprimera définitivement toutes vos informations.</p>
+        <button type="button" class="btn danger" (click)="deleteAccount()">Supprimer mon compte</button>
+      </div>
+    </div>
+  </div>
+</app-client-layout>

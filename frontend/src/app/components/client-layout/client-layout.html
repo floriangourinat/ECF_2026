@@ -1,0 +1,45 @@
+<div class="admin-container" [class.sidebar-collapsed]="sidebarCollapsed">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <h2 *ngIf="!sidebarCollapsed">Innov'Events</h2>
+      <span *ngIf="sidebarCollapsed" class="logo-mini">IE</span>
+      <button class="toggle-btn" (click)="toggleSidebar()">
+        {{ sidebarCollapsed ? '→' : '←' }}
+      </button>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a routerLink="/client/dashboard" routerLinkActive="active" class="nav-item">
+        <span class="icon">🏠</span>
+        <span class="label" *ngIf="!sidebarCollapsed">Dashboard</span>
+      </a>
+      <a routerLink="/client/quotes" routerLinkActive="active" class="nav-item">
+        <span class="icon">📄</span>
+        <span class="label" *ngIf="!sidebarCollapsed">Devis</span>
+      </a>
+      <a routerLink="/client/events" routerLinkActive="active" class="nav-item">
+        <span class="icon">🎉</span>
+        <span class="label" *ngIf="!sidebarCollapsed">Événements</span>
+      </a>
+      <a routerLink="/client/profile" routerLinkActive="active" class="nav-item">
+        <span class="icon">👤</span>
+        <span class="label" *ngIf="!sidebarCollapsed">Mon profil</span>
+      </a>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info" *ngIf="!sidebarCollapsed">
+        <p class="user-name">{{ currentUser?.first_name }} {{ currentUser?.last_name }}</p>
+        <p class="user-role">Client</p>
+      </div>
+      <button class="logout-btn" (click)="logout()">
+        <span class="icon">🚪</span>
+        <span class="label" *ngIf="!sidebarCollapsed">Déconnexion</span>
+      </button>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <ng-content></ng-content>
+  </main>
+</div>

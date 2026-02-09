@@ -1,0 +1,51 @@
+<app-client-layout>
+  <div class="page">
+    <header class="page-header">
+      <h1>📄 Mes devis</h1>
+      <p>Acceptez, refusez ou demandez une modification.</p>
+    </header>
+
+    <div *ngIf="loading" class="empty">Chargement...</div>
+    <div *ngIf="!loading && error" class="error">{{ error }}</div>
+
+    <div *ngIf="!loading && quotes.length === 0" class="empty">Aucun devis disponible</div>
+
+    <div class="quotes-grid">
+      <div *ngFor="let quote of quotes" class="quote-card">
+        <div class="quote-header">
+          <div>
+            <h3>{{ quote.event_name }}</h3>
+            <p>{{ formatDate(quote.event_date) }} · {{ quote.event_location || '-' }}</p>
+          </div>
+          <span class="status">{{ statusLabels[quote.status] || quote.status }}</span>
+        </div>
+
+        <div class="quote-body">
+          <p><strong>Montant TTC :</strong> {{ formatCurrency(quote.total_ttc) }}</p>
+          <p><strong>Créé le :</strong> {{ formatDate(quote.created_at) }}</p>
+        </div>
+
+        <div class="quote-actions">
+          <button (click)="downloadPdf(quote)" class="btn secondary">📥 Télécharger</button>
+          <button (click)="updateStatus(quote, 'accepted')" class="btn success" [disabled]="actionLoading[quote.id]">
+            ✅ Accepter
+          </button>
+          <button (click)="toggleModification(quote.id)" class="btn warning">
+            ✏️ Demander modification
+          </button>
+          <button (click)="updateStatus(quote, 'refused')" class="btn danger" [disabled]="actionLoading[quote.id]">
+            ❌ Refuser
+          </button>
+        </div>
+
+        <div *ngIf="showModificationForm[quote.id]" class="modification-form">
+          <label>Motif de modification *</label>
+          <textarea [(ngModel)]="modificationReason[quote.id]" rows="3"></textarea>
+          <button (click)="updateStatus(quote, 'modification')" class="btn warning" [disabled]="actionLoading[quote.id]">
+            Envoyer la demande
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-client-layout>

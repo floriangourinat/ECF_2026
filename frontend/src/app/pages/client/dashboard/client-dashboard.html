@@ -1,0 +1,45 @@
+<app-client-layout>
+  <div class="dashboard">
+    <header class="page-header">
+      <h1>Bienvenue, {{ authService.currentUserValue?.first_name }} 👋</h1>
+      <p>Suivez vos devis et vos événements en cours.</p>
+    </header>
+
+    <div class="widgets-grid">
+      <section class="widget">
+        <div class="widget-header">
+          <h3>📅 Prochains événements</h3>
+          <a routerLink="/client/events" class="link">Voir tout →</a>
+        </div>
+        <div *ngIf="loading" class="empty">Chargement...</div>
+        <div *ngIf="!loading && upcomingEvents.length === 0" class="empty">Aucun événement à venir</div>
+        <div class="event-list">
+          <div *ngFor="let event of upcomingEvents" class="event-item">
+            <strong>{{ event.name }}</strong>
+            <small>{{ formatDate(event.start_date) }} · {{ event.location || '-' }}</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="widget">
+        <div class="widget-header">
+          <h3>📄 Derniers devis</h3>
+          <a routerLink="/client/quotes" class="link">Gérer →</a>
+        </div>
+        <div *ngIf="latestQuotes.length === 0" class="empty">Aucun devis disponible</div>
+        <div class="quote-list">
+          <div *ngFor="let quote of latestQuotes" class="quote-item">
+            <div>
+              <strong>{{ quote.event_name }}</strong>
+              <small>{{ formatDate(quote.event_date) }}</small>
+            </div>
+            <div class="quote-meta">
+              <span class="status">{{ statusLabels[quote.status] || quote.status }}</span>
+              <span class="price">{{ formatCurrency(quote.total_ttc) }}</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</app-client-layout>

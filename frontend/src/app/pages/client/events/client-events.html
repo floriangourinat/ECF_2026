@@ -1,0 +1,43 @@
+<app-client-layout>
+  <div class="page">
+    <header class="page-header">
+      <h1>🎉 Mes événements</h1>
+      <p>Suivez l'évolution et évaluez vos événements terminés.</p>
+    </header>
+
+    <div *ngIf="loading" class="empty">Chargement...</div>
+    <div *ngIf="!loading && error" class="error">{{ error }}</div>
+    <div *ngIf="!loading && events.length === 0" class="empty">Aucun événement trouvé</div>
+
+    <div class="events-grid">
+      <div *ngFor="let event of events" class="event-card">
+        <div class="event-header">
+          <div>
+            <h3>{{ event.name }}</h3>
+            <p>{{ formatDate(event.start_date) }} → {{ formatDate(event.end_date) }}</p>
+            <small>{{ event.location || '-' }}</small>
+          </div>
+          <span class="status">{{ statusLabels[event.status] || event.status }}</span>
+        </div>
+
+        <div *ngIf="event.status === 'completed'" class="review-section">
+          <h4>⭐ Laisser un avis</h4>
+          <div *ngIf="reviewSent[event.id]" class="success">Merci, votre avis a été envoyé !</div>
+          <div *ngIf="!reviewSent[event.id]" class="review-form">
+            <label>Note</label>
+            <select [(ngModel)]="reviewRating[event.id]">
+              <option [ngValue]="1">1</option>
+              <option [ngValue]="2">2</option>
+              <option [ngValue]="3">3</option>
+              <option [ngValue]="4">4</option>
+              <option [ngValue]="5">5</option>
+            </select>
+            <label>Commentaire</label>
+            <textarea rows="3" [(ngModel)]="reviewComment[event.id]"></textarea>
+            <button class="btn" (click)="submitReview(event)">Envoyer l'avis</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</app-client-layout>

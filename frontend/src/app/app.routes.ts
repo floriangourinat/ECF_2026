@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { authGuard, guestGuard, adminGuard, employeeGuard } from './_guards/auth.guard';
+import { authGuard, guestGuard, adminGuard, employeeGuard, clientGuard } from './_guards/auth.guard';
 
 export const routes: Routes = [
   { 
@@ -70,6 +70,28 @@ export const routes: Routes = [
     path: 'dashboard', 
     loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.DashboardComponent),
     canActivate: [authGuard]
+  },
+  
+  // ========== ESPACE CLIENT ==========
+  { 
+    path: 'client/dashboard', 
+    loadComponent: () => import('./pages/client/dashboard/client-dashboard').then(m => m.ClientDashboardComponent),
+    canActivate: [clientGuard]
+  },
+  { 
+    path: 'client/quotes', 
+    loadComponent: () => import('./pages/client/quotes/client-quotes').then(m => m.ClientQuotesComponent),
+    canActivate: [clientGuard]
+  },
+  { 
+    path: 'client/events', 
+    loadComponent: () => import('./pages/client/events/client-events').then(m => m.ClientEventsComponent),
+    canActivate: [clientGuard]
+  },
+  { 
+    path: 'client/profile', 
+    loadComponent: () => import('./pages/client/profile/client-profile').then(m => m.ClientProfileComponent),
+    canActivate: [clientGuard]
   },
 
   // ========== ESPACE EMPLOYÉ ==========

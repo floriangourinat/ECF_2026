@@ -70,3 +70,20 @@ export const employeeGuard: CanActivateFn = (route, state) => {
   }
   return false;
 };
+
+// Guard spécifique pour les clients
+export const clientGuard: CanActivateFn = (route, state) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+
+  if (authService.currentUserValue && authService.isClient()) {
+    return true;
+  }
+
+  if (authService.currentUserValue) {
+    router.navigate(['/dashboard']);
+  } else {
+    router.navigate(['/login'], { queryParams: { returnUrl: state.url } });
+  }
+  return false;
+};
