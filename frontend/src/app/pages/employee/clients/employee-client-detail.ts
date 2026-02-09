@@ -65,7 +65,7 @@ export class EmployeeClientDetailComponent implements OnInit {
   loadClient(id: string): void {
     this.http.get<any>(`http://localhost:8080/api/clients/read_one.php?id=${id}`).subscribe({
       next: (r) => {
-        this.client = r.data;
+        this.client = r.data?.client || null;
         this.events = r.data?.events || [];
         this.loading = false;
       },
