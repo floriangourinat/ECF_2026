@@ -197,7 +197,7 @@ export class EventsListComponent implements OnInit {
     this.http.post<any>('http://localhost:8080/api/events/create.php', this.newEvent)
       .subscribe({
         next: (response) => {
-          const eventId = response.event_id;
+          const eventId = response.data?.id;
           
           if (this.selectedImage && eventId) {
             this.uploadImage(eventId);

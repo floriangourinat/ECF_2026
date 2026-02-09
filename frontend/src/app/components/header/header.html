@@ -11,6 +11,7 @@
     <a routerLink="/quote-request" routerLinkActive="active" class="nav-link btn-cta">Demande de devis</a>
     
     <ng-container *ngIf="!authService.isLoggedIn(); else loggedIn">
+      <a routerLink="/register" routerLinkActive="active" class="nav-link btn-register">S'inscrire</a>
       <a routerLink="/login" routerLinkActive="active" class="nav-link btn-login">Se connecter</a>
     </ng-container>
     

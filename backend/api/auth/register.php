@@ -1,7 +1,7 @@
 <?php
 /**
  * API Endpoint: Inscription utilisateur
- * backend/api/auth/register.php
+ * POST /api/auth/register.php
  */
 
 header("Access-Control-Allow-Origin: *");
@@ -15,21 +15,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-include_once '../../config/database.php';
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(["message" => "Méthode non autorisée"]);
+    exit;
+}
 
-$database = new Database();
-$db = $database->getConnection();
+include_once '../../config/database.php';
 
 $data = json_decode(file_get_contents("php://input"));
 
-// Validation champs requis
-$required = ['email', 'password', 'last_name', 'first_name', 'username'];
-foreach ($required as $field) {
-    if (empty($data->$field)) {
-        http_response_code(400);
-        echo json_encode(["message" => "Le champ '$field' est requis."]);
-        exit;
-    }
+// Validation des champs requis
+$errors = [];
+if (empty($data->email)) $errors[] = "Email requis";
+if (empty($data->password)) $errors[] = "Mot de passe requis";
+if (empty($data->last_name)) $errors[] = "Nom requis";
+if (empty($data->first_name)) $errors[] = "Prénom requis";
+if (empty($data->username)) $errors[] = "Nom d'utilisateur requis";
+
+if (!empty($errors)) {
+    http_response_code(400);
+    echo json_encode(["message" => "Données incomplètes.", "errors" => $errors]);
+    exit;
 }
 
 // Validation email
@@ -40,68 +47,75 @@ if (!$email) {
     exit;
 }
 
-// Validation mot de passe : 8 car, 1 maj, 1 min, 1 chiffre, 1 spécial
-$password_regex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
-if (!preg_match($password_regex, $data->password)) {
+// Validation mot de passe (min 8 caractères, 1 majuscule, 1 chiffre)
+if (strlen($data->password) < 8) {
     http_response_code(400);
-    echo json_encode([
-        "message" => "Mot de passe : 8 caractères min, 1 majuscule, 1 minuscule, 1 chiffre, 1 caractère spécial (@\$!%*?&)."
-    ]);
+    echo json_encode(["message" => "Le mot de passe doit contenir au moins 8 caractères."]);
     exit;
 }
 
-$last_name = htmlspecialchars(strip_tags(trim($data->last_name)));
-$first_name = htmlspecialchars(strip_tags(trim($data->first_name)));
-$username = htmlspecialchars(strip_tags(trim($data->username)));
+if (!preg_match('/[A-Z]/', $data->password)) {
+    http_response_code(400);
+    echo json_encode(["message" => "Le mot de passe doit contenir au moins une majuscule."]);
+    exit;
+}
+
+if (!preg_match('/[0-9]/', $data->password)) {
+    http_response_code(400);
+    echo json_encode(["message" => "Le mot de passe doit contenir au moins un chiffre."]);
+    exit;
+}
 
 try {
-    // Vérif email unique
-    $check = $db->prepare("SELECT id FROM users WHERE email = :email");
-    $check->bindParam(':email', $email);
-    $check->execute();
-    if ($check->rowCount() > 0) {
+    $database = new Database();
+    $db = $database->getConnection();
+
+    // Vérifier si l'email existe déjà
+    $stmtCheck = $db->prepare("SELECT id FROM users WHERE email = :email LIMIT 1");
+    $stmtCheck->bindParam(':email', $email, PDO::PARAM_STR);
+    $stmtCheck->execute();
+
+    if ($stmtCheck->rowCount() > 0) {
         http_response_code(409);
-        echo json_encode(["message" => "Cet email est déjà utilisé."]);
+        echo json_encode(["message" => "Un compte avec cet email existe déjà."]);
         exit;
     }
 
-    // Vérif username unique
-    $check = $db->prepare("SELECT id FROM users WHERE username = :username");
-    $check->bindParam(':username', $username);
-    $check->execute();
-    if ($check->rowCount() > 0) {
+    // Vérifier si le username existe déjà
+    $username = htmlspecialchars(strip_tags(trim($data->username)));
+    $stmtUsername = $db->prepare("SELECT id FROM users WHERE username = :username LIMIT 1");
+    $stmtUsername->bindParam(':username', $username, PDO::PARAM_STR);
+    $stmtUsername->execute();
+
+    if ($stmtUsername->rowCount() > 0) {
         http_response_code(409);
         echo json_encode(["message" => "Ce nom d'utilisateur est déjà pris."]);
         exit;
     }
 
-    // Token de vérification email
-    $verification_token = bin2hex(random_bytes(32));
-    $hashed_password = password_hash($data->password, PASSWORD_BCRYPT, ['cost' => 12]);
+    // Hashage du mot de passe
+    $hashedPassword = password_hash($data->password, PASSWORD_BCRYPT);
 
-    $query = "INSERT INTO users (last_name, first_name, username, email, password, role, is_active, email_verified, email_verification_token) 
-              VALUES (:last_name, :first_name, :username, :email, :password, 'client', 1, 0, :token)";
-    
+    // Insertion de l'utilisateur
+    $query = "INSERT INTO users (last_name, first_name, username, email, password, role, is_active, must_change_password, created_at) 
+              VALUES (:last_name, :first_name, :username, :email, :password, 'client', 1, 0, NOW())";
+
     $stmt = $db->prepare($query);
-    $stmt->bindParam(':last_name', $last_name);
-    $stmt->bindParam(':first_name', $first_name);
-    $stmt->bindParam(':username', $username);
-    $stmt->bindParam(':email', $email);
-    $stmt->bindParam(':password', $hashed_password);
-    $stmt->bindParam(':token', $verification_token);
-    
-    if ($stmt->execute()) {
-        // TODO: Envoyer email de confirmation avec PHPMailer
-        
-        http_response_code(201);
-        echo json_encode([
-            "message" => "Compte créé avec succès ! Un email de confirmation vous a été envoyé.",
-            "user_id" => $db->lastInsertId()
-        ]);
-    } else {
-        http_response_code(500);
-        echo json_encode(["message" => "Erreur lors de la création du compte."]);
-    }
+    $stmt->execute([
+        ':last_name' => htmlspecialchars(strip_tags(trim($data->last_name))),
+        ':first_name' => htmlspecialchars(strip_tags(trim($data->first_name))),
+        ':username' => $username,
+        ':email' => $email,
+        ':password' => $hashedPassword
+    ]);
+
+    $userId = $db->lastInsertId();
+
+    http_response_code(201);
+    echo json_encode([
+        "message" => "Compte créé avec succès.",
+        "user_id" => $userId
+    ]);
 
 } catch (PDOException $e) {
     http_response_code(500);

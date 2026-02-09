@@ -1,7 +1,7 @@
 <?php
 /**
  * API Endpoint: Changement de mot de passe
- * backend/api/auth/change-password.php
+ * POST /api/auth/change-password.php
  */
 
 header("Access-Control-Allow-Origin: *");
@@ -15,69 +15,56 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(["message" => "Méthode non autorisée"]);
+    exit;
+}
+
 include_once '../../config/database.php';
-
-$database = new Database();
-$db = $database->getConnection();
-
-// Récupérer le token depuis le header Authorization
-$headers = getallheaders();
-$auth_header = $headers['Authorization'] ?? '';
-
-if (empty($auth_header) || !preg_match('/Bearer\s+(.*)$/i', $auth_header, $matches)) {
-    http_response_code(401);
-    echo json_encode(["message" => "Token d'authentification requis."]);
-    exit;
-}
-
-$token = $matches[1];
-$decoded = json_decode(base64_decode($token), true);
-
-if (!$decoded || !isset($decoded['id']) || !isset($decoded['exp'])) {
-    http_response_code(401);
-    echo json_encode(["message" => "Token invalide."]);
-    exit;
-}
-
-// Vérifier expiration du token
-if ($decoded['exp'] < time()) {
-    http_response_code(401);
-    echo json_encode(["message" => "Token expiré. Veuillez vous reconnecter."]);
-    exit;
-}
-
-$user_id = $decoded['id'];
 
 $data = json_decode(file_get_contents("php://input"));
 
-if (empty($data->current_password) || empty($data->new_password)) {
+// Validation
+if (empty($data->user_id) || empty($data->current_password) || empty($data->new_password)) {
     http_response_code(400);
-    echo json_encode(["message" => "Mot de passe actuel et nouveau mot de passe requis."]);
+    echo json_encode(["message" => "Données incomplètes. ID utilisateur, mot de passe actuel et nouveau mot de passe requis."]);
     exit;
 }
 
-// Validation nouveau mot de passe
-$password_regex = '/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/';
-if (!preg_match($password_regex, $data->new_password)) {
+// Validation nouveau mot de passe (min 8 caractères, 1 majuscule, 1 chiffre)
+if (strlen($data->new_password) < 8) {
     http_response_code(400);
-    echo json_encode([
-        "message" => "Le nouveau mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial."
-    ]);
+    echo json_encode(["message" => "Le nouveau mot de passe doit contenir au moins 8 caractères."]);
+    exit;
+}
+
+if (!preg_match('/[A-Z]/', $data->new_password)) {
+    http_response_code(400);
+    echo json_encode(["message" => "Le nouveau mot de passe doit contenir au moins une majuscule."]);
+    exit;
+}
+
+if (!preg_match('/[0-9]/', $data->new_password)) {
+    http_response_code(400);
+    echo json_encode(["message" => "Le nouveau mot de passe doit contenir au moins un chiffre."]);
     exit;
 }
 
 try {
-    // Récupérer le mot de passe actuel
-    $stmt = $db->prepare("SELECT password FROM users WHERE id = :id");
-    $stmt->bindParam(':id', $user_id);
-    $stmt->execute();
-    
+    $database = new Database();
+    $db = $database->getConnection();
+
+    // Récupérer l'utilisateur
+    $stmt = $db->prepare("SELECT id, password FROM users WHERE id = :id AND is_active = 1 LIMIT 1");
+    $stmt->execute([':id' => (int)$data->user_id]);
+
     if ($stmt->rowCount() === 0) {
         http_response_code(404);
         echo json_encode(["message" => "Utilisateur non trouvé."]);
         exit;
     }
-    
+
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Vérifier le mot de passe actuel
@@ -88,11 +75,12 @@ try {
     }
 
     // Mettre à jour le mot de passe
-    $hashed = password_hash($data->new_password, PASSWORD_BCRYPT, ['cost' => 12]);
-    $update = $db->prepare("UPDATE users SET password = :password, must_change_password = 0 WHERE id = :id");
-    $update->bindParam(':password', $hashed);
-    $update->bindParam(':id', $user_id);
-    $update->execute();
+    $hashedPassword = password_hash($data->new_password, PASSWORD_BCRYPT);
+    $stmtUpdate = $db->prepare("UPDATE users SET password = :password, must_change_password = 0 WHERE id = :id");
+    $stmtUpdate->execute([
+        ':password' => $hashedPassword,
+        ':id' => $user['id']
+    ]);
 
     http_response_code(200);
     echo json_encode(["message" => "Mot de passe modifié avec succès."]);

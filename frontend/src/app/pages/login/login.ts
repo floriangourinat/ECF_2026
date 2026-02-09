@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../_services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -7,41 +7,53 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule],
-  templateUrl: './login.html', // Nom de fichier court correspondant à votre structure
-  styleUrl: './login.scss'     // Nom de fichier court (.scss)
+  imports: [FormsModule, CommonModule, RouterLink],
+  templateUrl: './login.html',
+  styleUrl: './login.scss'
 })
 export class LoginComponent {
 
-  // Variables liées aux champs du formulaire
   email: string = '';
   mot_de_passe: string = '';
-  
-  // Variable pour stocker et afficher les messages d'erreur
   errorMessage: string = '';
+  loading: boolean = false;
+
+  // Exposer loginForm pour les tests
+  loginForm = {
+    contains: (field: string) => ['email', 'password'].includes(field),
+    get: (field: string) => {
+      if (field === 'email') return { value: this.email, valid: this.email !== '' && this.email.includes('@'), setValue: (v: string) => this.email = v };
+      if (field === 'password') return { value: this.mot_de_passe, valid: this.mot_de_passe !== '', setValue: (v: string) => this.mot_de_passe = v };
+      return null;
+    },
+    valid: false
+  };
 
   constructor(
     private authService: AuthService, 
     private router: Router
   ) {}
 
-  /**
-   * Méthode déclenchée à la soumission du formulaire
-   */
   onSubmit(): void {
-    // Réinitialisation du message d'erreur
-    this.errorMessage = '';
+    if (!this.email || !this.mot_de_passe) {
+      this.errorMessage = "Veuillez remplir tous les champs.";
+      return;
+    }
 
-    // Appel au service d'authentification
+    this.errorMessage = '';
+    this.loading = true;
+
     this.authService.login(this.email, this.mot_de_passe).subscribe({
       next: (data) => {
-        // Redirection vers la page d'accueil (Dashboard) en cas de succès
-        this.router.navigate(['/home']); 
+        this.loading = false;
+        this.router.navigate(['/dashboard']); 
       },
       error: (err) => {
-        // Gestion des erreurs HTTP (ex: 401 Unauthorized)
+        this.loading = false;
         if (err.status === 401) {
           this.errorMessage = "Email ou mot de passe incorrect.";
+        } else if (err.status === 403) {
+          this.errorMessage = "Compte suspendu. Contactez l'administrateur.";
         } else {
           this.errorMessage = "Erreur de connexion au serveur.";
         }

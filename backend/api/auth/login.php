@@ -16,9 +16,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 include_once '../../config/database.php';
+require_once '../../services/MongoLogger.php';
 
 $database = new Database();
 $db = $database->getConnection();
+$logger = new MongoLogger();
 
 $data = json_decode(file_get_contents("php://input"));
 
@@ -46,6 +48,12 @@ try {
     $stmt->execute();
 
     if ($stmt->rowCount() === 0) {
+        // Log MongoDB - Tentative de connexion échouée (utilisateur inexistant)
+        $logger->log('CONNEXION_ECHOUEE', 'user', null, null, [
+            'email' => $email,
+            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+        ]);
+
         http_response_code(401);
         echo json_encode(["message" => "Identifiants incorrects."]);
         exit;
@@ -62,17 +70,20 @@ try {
 
     // Vérification mot de passe
     if (!password_verify($data->password, $user['password'])) {
+        // Log MongoDB - Tentative de connexion échouée (mauvais mot de passe)
+        $logger->log('CONNEXION_ECHOUEE', 'user', null, null, [
+            'email' => $email,
+            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+        ]);
+
         http_response_code(401);
         echo json_encode(["message" => "Identifiants incorrects."]);
         exit;
     }
 
     // Log MongoDB - Connexion réussie
-    require_once '../../services/MongoLogger.php';
-    $logger = new MongoLogger();
-    $logger->log('login', 'user', $user['id'], $user['id'], [
-        'email' => $user['email'],
-        'role' => $user['role']
+    $logger->log('CONNEXION_REUSSIE', 'user', $user['id'], $user['id'], [
+        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
     ]);
 
     // Création token

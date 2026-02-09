@@ -18,14 +18,16 @@ export class EventEditComponent implements OnInit {
     id: '',
     name: '',
     description: '',
-    event_date: '',
+    start_date: '',
+    end_date: '',
     location: '',
     attendees_count: 0,
     budget: 0,
     status: 'draft',
     type_id: '',
     theme_id: '',
-    image_path: ''
+    image_path: '',
+    is_visible: false
   };
   eventTypes: any[] = [];
   themes: any[] = [];
@@ -34,7 +36,6 @@ export class EventEditComponent implements OnInit {
   error = '';
   success = '';
 
-  // Image upload
   selectedImage: File | null = null;
   imagePreview: string | null = null;
 
@@ -55,17 +56,13 @@ export class EventEditComponent implements OnInit {
 
   loadEventTypes(): void {
     this.http.get<any>('http://localhost:8080/api/event-types/read.php').subscribe({
-      next: (response) => {
-        this.eventTypes = response.data || [];
-      }
+      next: (response) => { this.eventTypes = response.data || []; }
     });
   }
 
   loadThemes(): void {
     this.http.get<any>('http://localhost:8080/api/themes/read.php').subscribe({
-      next: (response) => {
-        this.themes = response.data || [];
-      }
+      next: (response) => { this.themes = response.data || []; }
     });
   }
 
@@ -79,14 +76,16 @@ export class EventEditComponent implements OnInit {
               id: e.id,
               name: e.name || '',
               description: e.description || '',
-              event_date: e.event_date ? e.event_date.substring(0, 16) : '',
+              start_date: e.start_date ? e.start_date.substring(0, 16) : '',
+              end_date: e.end_date ? e.end_date.substring(0, 16) : '',
               location: e.location || '',
               attendees_count: e.attendees_count || 0,
               budget: e.budget || 0,
               status: e.status || 'draft',
               type_id: e.type_id || '',
               theme_id: e.theme_id || '',
-              image_path: e.image_path || ''
+              image_path: e.image_path || '',
+              is_visible: e.is_visible == 1 || e.is_visible === true
             };
           }
           this.loading = false;
@@ -105,18 +104,13 @@ export class EventEditComponent implements OnInit {
         this.error = 'L\'image est trop volumineuse. Maximum 5 Mo.';
         return;
       }
-      
       if (!file.type.startsWith('image/')) {
         this.error = 'Le fichier doit être une image.';
         return;
       }
-
       this.selectedImage = file;
-      
       const reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.imagePreview = e.target.result;
-      };
+      reader.onload = (e: any) => { this.imagePreview = e.target.result; };
       reader.readAsDataURL(file);
     }
   }
@@ -135,7 +129,7 @@ export class EventEditComponent implements OnInit {
     if (path && path.startsWith('/uploads/')) {
       return 'http://localhost:8080' + path;
     }
-    return path || '/assets/images/event-default.jpg';
+    return path || 'assets/images/event-default.jpg';
   }
 
   saveEvent(): void {
@@ -148,18 +142,21 @@ export class EventEditComponent implements OnInit {
     this.error = '';
     this.success = '';
 
-    this.http.put<any>('http://localhost:8080/api/events/update.php', this.event)
+    // Convertir is_visible en 0/1 pour le backend
+    const payload = {
+      ...this.event,
+      is_visible: this.event.is_visible ? 1 : 0
+    };
+
+    this.http.put<any>('http://localhost:8080/api/events/update.php', payload)
       .subscribe({
         next: (response) => {
           if (response.success) {
-            // Upload image si sélectionnée
             if (this.selectedImage) {
               this.uploadImage();
             } else {
               this.success = 'Événement modifié avec succès';
-              setTimeout(() => {
-                this.router.navigate(['/admin/events', this.eventId]);
-              }, 1500);
+              setTimeout(() => { this.router.navigate(['/admin/events', this.eventId]); }, 1500);
               this.saving = false;
             }
           } else {
@@ -185,9 +182,7 @@ export class EventEditComponent implements OnInit {
       .subscribe({
         next: () => {
           this.success = 'Événement et image modifiés avec succès';
-          setTimeout(() => {
-            this.router.navigate(['/admin/events', this.eventId]);
-          }, 1500);
+          setTimeout(() => { this.router.navigate(['/admin/events', this.eventId]); }, 1500);
           this.saving = false;
         },
         error: () => {

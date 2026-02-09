@@ -26,7 +26,7 @@ export class AdminEventDetailComponent implements OnInit {
   addingNote = false;
 
   // Image par défaut
-  defaultImage = '/assets/images/event-default.jpg';
+  defaultImage = 'assets/images/event-default.jpg';
 
   statusLabels: { [key: string]: string } = {
     'draft': 'Brouillon',

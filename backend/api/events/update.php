@@ -102,9 +102,12 @@ try {
             status = :status,
             attendees_count = :attendees_count,
             budget = :budget,
+            is_visible = :is_visible,
             updated_at = NOW()
         WHERE id = :id
     ");
+
+    $is_visible = isset($data['is_visible']) ? (int)$data['is_visible'] : $currentEvent['is_visible'];
 
     $stmt->execute([
         ':id' => $data['id'],
@@ -117,12 +120,13 @@ try {
         ':theme' => $theme,
         ':status' => $status,
         ':attendees_count' => $attendees_count,
-        ':budget' => $budget
+        ':budget' => $budget,
+        ':is_visible' => $is_visible
     ]);
 
     http_response_code(200);
 
-    // Log MongoDB -Modification du statut si changé
+    // Log MongoDB - Modification du statut si changé
     if (isset($data['status']) && $data['status'] !== $currentEvent['status']) {
         require_once '../../services/MongoLogger.php';
         $logger = new MongoLogger();

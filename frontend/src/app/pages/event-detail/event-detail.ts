@@ -29,7 +29,7 @@ export class EventDetailComponent implements OnInit {
   event: Event | null = null;
   loading = true;
   error = '';
-  defaultImage = '/assets/images/event-default.jpg';
+  defaultImage = 'assets/images/event-default.jpg';
 
   constructor(
     private route: ActivatedRoute,

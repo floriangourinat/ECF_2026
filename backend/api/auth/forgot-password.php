@@ -1,7 +1,7 @@
 <?php
 /**
  * API Endpoint: Mot de passe oublié
- * backend/api/auth/forgot-password.php
+ * POST /api/auth/forgot-password.php
  */
 
 header("Access-Control-Allow-Origin: *");
@@ -15,16 +15,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-include_once '../../config/database.php';
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    http_response_code(405);
+    echo json_encode(["message" => "Méthode non autorisée"]);
+    exit;
+}
 
-$database = new Database();
-$db = $database->getConnection();
+include_once '../../config/database.php';
+require_once '../../vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 $data = json_decode(file_get_contents("php://input"));
 
 if (empty($data->email)) {
     http_response_code(400);
-    echo json_encode(["message" => "L'email est requis."]);
+    echo json_encode(["message" => "Email requis."]);
     exit;
 }
 
@@ -36,70 +43,82 @@ if (!$email) {
 }
 
 try {
-    $stmt = $db->prepare("SELECT id, first_name, email FROM users WHERE email = :email AND is_active = 1");
-    $stmt->bindParam(':email', $email);
+    $database = new Database();
+    $db = $database->getConnection();
+
+    // Vérifier si l'utilisateur existe
+    $stmt = $db->prepare("SELECT id, first_name, last_name, email FROM users WHERE email = :email AND is_active = 1 LIMIT 1");
+    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
     $stmt->execute();
 
-    // Message identique pour sécurité (éviter énumération des comptes)
-    $response_msg = "Si cet email existe dans notre système, un nouveau mot de passe vous sera envoyé.";
-
-    if ($stmt->rowCount() > 0) {
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        // Générer mot de passe temporaire sécurisé
-        $temp_password = generateSecurePassword(12);
-        $hashed = password_hash($temp_password, PASSWORD_BCRYPT, ['cost' => 12]);
-
-        // Mettre à jour avec obligation de changer le mot de passe
-        $update = $db->prepare("UPDATE users SET password = :pwd, must_change_password = 1 WHERE id = :id");
-        $update->bindParam(':pwd', $hashed);
-        $update->bindParam(':id', $user['id']);
-        $update->execute();
-
-        // TODO: Envoyer email avec PHPMailer
-        // sendPasswordResetEmail($user['email'], $user['first_name'], $temp_password);
-        
-        // En développement, on retourne le mot de passe pour tester
-        // À SUPPRIMER EN PRODUCTION !
+    // Toujours répondre succès pour ne pas révéler si l'email existe
+    if ($stmt->rowCount() === 0) {
         http_response_code(200);
-        echo json_encode([
-            "message" => $response_msg,
-            "debug_temp_password" => $temp_password // SUPPRIMER EN PROD
-        ]);
+        echo json_encode(["message" => "Si un compte existe avec cet email, un nouveau mot de passe vous sera envoyé."]);
         exit;
     }
 
-    http_response_code(200);
-    echo json_encode(["message" => $response_msg]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-} catch (PDOException $e) {
-    http_response_code(500);
-    echo json_encode(["message" => "Erreur serveur.", "error" => $e->getMessage()]);
-}
+    // Générer un nouveau mot de passe temporaire
+    $tempPassword = bin2hex(random_bytes(6)); // 12 caractères
+    $hashedPassword = password_hash($tempPassword, PASSWORD_BCRYPT);
 
-/**
- * Génère un mot de passe sécurisé respectant les critères
- */
-function generateSecurePassword($length = 12) {
-    $uppercase = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
-    $lowercase = 'abcdefghjkmnpqrstuvwxyz';
-    $numbers = '23456789';
-    $special = '@$!%*?&';
-    
-    $password = '';
-    // Garantir au moins un caractère de chaque type
-    $password .= $uppercase[random_int(0, strlen($uppercase) - 1)];
-    $password .= $lowercase[random_int(0, strlen($lowercase) - 1)];
-    $password .= $numbers[random_int(0, strlen($numbers) - 1)];
-    $password .= $special[random_int(0, strlen($special) - 1)];
-    
-    // Compléter avec des caractères aléatoires
-    $all = $uppercase . $lowercase . $numbers . $special;
-    for ($i = 4; $i < $length; $i++) {
-        $password .= $all[random_int(0, strlen($all) - 1)];
+    // Mettre à jour le mot de passe + forcer le changement à la prochaine connexion
+    $stmtUpdate = $db->prepare("UPDATE users SET password = :password, must_change_password = 1 WHERE id = :id");
+    $stmtUpdate->execute([
+        ':password' => $hashedPassword,
+        ':id' => $user['id']
+    ]);
+
+    // Envoyer l'email avec le nouveau mot de passe
+    $mailConfig = require '../../config/mail.php';
+
+    $mail = new PHPMailer(true);
+    $mail->isSMTP();
+    $mail->Host = $mailConfig['host'];
+    $mail->Port = $mailConfig['port'];
+    $mail->SMTPAuth = !empty($mailConfig['username']);
+    if ($mail->SMTPAuth) {
+        $mail->Username = $mailConfig['username'];
+        $mail->Password = $mailConfig['password'];
     }
-    
-    // Mélanger le mot de passe
-    return str_shuffle($password);
+    if (!empty($mailConfig['encryption'])) {
+        $mail->SMTPSecure = $mailConfig['encryption'];
+    }
+    $mail->CharSet = 'UTF-8';
+
+    $mail->setFrom($mailConfig['from_email'], $mailConfig['from_name']);
+    $mail->addAddress($user['email'], $user['first_name'] . ' ' . $user['last_name']);
+
+    $mail->isHTML(true);
+    $mail->Subject = "Innov'Events - Réinitialisation de votre mot de passe";
+    $mail->Body = "
+        <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;'>
+            <h2 style='color: #667eea;'>Innov'Events</h2>
+            <p>Bonjour {$user['first_name']},</p>
+            <p>Vous avez demandé la réinitialisation de votre mot de passe.</p>
+            <p>Voici votre nouveau mot de passe temporaire :</p>
+            <div style='background: #f8f9fa; padding: 15px; border-radius: 5px; text-align: center; margin: 20px 0;'>
+                <strong style='font-size: 18px; letter-spacing: 2px;'>{$tempPassword}</strong>
+            </div>
+            <p><strong>Important :</strong> Vous devrez modifier ce mot de passe lors de votre prochaine connexion.</p>
+            <p>Si vous n'êtes pas à l'origine de cette demande, veuillez contacter notre support.</p>
+            <hr style='border: none; border-top: 1px solid #eee; margin: 20px 0;'>
+            <p style='color: #999; font-size: 12px;'>Cet email a été envoyé automatiquement par Innov'Events.</p>
+        </div>
+    ";
+    $mail->AltBody = "Bonjour {$user['first_name']}, votre nouveau mot de passe temporaire est : {$tempPassword}. Vous devrez le modifier lors de votre prochaine connexion.";
+
+    $mail->send();
+
+    http_response_code(200);
+    echo json_encode([
+        "message" => "Si un compte existe avec cet email, un nouveau mot de passe vous sera envoyé."
+    ]);
+
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(["message" => "Erreur lors de l'envoi de l'email.", "error" => $e->getMessage()]);
 }
 ?>
