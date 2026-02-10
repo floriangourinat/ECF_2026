@@ -7,9 +7,9 @@
 
     <div *ngIf="loading" class="empty">Chargement...</div>
     <div *ngIf="!loading && error" class="error">{{ error }}</div>
-    <div *ngIf="!loading && events.length === 0" class="empty">Aucun événement trouvé</div>
+    <div *ngIf="!loading && !error && events.length === 0" class="empty">Aucun événement trouvé</div>
 
-    <div class="events-grid">
+    <div class="events-grid" *ngIf="!loading && !error && events.length > 0">
       <div *ngFor="let event of events" class="event-card">
         <div class="event-header">
           <div>
@@ -21,23 +21,55 @@
         </div>
 
         <div *ngIf="event.status === 'completed'" class="review-section">
-          <h4>⭐ Laisser un avis</h4>
-          <div *ngIf="reviewSent[event.id]" class="success">Merci, votre avis a été envoyé !</div>
-          <div *ngIf="!reviewSent[event.id]" class="review-form">
-            <label>Note</label>
-            <select [(ngModel)]="reviewRating[event.id]">
-              <option [ngValue]="1">1</option>
-              <option [ngValue]="2">2</option>
-              <option [ngValue]="3">3</option>
-              <option [ngValue]="4">4</option>
-              <option [ngValue]="5">5</option>
-            </select>
-            <label>Commentaire</label>
-            <textarea rows="3" [(ngModel)]="reviewComment[event.id]"></textarea>
-            <button class="btn" (click)="submitReview(event)">Envoyer l'avis</button>
+          <h4>⭐ Avis client</h4>
+
+          <div *ngIf="hasReview(event.id); else reviewForm" class="already-reviewed">
+            <p><strong>Vous avez déjà laissé un avis pour cet événement.</strong></p>
+            <p>Statut : {{ reviewStatusLabels[getReviewByEvent(event.id)?.status || 'pending'] }}</p>
+            <p>Note : {{ getReviewByEvent(event.id)?.rating }}/5</p>
+            <p *ngIf="getReviewByEvent(event.id)?.comment">Commentaire : {{ getReviewByEvent(event.id)?.comment }}</p>
           </div>
+
+          <ng-template #reviewForm>
+            <div class="review-form">
+              <div *ngIf="reviewSuccessMessage[event.id]" class="success-banner">{{ reviewSuccessMessage[event.id] }}</div>
+
+              <label>Note</label>
+              <select [(ngModel)]="reviewRating[event.id]">
+                <option [ngValue]="0">Sélectionner...</option>
+                <option [ngValue]="1">1</option>
+                <option [ngValue]="2">2</option>
+                <option [ngValue]="3">3</option>
+                <option [ngValue]="4">4</option>
+                <option [ngValue]="5">5</option>
+              </select>
+
+              <label>Commentaire</label>
+              <textarea rows="3" maxlength="1000" [(ngModel)]="reviewComment[event.id]"></textarea>
+
+              <button class="btn" [disabled]="submittingReview[event.id]" (click)="submitReview(event)">
+                {{ submittingReview[event.id] ? 'Envoi...' : 'Envoyer l\'avis' }}
+              </button>
+            </div>
+          </ng-template>
         </div>
       </div>
     </div>
+
+    <section class="my-reviews-section">
+      <h2>📝 Mes avis</h2>
+      <div *ngIf="myReviews.length === 0" class="empty">Vous n'avez pas encore laissé d'avis.</div>
+
+      <div class="my-reviews-list" *ngIf="myReviews.length > 0">
+        <div class="review-item" *ngFor="let review of myReviews">
+          <div class="review-top">
+            <strong>{{ review.event_name }}</strong>
+            <span class="review-status">{{ reviewStatusLabels[review.status] || review.status }}</span>
+          </div>
+          <p class="review-meta">Note : {{ review.rating }}/5 · {{ formatDate(review.created_at) }}</p>
+          <p *ngIf="review.comment">{{ review.comment }}</p>
+        </div>
+      </div>
+    </section>
   </div>
 </app-client-layout>
