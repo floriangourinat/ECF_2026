@@ -34,8 +34,8 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
-    // Récupérer le prospect
-    $stmt = $db->prepare("SELECT * FROM prospects WHERE id = :id AND status != 'converted'");
+    // Récupérer le prospect non converti
+    $stmt = $db->prepare("SELECT * FROM prospects WHERE id = :id AND status != 'converted' LIMIT 1");
     $stmt->execute([':id' => $data['prospect_id']]);
     $prospect = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -45,16 +45,33 @@ try {
         exit();
     }
 
+    $db->beginTransaction();
+
     // Vérifier si l'email existe déjà
-    $stmtCheck = $db->prepare("SELECT id FROM users WHERE email = :email");
+    $stmtCheck = $db->prepare("SELECT id FROM users WHERE email = :email LIMIT 1");
     $stmtCheck->execute([':email' => $prospect['email']]);
-    if ($stmtCheck->fetch()) {
-        http_response_code(400);
-        echo json_encode(['success' => false, 'message' => 'Un utilisateur avec cet email existe déjà']);
+    $existingUser = $stmtCheck->fetch(PDO::FETCH_ASSOC);
+
+    if ($existingUser) {
+        // Cas demandé : déjà inscrit => considérer la conversion comme acceptée
+        $stmtUpdate = $db->prepare("UPDATE prospects SET status = 'converted' WHERE id = :id");
+        $stmtUpdate->execute([':id' => $data['prospect_id']]);
+
+        $db->commit();
+
+        http_response_code(200);
+        echo json_encode([
+            'success' => true,
+            'message' => 'Un utilisateur avec cet email existe déjà',
+            'data' => [
+                'user_id' => (int)$existingUser['id'],
+                'client_id' => null,
+                'temp_password' => null,
+                'already_existing' => true
+            ]
+        ]);
         exit();
     }
-
-    $db->beginTransaction();
 
     // Générer un mot de passe temporaire
     $tempPassword = bin2hex(random_bytes(8));
@@ -71,7 +88,7 @@ try {
         ':email' => $prospect['email'],
         ':password' => $hashedPassword
     ]);
-    $userId = $db->lastInsertId();
+    $userId = (int)$db->lastInsertId();
 
     // Créer le client
     $stmtClient = $db->prepare("
@@ -84,7 +101,7 @@ try {
         ':phone' => $prospect['phone'],
         ':address' => $prospect['location']
     ]);
-    $clientId = $db->lastInsertId();
+    $clientId = (int)$db->lastInsertId();
 
     // Mettre à jour le statut du prospect
     $stmtUpdate = $db->prepare("UPDATE prospects SET status = 'converted' WHERE id = :id");
@@ -99,12 +116,16 @@ try {
         'data' => [
             'user_id' => $userId,
             'client_id' => $clientId,
-            'temp_password' => $tempPassword
+            'temp_password' => $tempPassword,
+            'already_existing' => false
         ]
     ]);
 
 } catch (PDOException $e) {
-    $db->rollBack();
+    if (isset($db) && $db->inTransaction()) {
+        $db->rollBack();
+    }
+
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);
 }

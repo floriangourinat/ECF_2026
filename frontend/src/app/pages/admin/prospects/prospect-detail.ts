@@ -107,7 +107,11 @@ export class ProspectDetailComponent implements OnInit {
       prospect_id: this.prospect.id
     }).subscribe({
       next: (response) => {
-        alert(`Client créé avec succès !\n\nMot de passe temporaire : ${response.data.temp_password}\n\nCommuniquez ce mot de passe au client.`);
+        if (response?.data?.already_existing) {
+          alert('Un utilisateur avec cet email existe déjà');
+        } else {
+          alert(`Client créé avec succès !\n\nMot de passe temporaire : ${response.data.temp_password}\n\nCommuniquez ce mot de passe au client.`);
+        }
         if (this.prospect) {
           this.prospect.status = 'converted';
         }
@@ -116,6 +120,15 @@ export class ProspectDetailComponent implements OnInit {
         alert(err.error?.message || 'Erreur lors de la conversion');
       }
     });
+  }
+
+
+  decodeText(value: string | null | undefined): string {
+    if (!value) return '-';
+
+    const textarea = document.createElement('textarea');
+    textarea.innerHTML = value;
+    return textarea.value;
   }
 
   formatDate(dateString: string): string {
