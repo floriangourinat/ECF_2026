@@ -12,28 +12,28 @@
       <div class="stat-card">
         <span class="stat-icon">➕</span>
         <div class="stat-info">
-          <span class="stat-value">{{ stats.by_action['create'] || 0 }}</span>
+          <span class="stat-value">{{ getCreateCount() }}</span>
           <span class="stat-label">Créations</span>
         </div>
       </div>
       <div class="stat-card">
         <span class="stat-icon">✏️</span>
         <div class="stat-info">
-          <span class="stat-value">{{ stats.by_action['update'] || 0 }}</span>
+          <span class="stat-value">{{ getUpdateCount() }}</span>
           <span class="stat-label">Modifications</span>
         </div>
       </div>
       <div class="stat-card">
         <span class="stat-icon">🗑️</span>
         <div class="stat-info">
-          <span class="stat-value">{{ stats.by_action['delete'] || 0 }}</span>
+          <span class="stat-value">{{ getDeleteCount() }}</span>
           <span class="stat-label">Suppressions</span>
         </div>
       </div>
       <div class="stat-card">
         <span class="stat-icon">🔑</span>
         <div class="stat-info">
-          <span class="stat-value">{{ stats.by_action['login'] || 0 }}</span>
+          <span class="stat-value">{{ getLoginCount() }}</span>
           <span class="stat-label">Connexions</span>
         </div>
       </div>

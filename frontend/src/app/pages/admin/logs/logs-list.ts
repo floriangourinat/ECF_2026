@@ -144,6 +144,45 @@ export class LogsListComponent implements OnInit {
     return icons[action] || '📝';
   }
 
+  private countActions(predicate: (actionKey: string) => boolean): number {
+    if (!this.stats?.by_action) return 0;
+
+    return Object.entries(this.stats.by_action).reduce((total, [actionKey, count]) => {
+      if (predicate(actionKey)) {
+        return total + Number(count || 0);
+      }
+      return total;
+    }, 0);
+  }
+
+  getCreateCount(): number {
+    return this.countActions((actionKey) => {
+      const key = actionKey.toUpperCase();
+      return key.includes('CREATION') || key === 'CREATE';
+    });
+  }
+
+  getUpdateCount(): number {
+    return this.countActions((actionKey) => {
+      const key = actionKey.toUpperCase();
+      return key.includes('MODIFICATION') || key === 'UPDATE';
+    });
+  }
+
+  getDeleteCount(): number {
+    return this.countActions((actionKey) => {
+      const key = actionKey.toUpperCase();
+      return key.includes('SUPPRESSION') || key === 'DELETE';
+    });
+  }
+
+  getLoginCount(): number {
+    return this.countActions((actionKey) => {
+      const key = actionKey.toUpperCase();
+      return key === 'CONNEXION_REUSSIE' || key === 'LOGIN';
+    });
+  }
+
   getDetailsKeys(details: any): string[] {
     return details ? Object.keys(details) : [];
   }
