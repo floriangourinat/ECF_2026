@@ -1,13 +1,14 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient, withFetch } from '@angular/common/http'; // Import indispensable
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes';
+import { htmlEntityDecoderInterceptor } from './_interceptors/html-entity-decoder.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }), 
+    provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
-    provideHttpClient(withFetch()) // <-- C'est cette ligne qui active la connexion au backend
+    provideHttpClient(withFetch(), withInterceptors([htmlEntityDecoderInterceptor]))
   ]
 };
