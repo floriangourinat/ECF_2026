@@ -31,7 +31,7 @@ if (empty($data['id']) || empty($data['status'])) {
 }
 
 $validStatuses = ['pending', 'approved', 'rejected'];
-if (!in_array($data['status'], $validStatuses)) {
+if (!in_array($data['status'], $validStatuses, true)) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'Statut invalide (pending, approved, rejected)']);
     exit();
@@ -41,16 +41,29 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
-    $stmt = $db->prepare("
-        UPDATE reviews 
-        SET status = :status, reviewed_by = :reviewed_by, updated_at = NOW()
-        WHERE id = :id
-    ");
-    $stmt->execute([
+    $stmtCols = $db->prepare("SHOW COLUMNS FROM reviews");
+    $stmtCols->execute();
+    $columns = array_column($stmtCols->fetchAll(PDO::FETCH_ASSOC), 'Field');
+
+    $sql = "UPDATE reviews SET status = :status";
+    $params = [
         ':status' => $data['status'],
-        ':reviewed_by' => $data['reviewed_by'] ?? null,
         ':id' => $data['id']
-    ]);
+    ];
+
+    if (in_array('reviewed_by', $columns, true)) {
+        $sql .= ", reviewed_by = :reviewed_by";
+        $params[':reviewed_by'] = $data['reviewed_by'] ?? null;
+    }
+
+    if (in_array('updated_at', $columns, true)) {
+        $sql .= ", updated_at = NOW()";
+    }
+
+    $sql .= " WHERE id = :id";
+
+    $stmt = $db->prepare($sql);
+    $stmt->execute($params);
 
     if ($stmt->rowCount() === 0) {
         http_response_code(404);
