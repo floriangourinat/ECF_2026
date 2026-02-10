@@ -1,13 +1,16 @@
+// frontend/src/app/pages/login/login.ts
 import { Component } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../_services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { HeaderComponent } from '../../components/header/header';
+import { FooterComponent } from '../../components/footer/footer';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule, RouterLink],
+  imports: [FormsModule, CommonModule, RouterLink, HeaderComponent, FooterComponent],
   templateUrl: './login.html',
   styleUrl: './login.scss'
 })
@@ -30,7 +33,7 @@ export class LoginComponent {
   };
 
   constructor(
-    private authService: AuthService, 
+    private authService: AuthService,
     private router: Router
   ) {}
 
@@ -44,9 +47,9 @@ export class LoginComponent {
     this.loading = true;
 
     this.authService.login(this.email, this.mot_de_passe).subscribe({
-      next: (data) => {
+      next: () => {
         this.loading = false;
-        this.router.navigate(['/dashboard']); 
+        this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         this.loading = false;

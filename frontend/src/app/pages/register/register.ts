@@ -3,11 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../_services/auth.service';
+import { HeaderComponent } from '../../components/header/header';
+import { FooterComponent } from '../../components/footer/footer';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, HeaderComponent, FooterComponent],
   templateUrl: './register.html',
   styleUrl: './register.scss'
 })
@@ -17,20 +19,21 @@ export class RegisterComponent {
   errorMessage = '';
   successMessage = '';
 
-  // Regex : 8 car min, 1 maj, 1 min, 1 chiffre, 1 spécial
-  passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router
   ) {
     this.registerForm = this.fb.group({
-      last_name: ['', [Validators.required, Validators.minLength(2)]],
-      first_name: ['', [Validators.required, Validators.minLength(2)]],
-      username: ['', [Validators.required, Validators.minLength(3)]],
+      last_name: ['', [Validators.required]],
+      first_name: ['', [Validators.required]],
+      username: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.pattern(this.passwordPattern)]]
+      password: ['', [
+        Validators.required,
+        Validators.minLength(8),
+        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/)
+      ]]
     });
   }
 
@@ -45,7 +48,7 @@ export class RegisterComponent {
       next: (response) => {
         this.successMessage = response.message || 'Compte créé avec succès !';
         this.loading = false;
-        
+
         // Redirection vers login après 2 secondes
         setTimeout(() => {
           this.router.navigate(['/login']);

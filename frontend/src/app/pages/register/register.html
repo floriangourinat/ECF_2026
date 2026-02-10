@@ -1,55 +1,61 @@
-<div class="register-container">
-  <div class="register-card">
-    <h1>Créer un compte</h1>
-    <p class="subtitle">Rejoignez Innov'Events</p>
+<app-header></app-header>
 
-    <div *ngIf="errorMessage" class="alert alert-danger">
-      {{ errorMessage }}
-    </div>
+<div class="register-page">
+  <div class="register-container">
+    <div class="register-card">
+      <h1>Créer un compte</h1>
+      <p class="subtitle">Rejoignez Innov'Events</p>
 
-    <div *ngIf="successMessage" class="alert alert-success">
-      {{ successMessage }}
-    </div>
+      <div *ngIf="errorMessage" class="alert alert-danger">
+        {{ errorMessage }}
+      </div>
 
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      <div class="form-row">
-        <div class="form-group half">
-          <label for="last_name">Nom *</label>
-          <input type="text" id="last_name" formControlName="last_name" class="form-control" placeholder="Dupont">
+      <div *ngIf="successMessage" class="alert alert-success">
+        {{ successMessage }}
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <div class="form-group half">
+            <label for="last_name">Nom *</label>
+            <input type="text" id="last_name" formControlName="last_name" class="form-control" placeholder="Dupont">
+          </div>
+          <div class="form-group half">
+            <label for="first_name">Prénom *</label>
+            <input type="text" id="first_name" formControlName="first_name" class="form-control" placeholder="Jean">
+          </div>
         </div>
-        <div class="form-group half">
-          <label for="first_name">Prénom *</label>
-          <input type="text" id="first_name" formControlName="first_name" class="form-control" placeholder="Jean">
+
+        <div class="form-group">
+          <label for="username">Nom d'utilisateur *</label>
+          <input type="text" id="username" formControlName="username" class="form-control" placeholder="jean_dupont">
         </div>
+
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input type="email" id="email" formControlName="email" class="form-control" placeholder="jean@email.com">
+        </div>
+
+        <div class="form-group">
+          <label for="password">Mot de passe *</label>
+          <input type="password" id="password" formControlName="password" class="form-control" placeholder="••••••••">
+          <small class="password-hint">8 caractères min, 1 majuscule, 1 minuscule, 1 chiffre, 1 spécial</small>
+        </div>
+
+        <button type="submit" [disabled]="registerForm.invalid || loading" class="btn-submit">
+          {{ loading ? 'Création...' : 'Créer mon compte' }}
+        </button>
+      </form>
+
+      <div class="login-link">
+        <p>Déjà un compte ? <a routerLink="/login">Se connecter</a></p>
       </div>
 
-      <div class="form-group">
-        <label for="username">Nom d'utilisateur *</label>
-        <input type="text" id="username" formControlName="username" class="form-control" placeholder="jean_dupont">
+      <div class="back-home">
+        <a routerLink="/home">← Retour à l'accueil</a>
       </div>
-
-      <div class="form-group">
-        <label for="email">Email *</label>
-        <input type="email" id="email" formControlName="email" class="form-control" placeholder="jean@email.com">
-      </div>
-
-      <div class="form-group">
-        <label for="password">Mot de passe *</label>
-        <input type="password" id="password" formControlName="password" class="form-control" placeholder="••••••••">
-        <small class="password-hint">8 caractères min, 1 majuscule, 1 minuscule, 1 chiffre, 1 spécial</small>
-      </div>
-
-      <button type="submit" [disabled]="registerForm.invalid || loading" class="btn-submit">
-        {{ loading ? 'Création...' : 'Créer mon compte' }}
-      </button>
-    </form>
-
-    <div class="login-link">
-      <p>Déjà un compte ? <a routerLink="/login">Se connecter</a></p>
-    </div>
-
-    <div class="back-home">
-      <a routerLink="/home">← Retour à l'accueil</a>
     </div>
   </div>
 </div>
+
+<app-footer></app-footer>

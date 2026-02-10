@@ -1,48 +1,54 @@
-<div class="login-container">
+<app-header></app-header>
+
+<div class="login-page">
+  <div class="login-container">
     <div class="login-card">
-        <h2>Connexion</h2>
-        <p class="subtitle">Innov'Events 2026</p>
+      <h2>Connexion</h2>
+      <p class="subtitle">Innov'Events 2026</p>
 
-        <div *ngIf="errorMessage" class="alert alert-danger">
-            {{ errorMessage }}
+      <div *ngIf="errorMessage" class="alert-danger">
+        {{ errorMessage }}
+      </div>
+
+      <form (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            [(ngModel)]="email"
+            required
+            placeholder="exemple@innovevents.com"
+          >
         </div>
 
-        <form (ngSubmit)="onSubmit()">
-            <div class="form-group">
-                <label for="email">Email</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    [(ngModel)]="email" 
-                    required 
-                    placeholder="exemple@innovevents.com"
-                >
-            </div>
-
-            <div class="form-group">
-                <label for="password">Mot de passe</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    [(ngModel)]="mot_de_passe" 
-                    required 
-                    placeholder="Votre mot de passe"
-                >
-            </div>
-
-            <div class="forgot-password">
-                <a routerLink="/forgot-password">Mot de passe oublié ?</a>
-            </div>
-
-            <button type="submit" class="btn-primary" [disabled]="loading">
-                {{ loading ? 'Connexion...' : 'Se connecter' }}
-            </button>
-        </form>
-
-        <div class="register-link">
-            <p>Pas encore de compte ? <a routerLink="/register">S'inscrire</a></p>
+        <div class="form-group">
+          <label for="password">Mot de passe</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            [(ngModel)]="mot_de_passe"
+            required
+            placeholder="Votre mot de passe"
+          >
         </div>
+
+        <div class="forgot-password">
+          <a routerLink="/forgot-password">Mot de passe oublié ?</a>
+        </div>
+
+        <button type="submit" class="btn-primary" [disabled]="loading">
+          {{ loading ? 'Connexion en cours...' : 'Se connecter' }}
+        </button>
+      </form>
+
+      <div class="register-link">
+        <p>Vous n'avez pas de compte ? <a routerLink="/register">S'inscrire</a></p>
+      </div>
     </div>
+  </div>
 </div>
+
+<app-footer></app-footer>
