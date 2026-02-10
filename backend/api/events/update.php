@@ -34,7 +34,7 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
-    // Récupérer l'événement actuel
+    // Récupérer l'vénement actuel
     $stmtCurrent = $db->prepare("SELECT * FROM events WHERE id = :id");
     $stmtCurrent->execute([':id' => $data['id']]);
     $currentEvent = $stmtCurrent->fetch(PDO::FETCH_ASSOC);
@@ -56,7 +56,6 @@ try {
     // Gérer event_type (peut venir de type_id ou event_type)
     $event_type = $currentEvent['event_type'];
     if (isset($data['type_id']) && !empty($data['type_id'])) {
-        // Récupérer le nom du type depuis l'ID
         $stmtType = $db->prepare("SELECT name FROM event_types WHERE id = :id");
         $stmtType->execute([':id' => $data['type_id']]);
         $typeRow = $stmtType->fetch(PDO::FETCH_ASSOC);
@@ -70,7 +69,6 @@ try {
     // Gérer theme (peut venir de theme_id ou theme)
     $theme = $currentEvent['theme'];
     if (isset($data['theme_id']) && !empty($data['theme_id'])) {
-        // Récupérer le nom du thème depuis l'ID
         $stmtTheme = $db->prepare("SELECT name FROM themes WHERE id = :id");
         $stmtTheme->execute([':id' => $data['theme_id']]);
         $themeRow = $stmtTheme->fetch(PDO::FETCH_ASSOC);
@@ -79,6 +77,18 @@ try {
         }
     } elseif (isset($data['theme'])) {
         $theme = $data['theme'];
+    }
+
+    if (empty($event_type)) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Type d\'événement requis']);
+        exit();
+    }
+
+    if (empty($theme)) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Thème requis']);
+        exit();
     }
     
     // Gérer les dates
@@ -126,7 +136,6 @@ try {
 
     http_response_code(200);
 
-    // Log MongoDB - Modification du statut si changé
     if (isset($data['status']) && $data['status'] !== $currentEvent['status']) {
         require_once '../../services/MongoLogger.php';
         $logger = new MongoLogger();

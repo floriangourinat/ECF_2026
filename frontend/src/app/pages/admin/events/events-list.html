@@ -8,7 +8,6 @@
       <button class="btn-create" (click)="openCreateModal()">+ Nouvel événement</button>
     </header>
 
-    <!-- Filtres -->
     <section class="filters-section">
       <div class="search-box">
         <input 
@@ -33,7 +32,6 @@
       </div>
     </section>
 
-    <!-- Liste -->
     <section class="events-list">
       <div *ngIf="loading" class="loading">Chargement...</div>
       <div *ngIf="error" class="error">{{ error }}</div>
@@ -90,7 +88,6 @@
       </table>
     </section>
 
-    <!-- Modal Création -->
     <div class="modal-overlay" *ngIf="showCreateModal" (click)="closeCreateModal()">
       <div class="modal modal-large" (click)="$event.stopPropagation()">
         <div class="modal-header">
@@ -133,14 +130,14 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label>Type d'événement</label>
+              <label>Type d'événement *</label>
               <select [(ngModel)]="newEvent.event_type">
                 <option value="">Sélectionner</option>
                 <option *ngFor="let type of eventTypes" [value]="type">{{ type }}</option>
               </select>
             </div>
             <div class="form-group">
-              <label>Thème</label>
+              <label>Thème *</label>
               <select [(ngModel)]="newEvent.theme">
                 <option value="">Sélectionner</option>
                 <option *ngFor="let theme of themes" [value]="theme">{{ theme }}</option>
@@ -148,7 +145,6 @@
             </div>
           </div>
 
-          <!-- Upload Image -->
           <div class="form-group">
             <label>Image de l'événement</label>
             <div class="image-upload">

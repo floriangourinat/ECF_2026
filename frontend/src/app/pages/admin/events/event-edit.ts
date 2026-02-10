@@ -24,13 +24,13 @@ export class EventEditComponent implements OnInit {
     attendees_count: 0,
     budget: 0,
     status: 'draft',
-    type_id: '',
-    theme_id: '',
+    event_type: '',
+    theme: '',
     image_path: '',
     is_visible: false
   };
-  eventTypes: any[] = [];
-  themes: any[] = [];
+  eventTypes: string[] = ['Séminaire', 'Conférence', 'Soirée d\'entreprise', 'Team Building', 'Autre'];
+  themes: string[] = ['Élégant', 'Tropical', 'Rétro', 'High-Tech', 'Nature', 'Industriel'];
   loading = true;
   saving = false;
   error = '';
@@ -47,23 +47,9 @@ export class EventEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.eventId = this.route.snapshot.paramMap.get('id') || '';
-    this.loadEventTypes();
-    this.loadThemes();
     if (this.eventId) {
       this.loadEvent();
     }
-  }
-
-  loadEventTypes(): void {
-    this.http.get<any>('http://localhost:8080/api/event-types/read.php').subscribe({
-      next: (response) => { this.eventTypes = response.data || []; }
-    });
-  }
-
-  loadThemes(): void {
-    this.http.get<any>('http://localhost:8080/api/themes/read.php').subscribe({
-      next: (response) => { this.themes = response.data || []; }
-    });
   }
 
   loadEvent(): void {
@@ -82,8 +68,8 @@ export class EventEditComponent implements OnInit {
               attendees_count: e.attendees_count || 0,
               budget: e.budget || 0,
               status: e.status || 'draft',
-              type_id: e.type_id || '',
-              theme_id: e.theme_id || '',
+              event_type: e.event_type || '',
+              theme: e.theme || '',
               image_path: e.image_path || '',
               is_visible: e.is_visible == 1 || e.is_visible === true
             };
@@ -135,6 +121,16 @@ export class EventEditComponent implements OnInit {
   saveEvent(): void {
     if (!this.event.name) {
       this.error = 'Le nom de l\'événement est requis';
+      return;
+    }
+
+    if (!this.event.event_type) {
+      this.error = 'Le type d\'événement est requis';
+      return;
+    }
+
+    if (!this.event.theme) {
+      this.error = 'Le thème est requis';
       return;
     }
 

@@ -59,7 +59,6 @@ export class EventsListComponent implements OnInit {
     is_visible: false
   };
 
-  // Image upload
   selectedImage: File | null = null;
   imagePreview: string | null = null;
 
@@ -186,8 +185,15 @@ export class EventsListComponent implements OnInit {
   }
 
   createEvent(): void {
-    if (!this.newEvent.name || !this.newEvent.client_id || !this.newEvent.start_date || !this.newEvent.end_date) {
-      this.createError = 'Nom, client, date de début et date de fin sont requis';
+    if (
+      !this.newEvent.name ||
+      !this.newEvent.client_id ||
+      !this.newEvent.start_date ||
+      !this.newEvent.end_date ||
+      !this.newEvent.event_type ||
+      !this.newEvent.theme
+    ) {
+      this.createError = 'Nom, client, dates, type et thème sont requis';
       return;
     }
 

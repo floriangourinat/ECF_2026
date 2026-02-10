@@ -69,15 +69,20 @@ try {
         exit();
     }
 
-    $stmtUpdate = $db->prepare("
-        UPDATE quotes
-        SET status = :status, updated_at = NOW()
-        WHERE id = :id
-    ");
-    $stmtUpdate->execute([
+    $sql = "UPDATE quotes SET status = :status, updated_at = NOW()";
+    $params = [
         ':status' => $data['status'],
         ':id' => $data['quote_id']
-    ]);
+    ];
+
+    if ($data['status'] === 'modification' && !empty($data['modification_reason'])) {
+        $sql .= ", modification_reason = :reason";
+        $params[':reason'] = htmlspecialchars(strip_tags($data['modification_reason']));
+    }
+
+    $sql .= " WHERE id = :id";
+    $stmtUpdate = $db->prepare($sql);
+    $stmtUpdate->execute($params);
 
     $mailConfig = include '../../config/mail.php';
     $notifyStatuses = ['accepted', 'modification'];

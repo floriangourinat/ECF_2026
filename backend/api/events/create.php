@@ -30,6 +30,8 @@ if (empty($data['name'])) $errors[] = 'Nom requis';
 if (empty($data['start_date'])) $errors[] = 'Date de début requise';
 if (empty($data['end_date'])) $errors[] = 'Date de fin requise';
 if (empty($data['client_id'])) $errors[] = 'Client requis';
+if (empty($data['event_type'])) $errors[] = 'Type d\'événement requis';
+if (empty($data['theme'])) $errors[] = 'Thème requis';
 
 if (!empty($errors)) {
     http_response_code(400);
@@ -52,8 +54,8 @@ try {
         ':start_date' => $data['start_date'],
         ':end_date' => $data['end_date'],
         ':location' => !empty($data['location']) ? htmlspecialchars(strip_tags($data['location'])) : null,
-        ':event_type' => !empty($data['event_type']) ? $data['event_type'] : null,
-        ':theme' => !empty($data['theme']) ? $data['theme'] : null,
+        ':event_type' => $data['event_type'],
+        ':theme' => $data['theme'],
         ':status' => !empty($data['status']) ? $data['status'] : 'draft',
         ':is_visible' => !empty($data['is_visible']) ? 1 : 0
     ]);
