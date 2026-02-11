@@ -18,36 +18,31 @@ export class AdminEventDetailComponent implements OnInit {
   quotes: any[] = [];
   notes: any[] = [];
   tasks: any[] = [];
+  employees: any[] = [];
   loading = true;
   error = '';
 
-  // Pour ajouter une note
+  // Notes
   newNoteContent = '';
   addingNote = false;
 
-  // Image par défaut
+  // Tâches
+  showTaskModal = false;
+  taskLoading = false;
+  taskError = '';
+  newTask = { title: '', description: '', assigned_to: '', due_date: '' };
+
   defaultImage = 'assets/images/event-default.jpg';
 
   statusLabels: { [key: string]: string } = {
-    'draft': 'Brouillon',
-    'client_review': 'En attente client',
-    'accepted': 'Accepté',
-    'in_progress': 'En cours',
-    'completed': 'Terminé',
-    'cancelled': 'Annulé'
+    'draft': 'Brouillon', 'client_review': 'En attente client', 'accepted': 'Accepté',
+    'in_progress': 'En cours', 'completed': 'Terminé', 'cancelled': 'Annulé'
   };
-
   taskStatusLabels: { [key: string]: string } = {
-    'todo': 'À faire',
-    'in_progress': 'En cours',
-    'done': 'Terminé'
+    'todo': 'À faire', 'in_progress': 'En cours', 'done': 'Terminé'
   };
-
   quoteStatusLabels: { [key: string]: string } = {
-    'pending': 'En attente',
-    'modification': 'Modification demandée',
-    'accepted': 'Accepté',
-    'refused': 'Refusé'
+    'pending': 'En attente', 'modification': 'Modification demandée', 'accepted': 'Accepté', 'refused': 'Refusé'
   };
 
   constructor(
@@ -61,6 +56,7 @@ export class AdminEventDetailComponent implements OnInit {
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.loadEvent(id);
+      this.loadEmployees();
     }
   }
 
@@ -81,108 +77,127 @@ export class AdminEventDetailComponent implements OnInit {
       });
   }
 
+  loadEmployees(): void {
+    this.http.get<any>('http://localhost:8080/api/employees/read.php').subscribe({
+      next: (r) => { this.employees = r.data || []; }
+    });
+  }
+
   getEventImage(imagePath: string | null): string {
     if (imagePath && imagePath.trim() !== '') {
-      if (imagePath.startsWith('/uploads/')) {
-        return 'http://localhost:8080' + imagePath;
-      }
+      if (imagePath.startsWith('/uploads/')) return 'http://localhost:8080' + imagePath;
       return imagePath;
     }
     return this.defaultImage;
   }
 
-  onImageError(event: any): void {
-    event.target.src = this.defaultImage;
-  }
+  onImageError(event: any): void { event.target.src = this.defaultImage; }
 
   updateStatus(newStatus: string): void {
     this.http.put<any>('http://localhost:8080/api/events/update.php', {
-      ...this.event,
-      status: newStatus
+      ...this.event, status: newStatus
     }).subscribe({
-      next: () => {
-        this.event.status = newStatus;
-      },
-      error: () => {
-        alert('Erreur lors de la mise à jour du statut');
-      }
+      next: () => { this.event.status = newStatus; },
+      error: () => { alert('Erreur lors de la mise à jour du statut'); }
     });
   }
 
   deleteEvent(): void {
-    if (!confirm(`Supprimer l'événement "${this.event.name}" ?\n\nCette action est irréversible.`)) {
-      return;
-    }
-
+    if (!confirm(`Supprimer l'événement "${this.event.name}" ?\n\nCette action est irréversible.`)) return;
     this.http.delete<any>('http://localhost:8080/api/events/delete.php', { body: { id: this.event.id } })
       .subscribe({
-        next: () => {
-          this.router.navigate(['/admin/events']);
-        },
-        error: () => {
-          alert('Erreur lors de la suppression');
-        }
+        next: () => { this.router.navigate(['/admin/events']); },
+        error: () => { alert('Erreur lors de la suppression'); }
       });
   }
 
-  // ===== GESTION DES NOTES =====
+  // ===== TÂCHES =====
+
+  openTaskModal(): void {
+    this.showTaskModal = true;
+    this.taskError = '';
+    this.newTask = { title: '', description: '', assigned_to: '', due_date: '' };
+  }
+
+  closeTaskModal(): void {
+    this.showTaskModal = false;
+  }
+
+  createTask(): void {
+    if (!this.newTask.title.trim()) {
+      this.taskError = 'Le titre est requis';
+      return;
+    }
+    this.taskLoading = true;
+    this.taskError = '';
+
+    const payload: any = {
+      event_id: this.event.id,
+      title: this.newTask.title,
+      description: this.newTask.description || null,
+      assigned_to: this.newTask.assigned_to || null,
+      due_date: this.newTask.due_date || null,
+      status: 'todo'
+    };
+
+    this.http.post<any>('http://localhost:8080/api/tasks/create.php', payload).subscribe({
+      next: (r) => {
+        if (r.success) {
+          this.tasks.push(r.data);
+          this.closeTaskModal();
+        } else {
+          this.taskError = r.message || 'Erreur';
+        }
+        this.taskLoading = false;
+      },
+      error: (err) => {
+        this.taskError = err.error?.message || 'Erreur serveur';
+        this.taskLoading = false;
+      }
+    });
+  }
+
+  deleteTask(task: any): void {
+    if (!confirm(`Supprimer la tâche "${task.title}" ?`)) return;
+    this.http.delete<any>('http://localhost:8080/api/tasks/delete.php', { body: { id: task.id } }).subscribe({
+      next: () => { this.tasks = this.tasks.filter(t => t.id !== task.id); },
+      error: () => { alert('Erreur lors de la suppression'); }
+    });
+  }
+
+  // ===== NOTES =====
 
   addNote(): void {
-    if (!this.newNoteContent.trim()) {
-      return;
-    }
-
+    if (!this.newNoteContent.trim()) return;
     const currentUser = this.authService.currentUserValue;
-    if (!currentUser) {
-      alert('Vous devez être connecté pour ajouter une note');
-      return;
-    }
+    if (!currentUser) { alert('Vous devez être connecté'); return; }
 
     this.addingNote = true;
-
     this.http.post<any>('http://localhost:8080/api/notes/create.php', {
       event_id: this.event.id,
       author_id: currentUser.id,
       content: this.newNoteContent
     }).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.notes.unshift(response.data);
-          this.newNoteContent = '';
-        }
+      next: (r) => {
+        if (r.success) { this.notes.unshift(r.data); this.newNoteContent = ''; }
         this.addingNote = false;
       },
-      error: () => {
-        alert('Erreur lors de l\'ajout de la note');
-        this.addingNote = false;
-      }
+      error: () => { alert('Erreur lors de l\'ajout'); this.addingNote = false; }
     });
   }
 
   deleteNote(note: any): void {
-    if (!confirm('Supprimer cette note ?')) {
-      return;
-    }
-
-    this.http.delete<any>('http://localhost:8080/api/notes/delete.php', { body: { id: note.id } })
-      .subscribe({
-        next: () => {
-          this.notes = this.notes.filter(n => n.id !== note.id);
-        },
-        error: () => {
-          alert('Erreur lors de la suppression');
-        }
-      });
+    if (!confirm('Supprimer cette note ?')) return;
+    this.http.delete<any>('http://localhost:8080/api/notes/delete.php', { body: { id: note.id } }).subscribe({
+      next: () => { this.notes = this.notes.filter(n => n.id !== note.id); },
+      error: () => { alert('Erreur lors de la suppression'); }
+    });
   }
 
   formatDate(dateString: string): string {
     if (!dateString) return '-';
     return new Date(dateString).toLocaleDateString('fr-FR', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
     });
   }
 

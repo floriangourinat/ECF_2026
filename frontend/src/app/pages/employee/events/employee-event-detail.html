@@ -37,8 +37,8 @@
               <span class="status-badge status-{{ task.status }}">{{ taskStatusLabels[task.status] }}</span>
               <button *ngIf="isMyTask(task) && getNextStatus(task.status)" 
                       class="btn-advance" 
-                      (click)="updateTaskStatus(task, getNextStatus(task.status)!)">
-                → {{ taskStatusLabels[getNextStatus(task.status)!] }}
+                      (click)="onAdvanceTask(task)">
+                → {{ taskStatusLabels[getNextStatus(task.status) || ''] }}
               </button>
             </div>
           </div>

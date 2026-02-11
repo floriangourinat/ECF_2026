@@ -49,7 +49,7 @@ export class EmployeeEventDetailComponent implements OnInit {
     });
   }
 
-  // ===== NOTES CRUD =====
+  // ===== NOTES CRUD (inchangé) =====
   addNote(): void {
     if (!this.newNoteContent.trim()) return;
     this.addingNote = true;
@@ -97,21 +97,35 @@ export class EmployeeEventDetailComponent implements OnInit {
   }
 
   isMyNote(note: any): boolean {
-    return note.author_id == this.currentUser?.id;
+    return String(note.author_id) === String(this.currentUser?.id);
   }
 
   // ===== TÂCHES =====
-  updateTaskStatus(task: any, newStatus: string): void {
-    this.http.put<any>('http://localhost:8080/api/tasks/update_status.php', {
-      id: task.id,
-      status: newStatus
+  onAdvanceTask(task: any): void {
+    const next = this.getNextStatus(task.status);
+    if (!next) return;
+
+    // POST au lieu de PUT pour éviter le blocage CORS preflight
+    this.http.post<any>('http://localhost:8080/api/tasks/update_status.php', {
+      id: Number(task.id),
+      status: next,
+      user_id: Number(this.currentUser?.id)
     }).subscribe({
-      next: (r) => { if (r.success) task.status = newStatus; }
+      next: (r) => {
+        if (r.success) {
+          task.status = next;
+        } else {
+          alert(r.message || 'Impossible de mettre à jour');
+        }
+      },
+      error: (err) => {
+        alert(err.error?.message || 'Erreur serveur');
+      }
     });
   }
 
   isMyTask(task: any): boolean {
-    return task.assigned_to == this.currentUser?.id;
+    return String(task.assigned_to) === String(this.currentUser?.id);
   }
 
   getNextStatus(current: string): string | null {

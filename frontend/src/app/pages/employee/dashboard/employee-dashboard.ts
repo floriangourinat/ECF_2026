@@ -15,7 +15,6 @@ import { AuthService } from '../../../_services/auth.service';
 export class EmployeeDashboardComponent implements OnInit {
   myTasks: any[] = [];
   upcomingEvents: any[] = [];
-  recentNotes: any[] = [];
   pendingReviews: any[] = [];
   loading = true;
 
@@ -26,21 +25,36 @@ export class EmployeeDashboardComponent implements OnInit {
   }
 
   loadDashboard(): void {
-    const userId = this.authService.currentUserValue?.id;
+    const userId = String(this.authService.currentUserValue?.id);
 
-    // Mes tâches
-    this.http.get<any>(`http://localhost:8080/api/tasks/read.php?assigned_to=${userId}`).subscribe({
-      next: (r) => { this.myTasks = (r.data || []).filter((t: any) => t.status !== 'done').slice(0, 5); }
+    // Toutes les tâches, filtrées côté frontend par userId
+    this.http.get<any>('http://localhost:8080/api/tasks/read.php').subscribe({
+      next: (r) => {
+        const allTasks = r.data || [];
+        this.myTasks = allTasks
+          .filter((t: any) => String(t.assigned_to) === userId && t.status !== 'done')
+          .slice(0, 5);
+      },
+      error: () => {}
     });
 
-    // Prochains événements
-    this.http.get<any>('http://localhost:8080/api/events/read_all.php?status=in_progress').subscribe({
-      next: (r) => { this.upcomingEvents = (r.data || []).slice(0, 3); this.loading = false; }
+    // Tous les événements non terminés/annulés
+    this.http.get<any>('http://localhost:8080/api/events/read_all.php').subscribe({
+      next: (r) => {
+        this.upcomingEvents = (r.data || [])
+          .filter((e: any) => e.status !== 'cancelled' && e.status !== 'completed')
+          .slice(0, 3);
+        this.loading = false;
+      },
+      error: () => { this.loading = false; }
     });
 
     // Avis en attente
     this.http.get<any>('http://localhost:8080/api/reviews/read_all.php').subscribe({
-      next: (r) => { this.pendingReviews = (r.data || []).filter((rev: any) => rev.status === 'pending'); }
+      next: (r) => {
+        this.pendingReviews = (r.data || []).filter((rev: any) => rev.status === 'pending');
+      },
+      error: () => {}
     });
   }
 
