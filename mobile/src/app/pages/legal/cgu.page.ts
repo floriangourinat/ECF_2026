@@ -28,7 +28,7 @@ import {
         <p>L'application permet la consultation des événements, des fiches clients, l'ajout de notes collaboratives et la communication rapide avec les clients (appel, email, itinéraire). Ces services sont fournis à titre professionnel dans le cadre de l'activité d'Innov'Events.</p>
 
         <h3>Article 4 — Données personnelles</h3>
-        <p>Conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi Informatique et Libertés, les données collectées sont traitées dans le cadre de la gestion des événements. L'utilisateur dispose d'un droit d'accès, de rectification et de suppression de ses données en contactant le responsable de traitement à l'adresse : contact@innovevents.com.</p>
+        <p>Conformément au Règlement Général sur la Protection des Données (RGPD) et à la loi Informatique et Libertés, les données collectées sont traitées dans le cadre de la gestion des événements. L'utilisateur dispose d'un droit d'accès, de rectification et de suppression de ses données en contactant le responsable de traitement à l'adresse : contact&#64;innovevents.com.</p>
 
         <h3>Article 5 — Propriété intellectuelle</h3>
         <p>L'ensemble des éléments de l'application (design, code, textes, logos) sont la propriété exclusive d'Innov'Events. Toute reproduction, même partielle, est interdite sans autorisation préalable.</p>

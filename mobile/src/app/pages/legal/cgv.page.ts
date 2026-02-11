@@ -19,7 +19,7 @@ import {
         <p><strong>Dernière mise à jour : Février 2026</strong></p>
 
         <h3>Article 1 — Identification du prestataire</h3>
-        <p>Innov'Events — Société spécialisée dans l'organisation d'événements professionnels haut de gamme (séminaires, conférences, team-buildings). Siège social : Paris, France. Email : contact@innovevents.com.</p>
+        <p>Innov'Events — Société spécialisée dans l'organisation d'événements professionnels haut de gamme (séminaires, conférences, team-buildings). Siège social : Paris, France. Email : contact&#64;innovevents.com.</p>
 
         <h3>Article 2 — Objet</h3>
         <p>Les présentes Conditions Générales de Vente (CGV) définissent les droits et obligations des parties dans le cadre de la prestation de services événementiels proposés par Innov'Events à ses clients.</p>
