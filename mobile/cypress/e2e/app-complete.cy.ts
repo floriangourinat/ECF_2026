@@ -1,5 +1,8 @@
 describe('Innov\'Events Mobile - Parcours Complet E2E', () => {
 
+  const adminEmail = 'chloe@innovevents.com';
+  const adminPassword = '@Floflo81';
+
   beforeEach(() => { cy.clearLocalStorage(); });
 
   describe('Page de connexion', () => {
@@ -17,8 +20,8 @@ describe('Innov\'Events Mobile - Parcours Complet E2E', () => {
 
     it('should login with admin account', () => {
       cy.visit('/login');
-      cy.get('ion-input[type="email"] input').type('chloe@innovevents.com');
-      cy.get('ion-input[type="password"] input').type('Admin123!');
+      cy.get('ion-input[type="email"] input').type(adminEmail);
+      cy.get('ion-input[type="password"] input').type(adminPassword);
       cy.contains('Se connecter').click();
       cy.url({ timeout: 10000 }).should('include', '/tabs/events');
     });
@@ -27,8 +30,8 @@ describe('Innov\'Events Mobile - Parcours Complet E2E', () => {
   describe('Événements (après login)', () => {
     beforeEach(() => {
       cy.visit('/login');
-      cy.get('ion-input[type="email"] input').type('chloe@innovevents.com');
-      cy.get('ion-input[type="password"] input').type('Admin123!');
+      cy.get('ion-input[type="email"] input').type(adminEmail);
+      cy.get('ion-input[type="password"] input').type(adminPassword);
       cy.contains('Se connecter').click();
       cy.url({ timeout: 10000 }).should('include', '/tabs/events');
     });
@@ -57,8 +60,8 @@ describe('Innov\'Events Mobile - Parcours Complet E2E', () => {
   describe('Détail événement + notes', () => {
     beforeEach(() => {
       cy.visit('/login');
-      cy.get('ion-input[type="email"] input').type('chloe@innovevents.com');
-      cy.get('ion-input[type="password"] input').type('Admin123!');
+      cy.get('ion-input[type="email"] input').type(adminEmail);
+      cy.get('ion-input[type="password"] input').type(adminPassword);
       cy.contains('Se connecter').click();
       cy.url({ timeout: 10000 }).should('include', '/tabs/events');
     });
@@ -71,17 +74,17 @@ describe('Innov\'Events Mobile - Parcours Complet E2E', () => {
 
     it('should add a note', () => {
       cy.get('ion-item.event-card', { timeout: 10000 }).first().click();
-      cy.get('ion-textarea textarea').type('Note test E2E');
+      cy.get('ion-textarea textarea').type('Note test E2E Cypress');
       cy.contains('Ajouter la note').click();
-      cy.contains('Note test E2E', { timeout: 5000 }).should('be.visible');
+      cy.contains('Note test E2E Cypress', { timeout: 5000 }).should('be.visible');
     });
   });
 
   describe('Fiche client', () => {
     beforeEach(() => {
       cy.visit('/login');
-      cy.get('ion-input[type="email"] input').type('chloe@innovevents.com');
-      cy.get('ion-input[type="password"] input').type('Admin123!');
+      cy.get('ion-input[type="email"] input').type(adminEmail);
+      cy.get('ion-input[type="password"] input').type(adminPassword);
       cy.contains('Se connecter').click();
       cy.url({ timeout: 10000 }).should('include', '/tabs/events');
     });
@@ -97,8 +100,8 @@ describe('Innov\'Events Mobile - Parcours Complet E2E', () => {
   describe('Déconnexion', () => {
     it('should logout', () => {
       cy.visit('/login');
-      cy.get('ion-input[type="email"] input').type('chloe@innovevents.com');
-      cy.get('ion-input[type="password"] input').type('Admin123!');
+      cy.get('ion-input[type="email"] input').type(adminEmail);
+      cy.get('ion-input[type="password"] input').type(adminPassword);
       cy.contains('Se connecter').click();
       cy.url({ timeout: 10000 }).should('include', '/tabs/events');
       cy.contains('Déconnexion').click();
