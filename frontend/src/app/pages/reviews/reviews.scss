@@ -2,6 +2,8 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f6fa;
 }
 
 .hero {
@@ -17,7 +19,7 @@
 
   p {
     font-size: 1.2rem;
-    opacity: 0.9;
+    opacity: 0.95;
     margin-bottom: 20px;
   }
 
@@ -26,11 +28,11 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    font-size: 1.3rem;
+    font-size: 1.2rem;
 
     .stars {
       color: #ffc107;
-      font-size: 1.8rem;
+      font-size: 1.7rem;
     }
 
     .score {
@@ -38,7 +40,7 @@
     }
 
     .count {
-      opacity: 0.8;
+      opacity: 0.85;
     }
   }
 }
@@ -51,7 +53,9 @@
   width: 100%;
 }
 
-.loading, .error, .no-reviews {
+.loading,
+.error,
+.no-reviews {
   text-align: center;
   padding: 60px 20px;
   color: #666;
@@ -149,9 +153,10 @@
 }
 
 .cta-section {
-  background: #f8f9fa;
-  padding: 80px 20px;
+  background: #fff;
+  padding: 70px 20px;
   text-align: center;
+  border-top: 1px solid #eceef3;
 
   h2 {
     font-size: 2rem;
@@ -168,7 +173,7 @@
   .btn-cta {
     display: inline-block;
     padding: 15px 40px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #e67e22;
     color: white;
     text-decoration: none;
     border-radius: 30px;
@@ -177,7 +182,7 @@
     transition: transform 0.3s;
 
     &:hover {
-      transform: scale(1.05);
+      transform: translateY(-2px);
     }
   }
 }

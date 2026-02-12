@@ -2,6 +2,8 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f6fa;
 }
 
 .hero {
@@ -17,7 +19,7 @@
 
   p {
     font-size: 1.2rem;
-    opacity: 0.9;
+    opacity: 0.95;
   }
 }
 
@@ -78,7 +80,7 @@
   background: white;
   padding: 40px;
   border-radius: 15px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.08);
 
   h2 {
     font-size: 1.5rem;
@@ -96,17 +98,20 @@
       color: #333;
     }
 
-    input, textarea {
+    input,
+    textarea {
       width: 100%;
+      box-sizing: border-box;
       padding: 12px 15px;
       border: 1px solid #ddd;
       border-radius: 8px;
       font-size: 1rem;
-      transition: border-color 0.3s;
+      transition: border-color 0.3s, box-shadow 0.3s;
 
       &:focus {
         outline: none;
         border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
       }
 
       &.is-invalid {
@@ -119,7 +124,8 @@
       min-height: 120px;
     }
 
-    .hint {
+    .hint,
+    .char-count {
       display: block;
       font-size: 0.85rem;
       color: #888;
@@ -127,11 +133,7 @@
     }
 
     .char-count {
-      display: block;
       text-align: right;
-      font-size: 0.85rem;
-      color: #888;
-      margin-top: 5px;
     }
 
     .text-danger {
@@ -144,18 +146,20 @@
 
   .btn-submit {
     width: 100%;
+    box-sizing: border-box;
     padding: 15px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #e67e22;
     color: white;
     border: none;
     border-radius: 8px;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: transform 0.3s;
+    transition: transform 0.3s, background 0.3s;
 
     &:hover:not(:disabled) {
       transform: translateY(-2px);
+      background: #d35400;
     }
 
     &:disabled {
@@ -196,7 +200,7 @@
   .btn-primary {
     display: inline-block;
     padding: 12px 30px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #e67e22;
     color: white;
     text-decoration: none;
     border-radius: 8px;

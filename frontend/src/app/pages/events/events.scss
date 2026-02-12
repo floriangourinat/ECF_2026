@@ -1,7 +1,10 @@
+/* frontend/src/app/pages/events/events.scss */
 .events-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f5f6fa;
 }
 
 .hero {
@@ -17,12 +20,12 @@
 
   p {
     font-size: 1.2rem;
-    opacity: 0.9;
+    opacity: 0.95;
   }
 }
 
 .filters-section {
-  background: #f8f9fa;
+  background: #ffffff;
   padding: 30px 20px;
   border-bottom: 1px solid #e9ecef;
 
@@ -42,31 +45,33 @@
     label {
       display: block;
       font-weight: 600;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
       color: #333;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
     }
 
-    select, input {
+    select,
+    input {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       border: 1px solid #ddd;
-      border-radius: 5px;
+      border-radius: 8px;
       font-size: 1rem;
 
       &:focus {
         outline: none;
         border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
       }
     }
   }
 
   .btn-reset {
-    padding: 10px 20px;
+    padding: 12px 22px;
     background: #6c757d;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
     transition: background 0.3s;
 
@@ -80,11 +85,13 @@
   flex: 1;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 20px;
+  padding: 40px 20px 60px;
   width: 100%;
 }
 
-.loading, .error, .no-events {
+.loading,
+.error,
+.no-events {
   text-align: center;
   padding: 60px 20px;
   color: #666;
@@ -103,14 +110,14 @@
 
 .event-card {
   background: white;
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s, box-shadow 0.3s;
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.14);
   }
 
   .event-image {
@@ -130,7 +137,7 @@
       left: 15px;
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      padding: 5px 15px;
+      padding: 6px 15px;
       border-radius: 20px;
       font-size: 0.85rem;
       font-weight: 600;
@@ -146,7 +153,8 @@
       color: #333;
     }
 
-    .event-date, .event-location {
+    .event-date,
+    .event-location {
       font-size: 0.95rem;
       color: #666;
       margin-bottom: 5px;
@@ -154,7 +162,7 @@
 
     .event-description {
       color: #777;
-      line-height: 1.5;
+      line-height: 1.55;
       margin: 15px 0;
     }
 
@@ -164,12 +172,12 @@
       background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
       text-decoration: none;
-      border-radius: 5px;
+      border-radius: 8px;
       font-weight: 600;
       transition: transform 0.3s;
 
       &:hover {
-        transform: scale(1.05);
+        transform: translateY(-2px);
       }
     }
   }
