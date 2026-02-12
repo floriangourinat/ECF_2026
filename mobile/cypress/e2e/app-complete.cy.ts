@@ -1,7 +1,7 @@
 describe('Innov\'Events Mobile - Parcours Complet E2E', () => {
 
-  const adminEmail = 'chloe@innovevents.com';
-  const adminPassword = '@Floflo81';
+  const adminEmail = Cypress.env('ADMIN_EMAIL');
+  const adminPassword = Cypress.env('ADMIN_PASSWORD');
 
   beforeEach(() => { cy.clearLocalStorage(); });
 
