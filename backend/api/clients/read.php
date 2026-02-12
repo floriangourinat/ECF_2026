@@ -21,9 +21,11 @@ try {
     $db = $database->getConnection();
 
     $sql = "SELECT c.id, c.company_name, c.phone, c.address, c.created_at,
-                   u.id as user_id, u.first_name, u.last_name, u.email, u.is_active
+                   u.id as user_id, u.first_name, u.last_name, u.email, u.is_active,
+                   COUNT(e.id) as events_count
             FROM clients c
             JOIN users u ON c.user_id = u.id
+            LEFT JOIN events e ON e.client_id = c.id
             WHERE 1=1";
     
     $params = [];
@@ -44,7 +46,7 @@ try {
         $params[':is_active'] = $_GET['is_active'];
     }
 
-    $sql .= " ORDER BY c.created_at DESC";
+    $sql .= " GROUP BY c.id, c.company_name, c.phone, c.address, c.created_at, u.id, u.first_name, u.last_name, u.email, u.is_active ORDER BY c.created_at DESC";
 
     $stmt = $db->prepare($sql);
     $stmt->execute($params);
