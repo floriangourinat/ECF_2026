@@ -17,6 +17,7 @@ mobile/.angular/
 mobile/coverage/
 mobile/cypress/videos/
 mobile/cypress/screenshots/
+mobile/cypress.env.json
 
 # --- Système & IDE ---
 .DS_Store
