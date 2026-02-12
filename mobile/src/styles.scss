@@ -15,37 +15,13 @@
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-shade: #d68910;
   --ion-color-primary-tint: #f4a62a;
-
   --ion-color-secondary: #2c3e50;
   --ion-color-secondary-contrast: #ffffff;
-
   --ion-color-success: #27ae60;
   --ion-color-warning: #f39c12;
   --ion-color-danger: #e74c3c;
-
   --ion-font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-body {
-  font-family: var(--ion-font-family);
-  background: #f5f6fa;
-}
-
-ion-toolbar {
-  --background: #2c3e50;
-  --color: #ffffff;
-}
-
-.status-badge {
-  display: inline-block;
-  padding: 3px 10px;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  &.status-draft { background: #e9ecef; color: #6c757d; }
-  &.status-client_review, &.status-client-review { background: #fff3cd; color: #856404; }
-  &.status-accepted { background: #cce5ff; color: #004085; }
-  &.status-in_progress, &.status-in-progress { background: #d4edda; color: #155724; }
-  &.status-completed { background: #28a745; color: white; }
-  &.status-cancelled { background: #f8d7da; color: #721c24; }
-}
+body { font-family: var(--ion-font-family); background: #f5f6fa; }
+ion-toolbar { --background: #2c3e50; --color: #ffffff; }

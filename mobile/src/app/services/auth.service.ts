@@ -20,6 +20,9 @@ export class AuthService {
     return this.http.post<any>(`${environment.apiUrl}/auth/login.php`, { email, password })
       .pipe(map(r => {
         if (r && r.user) {
+          if (r.user.role !== 'admin') {
+            throw new Error('Accès réservé aux administrateurs');
+          }
           const user = { ...r.user, token: r.token };
           localStorage.setItem('mobileUser', JSON.stringify(user));
           this.currentUserSubject.next(user);
