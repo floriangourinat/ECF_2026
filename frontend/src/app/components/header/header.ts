@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../_services/auth.service';
 
 @Component({
@@ -13,9 +13,19 @@ import { AuthService } from '../../_services/auth.service';
 export class HeaderComponent {
   mobileMenuOpen = false;
 
-  constructor(public authService: AuthService) {}
+  constructor(public authService: AuthService, private router: Router) {}
 
   toggleMobileMenu(): void {
     this.mobileMenuOpen = !this.mobileMenuOpen;
+  }
+
+  closeMobileMenu(): void {
+    this.mobileMenuOpen = false;
+  }
+
+  onLogout(): void {
+    this.authService.logout();
+    this.mobileMenuOpen = false;
+    this.router.navigate(['/home']);
   }
 }

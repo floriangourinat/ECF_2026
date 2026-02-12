@@ -4,25 +4,26 @@
   </div>
   
   <nav class="nav" [class.active]="mobileMenuOpen">
-    <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link">Accueil</a>
-    <a routerLink="/events" routerLinkActive="active" class="nav-link">Événements</a>
-    <a routerLink="/reviews" routerLinkActive="active" class="nav-link">Avis</a>
-    <a routerLink="/contact" routerLinkActive="active" class="nav-link">Contact</a>
-    <a routerLink="/quote-request" routerLinkActive="active" class="nav-link btn-cta">Demande de devis</a>
+    <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link" (click)="closeMobileMenu()">Accueil</a>
+    <a routerLink="/events" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">Événements</a>
+    <a routerLink="/reviews" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">Avis</a>
+    <a routerLink="/contact" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">Contact</a>
+    <a routerLink="/quote-request" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">Demande de devis</a>
     
     <ng-container *ngIf="!authService.isLoggedIn(); else loggedIn">
-      <a routerLink="/register" routerLinkActive="active" class="nav-link btn-register">S'inscrire</a>
-      <a routerLink="/login" routerLinkActive="active" class="nav-link btn-login">Se connecter</a>
+      <a routerLink="/register" routerLinkActive="active" class="nav-link btn-register" (click)="closeMobileMenu()">S'inscrire</a>
+      <a routerLink="/login" routerLinkActive="active" class="nav-link btn-login" (click)="closeMobileMenu()">Se connecter</a>
     </ng-container>
     
     <ng-template #loggedIn>
-      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link btn-login">Mon espace</a>
+      <a routerLink="/dashboard" routerLinkActive="active" class="nav-link btn-login" (click)="closeMobileMenu()">Mon espace</a>
+      <a class="nav-link btn-logout" (click)="onLogout()">Déconnexion</a>
     </ng-template>
   </nav>
 
   <div class="mobile-menu-btn" (click)="toggleMobileMenu()">
-    <span></span>
-    <span></span>
-    <span></span>
+    <span [class.open]="mobileMenuOpen"></span>
+    <span [class.open]="mobileMenuOpen"></span>
+    <span [class.open]="mobileMenuOpen"></span>
   </div>
 </header>

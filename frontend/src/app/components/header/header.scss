@@ -34,6 +34,7 @@
       padding: 10px 15px;
       border-radius: 5px;
       transition: all 0.3s;
+      cursor: pointer;
 
       &:hover,
       &.active {
@@ -61,6 +62,16 @@
           color: white;
         }
       }
+
+      &.btn-logout {
+        color: #e74c3c;
+        font-weight: 500;
+
+        &:hover {
+          background: #fde8e8;
+          color: #c0392b;
+        }
+      }
     }
   }
 
@@ -77,6 +88,18 @@
       background: #333;
       border-radius: 2px;
       transition: all 0.3s;
+
+      &.open:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 6px);
+      }
+
+      &.open:nth-child(2) {
+        opacity: 0;
+      }
+
+      &.open:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -6px);
+      }
     }
   }
 }
