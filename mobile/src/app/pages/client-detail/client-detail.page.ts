@@ -71,7 +71,7 @@ export class ClientDetailPage implements OnInit {
   constructor(private route: ActivatedRoute, private http: HttpClient) { addIcons({ callOutline, mailOutline, navigateOutline, businessOutline, personOutline }); }
   ngOnInit() { const id = this.route.snapshot.paramMap.get('id'); if (id) this.loadClient(id); }
   loadClient(id: string) {
-    this.http.get<any>(`${environment.apiUrl}/clients/read_detail.php?id=${id}`).subscribe({
+    this.http.get<any>(`${environment.apiUrl}/clients/read_one.php?id=${id}`).subscribe({
       next: (r) => { this.client = r.data?.client || r.data; this.events = r.data?.events || []; this.loading = false; },
       error: () => { this.loading = false; }
     });

@@ -31,21 +31,21 @@ describe('ClientDetailPage', () => {
 
   it('should load client', () => {
     fixture.detectChanges();
-    httpMock.expectOne('/api/clients/read_detail.php?id=10').flush(mockClient);
+    httpMock.expectOne('/api/clients/read_one.php?id=10').flush(mockClient);
     expect(component.client.first_name).toBe('Jean');
     expect(component.events.length).toBe(1);
   });
 
   it('should generate maps URL', () => {
     fixture.detectChanges();
-    httpMock.expectOne('/api/clients/read_detail.php?id=10').flush(mockClient);
+    httpMock.expectOne('/api/clients/read_one.php?id=10').flush(mockClient);
     expect(component.getMapsUrl()).toContain('google.com/maps');
     expect(component.getMapsUrl()).toContain('15%20rue');
   });
 
   it('should handle API error', () => {
     fixture.detectChanges();
-    httpMock.expectOne('/api/clients/read_detail.php?id=10').flush('err', { status: 500, statusText: 'Error' });
+    httpMock.expectOne('/api/clients/read_one.php?id=10').flush('err', { status: 500, statusText: 'Error' });
     expect(component.loading).toBeFalse();
     expect(component.client).toBeNull();
   });
