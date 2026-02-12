@@ -10,6 +10,14 @@ frontend/yarn-error.log
 backend/vendor/
 backend/composer.phar
 
+# --- Mobile (Ionic Angular) ---
+mobile/node_modules/
+mobile/dist/
+mobile/.angular/
+mobile/coverage/
+mobile/cypress/videos/
+mobile/cypress/screenshots/
+
 # --- Système & IDE ---
 .DS_Store
 Thumbs.db
