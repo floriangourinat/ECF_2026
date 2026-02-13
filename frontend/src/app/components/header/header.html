@@ -10,7 +10,7 @@
     </a>
   </div>
   
-  <nav class="nav" [class.active]="mobileMenuOpen">
+  <nav id="main-navigation" class="nav" [class.active]="mobileMenuOpen" aria-label="Navigation principale">
     <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link" (click)="closeMobileMenu()">Accueil</a>
     <a routerLink="/events" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">Événements</a>
     <a routerLink="/reviews" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">Avis</a>
@@ -24,13 +24,20 @@
     
     <ng-template #loggedIn>
       <a routerLink="/dashboard" routerLinkActive="active" class="nav-link btn-login" (click)="closeMobileMenu()">Mon espace</a>
-      <a class="nav-link btn-logout" (click)="onLogout()">Déconnexion</a>
+      <button type="button" class="nav-link btn-logout" (click)="onLogout()">Déconnexion</button>
     </ng-template>
   </nav>
 
-  <div class="mobile-menu-btn" (click)="toggleMobileMenu()">
+  <button
+    type="button"
+    class="mobile-menu-btn"
+    (click)="toggleMobileMenu()"
+    [attr.aria-expanded]="mobileMenuOpen"
+    aria-controls="main-navigation"
+    aria-label="Ouvrir ou fermer le menu"
+  >
     <span [class.open]="mobileMenuOpen"></span>
     <span [class.open]="mobileMenuOpen"></span>
     <span [class.open]="mobileMenuOpen"></span>
-  </div>
+  </button>
 </header>

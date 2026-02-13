@@ -67,6 +67,9 @@
       &.btn-logout {
         color: #e74c3c;
         font-weight: 500;
+        border: none;
+        background: transparent;
+        font: inherit;
 
         &:hover {
           background: #fde8e8;
@@ -82,6 +85,8 @@
     gap: 5px;
     cursor: pointer;
     padding: 10px;
+    border: none;
+    background: transparent;
 
     span {
       width: 25px;
