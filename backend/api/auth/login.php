@@ -17,6 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 
 include_once '../../config/database.php';
 require_once '../../services/MongoLogger.php';
+require_once '../../services/JwtService.php';
+
+$jwtConfig = require '../../config/jwt.php';
 
 $database = new Database();
 $db = $database->getConnection();
@@ -39,10 +42,10 @@ if (!$email) {
 }
 
 try {
-    $query = "SELECT id, last_name, first_name, username, email, password, role, 
+    $query = "SELECT id, last_name, first_name, username, email, password, role,
                      is_active, must_change_password, email_verified
               FROM users WHERE email = :email LIMIT 1";
-    
+
     $stmt = $db->prepare($query);
     $stmt->bindParam(':email', $email, PDO::PARAM_STR);
     $stmt->execute();
@@ -90,27 +93,26 @@ try {
         'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
     ]);
 
-    // Création token
-    $token_payload = [
-        "id" => $user['id'],
+    // ✅ JWT signé (non forgeable)
+    $jwt = new JwtService($jwtConfig['secret'], $jwtConfig['issuer']);
+    $token = $jwt->encode([
+        "sub" => (int)$user['id'],
         "email" => $user['email'],
-        "role" => $user['role'],
-        "iat" => time(),
-        "exp" => time() + 86400
-    ];
+        "role" => $user['role']
+    ], (int)$jwtConfig['ttl_seconds']);
 
     http_response_code(200);
     echo json_encode([
         "message" => "Connexion réussie.",
-        "token" => base64_encode(json_encode($token_payload)),
+        "token" => $token,
         "user" => [
-            "id" => $user['id'],
+            "id" => (int)$user['id'],
             "last_name" => $user['last_name'],
             "first_name" => $user['first_name'],
             "username" => $user['username'],
             "email" => $user['email'],
             "role" => $user['role'],
-            "must_change_password" => (bool) $user['must_change_password']
+            "must_change_password" => (bool)$user['must_change_password']
         ]
     ]);
 

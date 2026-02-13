@@ -25,6 +25,8 @@ export class LoginComponent {
   resendLoading: boolean = false;
   resendMessage: string = '';
 
+  private returnUrl: string = '/dashboard';
+
   // Exposer loginForm pour les tests
   loginForm = {
     contains: (field: string) => ['email', 'password'].includes(field),
@@ -47,6 +49,12 @@ export class LoginComponent {
       this.email = emailParam;
       this.infoMessage = "Si vous venez de créer votre compte, pensez à confirmer votre email avant de vous connecter.";
     }
+
+    // ✅ ReturnUrl : si l'utilisateur a tenté d'accéder à une page protégée
+    const ru = this.route.snapshot.queryParamMap.get('returnUrl');
+    if (ru && typeof ru === 'string' && ru.trim().length > 0) {
+      this.returnUrl = ru;
+    }
   }
 
   onSubmit(): void {
@@ -61,9 +69,24 @@ export class LoginComponent {
     this.loading = true;
 
     this.authService.login(this.email, this.mot_de_passe).subscribe({
-      next: () => {
+      next: (user) => {
         this.loading = false;
-        this.router.navigate(['/dashboard']);
+
+        // ✅ Si le backend force le changement de mot de passe (cas mot de passe oublié)
+        if (user?.must_change_password) {
+          const role = user.role;
+          const target =
+            role === 'admin' ? '/admin/change-password'
+            : role === 'employee' ? '/employee/change-password'
+            : '/client/profile';
+
+          // On conserve le returnUrl pour revenir ensuite (si tu veux l’exploiter dans ces pages)
+          this.router.navigate([target], { queryParams: { returnUrl: this.returnUrl } });
+          return;
+        }
+
+        // ✅ Conformité énoncé : redirection vers l’action initiale
+        this.router.navigateByUrl(this.returnUrl || '/dashboard');
       },
       error: (err) => {
         this.loading = false;
