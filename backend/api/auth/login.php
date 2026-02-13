@@ -40,7 +40,7 @@ if (!$email) {
 
 try {
     $query = "SELECT id, last_name, first_name, username, email, password, role, 
-                     is_active, must_change_password 
+                     is_active, must_change_password, email_verified
               FROM users WHERE email = :email LIMIT 1";
     
     $stmt = $db->prepare($query);
@@ -48,7 +48,6 @@ try {
     $stmt->execute();
 
     if ($stmt->rowCount() === 0) {
-        // Log MongoDB - Tentative de connexion échouée (utilisateur inexistant)
         $logger->log('CONNEXION_ECHOUEE', 'user', null, null, [
             'email' => $email,
             'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
@@ -62,15 +61,21 @@ try {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Compte suspendu ?
-    if (!$user['is_active']) {
+    if (!(bool)$user['is_active']) {
         http_response_code(403);
         echo json_encode(["message" => "Compte suspendu. Contactez l'administrateur."]);
         exit;
     }
 
+    // Email non vérifié ?
+    if ((int)$user['email_verified'] !== 1) {
+        http_response_code(403);
+        echo json_encode(["message" => "Email non vérifié. Veuillez confirmer votre email avant de vous connecter."]);
+        exit;
+    }
+
     // Vérification mot de passe
     if (!password_verify($data->password, $user['password'])) {
-        // Log MongoDB - Tentative de connexion échouée (mauvais mot de passe)
         $logger->log('CONNEXION_ECHOUEE', 'user', null, null, [
             'email' => $email,
             'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
@@ -81,7 +86,6 @@ try {
         exit;
     }
 
-    // Log MongoDB - Connexion réussie
     $logger->log('CONNEXION_REUSSIE', 'user', $user['id'], $user['id'], [
         'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
     ]);
@@ -112,6 +116,6 @@ try {
 
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(["message" => "Erreur serveur.", "error" => $e->getMessage()]);
+    echo json_encode(["message" => "Erreur serveur."]);
 }
 ?>

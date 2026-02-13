@@ -1,0 +1,19 @@
+<app-header></app-header>
+
+<div class="verify-email-page">
+  <div class="verify-email-card">
+    <h2>Confirmation email</h2>
+
+    <p *ngIf="loading">Vérification en cours...</p>
+
+    <div *ngIf="!loading" [class.success]="isSuccess" [class.error]="!isSuccess" class="result-box">
+      {{ message }}
+    </div>
+
+    <div *ngIf="!loading" class="actions">
+      <a routerLink="/login" class="btn-primary">Aller à la connexion</a>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

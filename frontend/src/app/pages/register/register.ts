@@ -24,15 +24,17 @@ export class RegisterComponent {
     private authService: AuthService,
     private router: Router
   ) {
+    // 8+ / 1 minuscule / 1 majuscule / 1 chiffre / 1 spécial (non alphanum)
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
+
     this.registerForm = this.fb.group({
-      last_name: ['', [Validators.required]],
-      first_name: ['', [Validators.required]],
-      username: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
+      last_name: ['', [Validators.required, Validators.maxLength(100)]],
+      first_name: ['', [Validators.required, Validators.maxLength(100)]],
+      username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(150)]],
       password: ['', [
         Validators.required,
-        Validators.minLength(8),
-        Validators.pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/)
+        Validators.pattern(passwordPattern)
       ]]
     });
   }
@@ -46,22 +48,22 @@ export class RegisterComponent {
 
     this.authService.register(this.registerForm.value).subscribe({
       next: (response) => {
-        this.successMessage = response.message || 'Compte créé avec succès !';
+        this.successMessage = response.message || "Compte créé. Vérifiez vos emails pour confirmer votre adresse.";
         this.loading = false;
 
-        // Redirection vers login après 2 secondes
+        // Redirection vers login avec email pré-rempli
+        const email = this.registerForm.value.email;
         setTimeout(() => {
-          this.router.navigate(['/login']);
-        }, 2000);
+          this.router.navigate(['/login'], { queryParams: { email } });
+        }, 1500);
       },
       error: (error) => {
-        this.errorMessage = error.error?.message || 'Erreur lors de la création du compte';
+        this.errorMessage = error.error?.message || "Erreur lors de la création du compte";
         this.loading = false;
       }
     });
   }
 
-  // Getters pour les validations dans le template
   get f() {
     return this.registerForm.controls;
   }

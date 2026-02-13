@@ -64,6 +64,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/forgot-password/forgot-password').then(m => m.ForgotPasswordComponent),
     canActivate: [guestGuard]
   },
+  {
+    path: 'verify-email',
+    loadComponent: () => import('./pages/verify-email/verify-email').then(m => m.VerifyEmailComponent),
+    canActivate: [guestGuard]
+  },
 
   // ========== ESPACE CONNECTÉ (Redirection selon rôle) ==========
   { 

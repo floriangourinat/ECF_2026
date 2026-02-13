@@ -6,8 +6,22 @@
       <h2>Connexion</h2>
       <p class="subtitle">Innov'Events 2026</p>
 
+      <div *ngIf="infoMessage" class="alert-info">
+        {{ infoMessage }}
+      </div>
+
       <div *ngIf="errorMessage" class="alert-danger">
         {{ errorMessage }}
+      </div>
+
+      <div *ngIf="showResendVerification" class="alert-warning">
+        <p>Votre email n’est pas confirmé.</p>
+        <button type="button" class="btn-secondary" (click)="resendVerification()" [disabled]="resendLoading">
+          {{ resendLoading ? "Renvoi en cours..." : "Renvoyer l'email de confirmation" }}
+        </button>
+        <div *ngIf="resendMessage" class="mt-2">
+          {{ resendMessage }}
+        </div>
       </div>
 
       <form (ngSubmit)="onSubmit()">

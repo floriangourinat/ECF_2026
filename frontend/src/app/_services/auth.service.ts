@@ -57,6 +57,14 @@ export class AuthService {
     return this.http.post<any>(`${this.baseUrl}/register.php`, userData);
   }
 
+  verifyEmail(token: string): Observable<any> {
+    return this.http.get<any>(`${this.baseUrl}/verify-email.php?token=${encodeURIComponent(token)}`);
+  }
+
+  resendVerification(email: string): Observable<any> {
+    return this.http.post<any>(`${this.baseUrl}/resend-verification.php`, { email });
+  }
+
   forgotPassword(email: string): Observable<any> {
     return this.http.post<any>(`${this.baseUrl}/forgot-password.php`, { email });
   }
