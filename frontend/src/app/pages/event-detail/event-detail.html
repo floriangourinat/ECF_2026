@@ -55,6 +55,22 @@
               <p>{{ event.theme }}</p>
             </div>
           </div>
+
+          <div class="info-card" *ngIf="event.client_company">
+            <span class="icon">🏢</span>
+            <div>
+              <strong>Entreprise cliente</strong>
+              <p>{{ event.client_company }}</p>
+            </div>
+          </div>
+
+          <div class="info-card">
+            <span class="icon">📌</span>
+            <div>
+              <strong>Statut</strong>
+              <p>{{ getStatusLabel(event.status) }}</p>
+            </div>
+          </div>
         </div>
 
         <section class="cta-section">

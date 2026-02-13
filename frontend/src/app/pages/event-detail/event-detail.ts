@@ -31,6 +31,15 @@ export class EventDetailComponent implements OnInit {
   error = '';
   defaultImage = 'assets/images/event-default.jpg';
 
+  statusLabels: Record<string, string> = {
+    draft: 'Brouillon',
+    client_review: 'En attente client',
+    accepted: 'Accepté',
+    in_progress: 'En cours',
+    completed: 'Terminé',
+    cancelled: 'Annulé'
+  };
+
   constructor(
     private route: ActivatedRoute,
     private http: HttpClient
@@ -85,5 +94,9 @@ export class EventDetailComponent implements OnInit {
 
   onImageError(event: any): void {
     event.target.src = this.defaultImage;
+  }
+
+  getStatusLabel(status: string): string {
+    return this.statusLabels[status] || status;
   }
 }
