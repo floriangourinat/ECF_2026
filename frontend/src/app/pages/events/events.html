@@ -32,6 +32,14 @@
         <input type="date" id="filterDateEnd" [(ngModel)]="filterDateEnd" (change)="applyFilters()">
       </div>
 
+      <div class="filter-group">
+        <label for="sortOrder">Tri par date</label>
+        <select id="sortOrder" [(ngModel)]="sortOrder" (change)="applySorting()">
+          <option value="desc">Plus récents</option>
+          <option value="asc">Plus anciens</option>
+        </select>
+      </div>
+
       <button class="btn-reset" (click)="resetFilters()">Réinitialiser</button>
     </div>
   </section>

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { HeaderComponent } from '../../components/header/header';
 import { FooterComponent } from '../../components/footer/footer';
 
@@ -23,6 +23,7 @@ export class EventsComponent implements OnInit {
   filterTheme = '';
   filterDateStart = '';
   filterDateEnd = '';
+  sortOrder: 'desc' | 'asc' = 'desc';
 
   defaultImage = 'assets/images/event-default.jpg';
 
@@ -52,11 +53,31 @@ export class EventsComponent implements OnInit {
   }
 
   loadEvents(): void {
-    this.http.get<any>('http://localhost:8080/api/events/read_public.php')
+    this.loading = true;
+
+    let params = new HttpParams();
+
+    if (this.filterType) {
+      params = params.set('type', this.filterType);
+    }
+
+    if (this.filterTheme) {
+      params = params.set('theme', this.filterTheme);
+    }
+
+    if (this.filterDateStart) {
+      params = params.set('date_start', this.filterDateStart);
+    }
+
+    if (this.filterDateEnd) {
+      params = params.set('date_end', this.filterDateEnd);
+    }
+
+    this.http.get<any>('http://localhost:8080/api/events/read_public.php', { params })
       .subscribe({
         next: (response) => {
           this.events = response.data || [];
-          this.filteredEvents = this.events;
+          this.filteredEvents = this.sortEventsByDate(this.events);
           this.loading = false;
         },
         error: () => {
@@ -67,27 +88,11 @@ export class EventsComponent implements OnInit {
   }
 
   applyFilters(): void {
-    this.filteredEvents = this.events.filter(event => {
-      let match = true;
+    this.loadEvents();
+  }
 
-      if (this.filterType && event.event_type !== this.filterType) {
-        match = false;
-      }
-
-      if (this.filterTheme && event.theme !== this.filterTheme) {
-        match = false;
-      }
-
-      if (this.filterDateStart && new Date(event.start_date) < new Date(this.filterDateStart)) {
-        match = false;
-      }
-
-      if (this.filterDateEnd && new Date(event.end_date) > new Date(this.filterDateEnd)) {
-        match = false;
-      }
-
-      return match;
-    });
+  applySorting(): void {
+    this.filteredEvents = this.sortEventsByDate(this.events);
   }
 
   resetFilters(): void {
@@ -95,7 +100,16 @@ export class EventsComponent implements OnInit {
     this.filterTheme = '';
     this.filterDateStart = '';
     this.filterDateEnd = '';
-    this.filteredEvents = this.events;
+    this.sortOrder = 'desc';
+    this.loadEvents();
+  }
+
+  private sortEventsByDate(events: any[]): any[] {
+    return [...events].sort((a, b) => {
+      const dateA = new Date(a.start_date).getTime();
+      const dateB = new Date(b.start_date).getTime();
+      return this.sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+    });
   }
 
   formatDate(dateString: string): string {
@@ -109,7 +123,6 @@ export class EventsComponent implements OnInit {
 
   getEventImage(imagePath: string | null): string {
     if (imagePath && imagePath.trim() !== '') {
-      // Si c'est un chemin relatif du backend
       if (imagePath.startsWith('/uploads/')) {
         return 'http://localhost:8080' + imagePath;
       }
