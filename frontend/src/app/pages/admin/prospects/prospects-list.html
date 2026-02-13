@@ -68,7 +68,7 @@
                    [alt]="prospect.company_name"
                    class="prospect-thumbnail"
                    (error)="onImageError($event)">
-              <span *ngIf="!prospect.image_path" class="no-image">📷</span>
+              <span *ngIf="!prospect.image_path" class="no-image" aria-hidden="true">📷</span>
             </td>
             <td class="company">
               <strong>{{ prospect.company_name || '-' }}</strong>
@@ -86,15 +86,15 @@
               <a [routerLink]="['/admin/prospects', prospect.id]" class="btn-view" title="Voir détails" aria-label="Voir les détails"><span aria-hidden="true">👁️</span></a>
               
               <div class="dropdown" *ngIf="prospect.status !== 'converted'">
-                <button type="button" class="btn-action" aria-label="Actions du prospect"><span aria-hidden="true">⚙️</span></button>
-                <div class="dropdown-content">
-                  <button *ngIf="prospect.status === 'to_contact'" (click)="updateStatus(prospect, 'qualification')">
+                <button type="button" class="btn-action" aria-label="Actions du prospect" aria-haspopup="menu"><span aria-hidden="true">⚙️</span></button>
+                <div class="dropdown-content" role="menu" aria-label="Actions disponibles">
+                  <button *ngIf="prospect.status === 'to_contact'" role="menuitem" (click)="updateStatus(prospect, 'qualification')">
                     Passer en qualification
                   </button>
-                  <button *ngIf="prospect.status !== 'converted' && prospect.status !== 'failed'" (click)="updateStatus(prospect, 'failed')">
+                  <button *ngIf="prospect.status !== 'converted' && prospect.status !== 'failed'" role="menuitem" (click)="updateStatus(prospect, 'failed')">
                     Marquer comme échoué
                   </button>
-                  <button *ngIf="prospect.status === 'qualification'" (click)="convertToClient(prospect)" class="btn-convert">
+                  <button *ngIf="prospect.status === 'qualification'" role="menuitem" (click)="convertToClient(prospect)" class="btn-convert">
                     ✅ Convertir en client
                   </button>
                 </div>

@@ -11,7 +11,8 @@
     <!-- Filtres -->
     <section class="filters-section">
       <div class="filter-box">
-        <select [(ngModel)]="filterStatus" (change)="onFilterChange()">
+        <label class="sr-only" for="quotes-status-filter">Filtre</label>
+        <select id="quotes-status-filter" [(ngModel)]="filterStatus" (change)="onFilterChange()">
           <option value="">Tous les statuts</option>
           <option value="pending">En attente</option>
           <option value="modification">Modification demandée</option>
@@ -59,19 +60,19 @@
                 class="btn-icon"
                 title="Voir"
                 [attr.aria-label]="'Voir le devis #' + quote.id"
-              >👁️</a>
+              ><span aria-hidden="true">👁️</span></a>
               <button
                 (click)="downloadPdf(quote)"
                 class="btn-icon"
                 title="Télécharger PDF"
                 [attr.aria-label]="'Télécharger le PDF du devis #' + quote.id"
-              >📄</button>
+              ><span aria-hidden="true">📄</span></button>
               <button
                 (click)="deleteQuote(quote)"
                 class="btn-icon btn-danger"
                 title="Supprimer"
                 [attr.aria-label]="'Supprimer le devis #' + quote.id"
-              >🗑️</button>
+              ><span aria-hidden="true">🗑️</span></button>
             </td>
           </tr>
         </tbody>

@@ -234,7 +234,9 @@
         }
       }
 
-      &:hover .dropdown-content {
+      &:hover .dropdown-content,
+      .btn-action:focus + .dropdown-content,
+      .dropdown-content:focus-within {
         display: block;
       }
     }

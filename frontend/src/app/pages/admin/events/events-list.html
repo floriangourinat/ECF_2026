@@ -10,17 +10,20 @@
 
     <section class="filters-section">
       <div class="search-box">
+        <label class="sr-only" for="events-search-input">Recherche</label>
         <input 
+          id="events-search-input"
           type="text" 
           [(ngModel)]="searchTerm" 
           (keyup.enter)="onSearch()"
           placeholder="Rechercher par nom, lieu, client..."
         >
-        <button type="button" (click)="onSearch()" aria-label="Lancer la recherche">🔍</button>
+        <button type="button" (click)="onSearch()" aria-label="Lancer la recherche"><span aria-hidden="true">🔍</span></button>
       </div>
 
       <div class="filter-box">
-        <select [(ngModel)]="filterStatus" (change)="onFilterChange()">
+        <label class="sr-only" for="events-status-filter">Filtre</label>
+        <select id="events-status-filter" [(ngModel)]="filterStatus" (change)="onFilterChange()">
           <option value="">Tous les statuts</option>
           <option value="draft">Brouillon</option>
           <option value="client_review">En attente client</option>
@@ -59,7 +62,7 @@
                    [alt]="event.name"
                    class="event-thumbnail"
                    (error)="onImageError($event)">
-              <span *ngIf="!event.image_path" class="no-image">📷</span>
+              <span *ngIf="!event.image_path" class="no-image" aria-hidden="true">📷</span>
             </td>
             <td class="event-name">
               <strong>{{ event.name }}</strong>
@@ -79,9 +82,9 @@
               </span>
             </td>
             <td class="actions">
-              <a [routerLink]="['/admin/events', event.id]" class="btn-icon" title="Voir" [attr.aria-label]="'Voir l\'événement ' + event.name">👁️</a>
-              <a [routerLink]="['/admin/events', event.id, 'edit']" class="btn-icon" title="Modifier" [attr.aria-label]="'Modifier l\'événement ' + event.name">✏️</a>
-              <button (click)="deleteEvent(event)" class="btn-icon btn-danger" title="Supprimer" [attr.aria-label]="'Supprimer l\'événement ' + event.name">🗑️</button>
+              <a [routerLink]="['/admin/events', event.id]" class="btn-icon" title="Voir" [attr.aria-label]="'Voir l\'événement ' + event.name"><span aria-hidden="true">👁️</span></a>
+              <a [routerLink]="['/admin/events', event.id, 'edit']" class="btn-icon" title="Modifier" [attr.aria-label]="'Modifier l\'événement ' + event.name"><span aria-hidden="true">✏️</span></a>
+              <button (click)="deleteEvent(event)" class="btn-icon btn-danger" title="Supprimer" [attr.aria-label]="'Supprimer l\'événement ' + event.name"><span aria-hidden="true">🗑️</span></button>
             </td>
           </tr>
         </tbody>

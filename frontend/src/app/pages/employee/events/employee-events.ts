@@ -16,7 +16,7 @@ import { EmployeeLayoutComponent } from '../../../components/employee-layout/emp
           <h1>🎉 Événements</h1>
           <div class="search-box">
             <input type="text" [(ngModel)]="searchTerm" (keyup.enter)="loadEvents()" placeholder="Rechercher...">
-            <button (click)="loadEvents()">🔍</button>
+            <button type="button" (click)="loadEvents()" aria-label="Rechercher un événement"><span aria-hidden="true">🔍</span></button>
           </div>
         </header>
         <div *ngIf="loading" class="loading">Chargement...</div>
