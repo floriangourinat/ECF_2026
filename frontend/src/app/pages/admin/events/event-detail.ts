@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
@@ -31,6 +31,8 @@ export class AdminEventDetailComponent implements OnInit {
   taskLoading = false;
   taskError = '';
   newTask = { title: '', description: '', assigned_to: '', due_date: '' };
+
+  @ViewChild('taskTitleInput') taskTitleInput?: ElementRef<HTMLInputElement>;
 
   defaultImage = 'assets/images/event-default.jpg';
 
@@ -117,6 +119,10 @@ export class AdminEventDetailComponent implements OnInit {
     this.showTaskModal = true;
     this.taskError = '';
     this.newTask = { title: '', description: '', assigned_to: '', due_date: '' };
+
+    setTimeout(() => {
+      this.taskTitleInput?.nativeElement.focus();
+    });
   }
 
   closeTaskModal(): void {

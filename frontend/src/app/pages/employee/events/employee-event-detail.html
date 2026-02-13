@@ -79,8 +79,8 @@
 
             <!-- Actions (seulement mes notes) -->
             <div *ngIf="isMyNote(note) && editingNoteId !== note.id" class="note-actions">
-              <button (click)="startEditNote(note)" class="btn-edit">✏️</button>
-              <button (click)="deleteNote(note)" class="btn-delete">🗑️</button>
+              <button (click)="startEditNote(note)" class="btn-edit" aria-label="Modifier la note">✏️</button>
+              <button (click)="deleteNote(note)" class="btn-delete" aria-label="Supprimer la note">🗑️</button>
             </div>
           </div>
         </div>

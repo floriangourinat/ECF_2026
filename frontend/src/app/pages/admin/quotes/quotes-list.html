@@ -54,9 +54,24 @@
             </td>
             <td>{{ formatDate(quote.issue_date) }}</td>
             <td class="actions">
-              <a [routerLink]="['/admin/quotes', quote.id]" class="btn-icon" title="Voir">👁️</a>
-              <button (click)="downloadPdf(quote)" class="btn-icon" title="Télécharger PDF">📄</button>
-              <button (click)="deleteQuote(quote)" class="btn-icon btn-danger" title="Supprimer">🗑️</button>
+              <a
+                [routerLink]="['/admin/quotes', quote.id]"
+                class="btn-icon"
+                title="Voir"
+                [attr.aria-label]="'Voir le devis #' + quote.id"
+              >👁️</a>
+              <button
+                (click)="downloadPdf(quote)"
+                class="btn-icon"
+                title="Télécharger PDF"
+                [attr.aria-label]="'Télécharger le PDF du devis #' + quote.id"
+              >📄</button>
+              <button
+                (click)="deleteQuote(quote)"
+                class="btn-icon btn-danger"
+                title="Supprimer"
+                [attr.aria-label]="'Supprimer le devis #' + quote.id"
+              >🗑️</button>
             </td>
           </tr>
         </tbody>

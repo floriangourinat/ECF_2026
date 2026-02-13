@@ -148,7 +148,7 @@
               <td>{{ task.due_date ? formatDate(task.due_date) : '-' }}</td>
               <td><span class="task-status" [class]="'task-' + task.status">{{ taskStatusLabels[task.status] }}</span></td>
               <td>
-                <button (click)="deleteTask(task)" class="btn-icon btn-danger" title="Supprimer">🗑️</button>
+                <button (click)="deleteTask(task)" class="btn-icon btn-danger" title="Supprimer" [attr.aria-label]="'Supprimer la tâche '+ task.title">🗑️</button>
               </td>
             </tr>
           </tbody>
@@ -183,7 +183,7 @@
               </div>
               <div class="note-actions">
                 <span class="note-date">{{ formatDate(note.created_at) }}</span>
-                <button (click)="deleteNote(note)" class="btn-delete" title="Supprimer">🗑️</button>
+                <button (click)="deleteNote(note)" class="btn-delete" title="Supprimer" aria-label="Supprimer la note">🗑️</button>
               </div>
             </div>
             <p class="note-content">{{ note.content }}</p>
@@ -193,29 +193,29 @@
     </div>
 
     <!-- Modal Ajouter une tâche -->
-    <div class="modal-overlay" *ngIf="showTaskModal" (click)="closeTaskModal()">
-      <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-overlay" *ngIf="showTaskModal" (click)="closeTaskModal()" (keydown.escape)="closeTaskModal()">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="task-modal-title" (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <h2>Nouvelle tâche</h2>
-          <button class="btn-close" (click)="closeTaskModal()">×</button>
+          <h2 id="task-modal-title">Nouvelle tâche</h2>
+          <button class="btn-close" aria-label="Fermer la fenêtre" (click)="closeTaskModal()">×</button>
         </div>
         <div class="modal-body">
           <div *ngIf="taskError" class="alert alert-danger">{{ taskError }}</div>
 
           <div class="form-group">
-            <label>Titre de la tâche *</label>
-            <input type="text" [(ngModel)]="newTask.title" placeholder="Ex: Réserver la salle">
+            <label for="new-task-title">Titre de la tâche *</label>
+            <input id="new-task-title" #taskTitleInput type="text" [(ngModel)]="newTask.title" placeholder="Ex: Réserver la salle">
           </div>
 
           <div class="form-group">
-            <label>Description</label>
-            <textarea [(ngModel)]="newTask.description" rows="3" placeholder="Détails optionnels..."></textarea>
+            <label for="new-task-description">Description</label>
+            <textarea id="new-task-description" [(ngModel)]="newTask.description" rows="3" placeholder="Détails optionnels..."></textarea>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label>Assigner à</label>
-              <select [(ngModel)]="newTask.assigned_to">
+              <label for="new-task-assigned-to">Assigner à</label>
+              <select id="new-task-assigned-to" [(ngModel)]="newTask.assigned_to">
                 <option value="">Non assigné</option>
                 <option *ngFor="let emp of employees" [value]="emp.id">
                   {{ emp.first_name }} {{ emp.last_name }}
@@ -223,8 +223,8 @@
               </select>
             </div>
             <div class="form-group">
-              <label>Échéance</label>
-              <input type="date" [(ngModel)]="newTask.due_date">
+              <label for="new-task-due-date">Échéance</label>
+              <input id="new-task-due-date" type="date" [(ngModel)]="newTask.due_date">
             </div>
           </div>
         </div>
