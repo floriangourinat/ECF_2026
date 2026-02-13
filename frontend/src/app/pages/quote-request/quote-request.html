@@ -15,8 +15,7 @@
       <div *ngIf="submitted" class="success-container">
         <div class="success-icon">✅</div>
         <h3>Demande envoyée avec succès !</h3>
-        <p>{{ successMessage }}</p>
-        <p class="info">Notre équipe vous contactera dans les plus brefs délais.</p>
+        <p class="info">{{ successMessage }}</p>
         <a routerLink="/home" class="btn-primary">Retour à l'accueil</a>
       </div>
 
@@ -27,7 +26,6 @@
           {{ errorMessage }}
         </div>
 
-        <!-- Informations entreprise -->
         <div class="form-section-title">
           <span class="icon">🏢</span>
           <h3>Informations entreprise</h3>
@@ -35,8 +33,14 @@
 
         <div class="form-group">
           <label for="company_name">Nom de l'entreprise *</label>
-          <input type="text" id="company_name" formControlName="company_name" class="form-control"
-            [class.is-invalid]="f['company_name'].invalid && f['company_name'].touched" placeholder="Votre entreprise">
+          <input
+            type="text"
+            id="company_name"
+            formControlName="company_name"
+            class="form-control"
+            [class.is-invalid]="f['company_name'].invalid && f['company_name'].touched"
+            placeholder="Votre entreprise"
+          >
           <small *ngIf="f['company_name'].errors?.['required'] && f['company_name'].touched" class="text-danger">
             Le nom de l'entreprise est requis
           </small>
@@ -45,7 +49,6 @@
           </small>
         </div>
 
-        <!-- Coordonnées -->
         <div class="form-section-title">
           <span class="icon">👤</span>
           <h3>Vos coordonnées</h3>
@@ -54,8 +57,14 @@
         <div class="form-row">
           <div class="form-group half">
             <label for="last_name">Nom *</label>
-            <input type="text" id="last_name" formControlName="last_name" class="form-control"
-              [class.is-invalid]="f['last_name'].invalid && f['last_name'].touched" placeholder="Dupont">
+            <input
+              type="text"
+              id="last_name"
+              formControlName="last_name"
+              class="form-control"
+              [class.is-invalid]="f['last_name'].invalid && f['last_name'].touched"
+              placeholder="Dupont"
+            >
             <small *ngIf="f['last_name'].errors?.['required'] && f['last_name'].touched" class="text-danger">
               Le nom est requis
             </small>
@@ -63,10 +72,17 @@
               Minimum 2 caractères
             </small>
           </div>
+
           <div class="form-group half">
             <label for="first_name">Prénom *</label>
-            <input type="text" id="first_name" formControlName="first_name" class="form-control"
-              [class.is-invalid]="f['first_name'].invalid && f['first_name'].touched" placeholder="Jean">
+            <input
+              type="text"
+              id="first_name"
+              formControlName="first_name"
+              class="form-control"
+              [class.is-invalid]="f['first_name'].invalid && f['first_name'].touched"
+              placeholder="Jean"
+            >
             <small *ngIf="f['first_name'].errors?.['required'] && f['first_name'].touched" class="text-danger">
               Le prénom est requis
             </small>
@@ -79,8 +95,14 @@
         <div class="form-row">
           <div class="form-group half">
             <label for="email">Email *</label>
-            <input type="email" id="email" formControlName="email" class="form-control"
-              [class.is-invalid]="f['email'].invalid && f['email'].touched" placeholder="jean.dupont@entreprise.com">
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              class="form-control"
+              [class.is-invalid]="f['email'].invalid && f['email'].touched"
+              placeholder="jean.dupont@entreprise.com"
+            >
             <small *ngIf="f['email'].errors?.['required'] && f['email'].touched" class="text-danger">
               L'email est requis
             </small>
@@ -88,10 +110,17 @@
               Format d'email invalide
             </small>
           </div>
+
           <div class="form-group half">
             <label for="phone">Téléphone *</label>
-            <input type="tel" id="phone" formControlName="phone" class="form-control"
-              [class.is-invalid]="f['phone'].invalid && f['phone'].touched" placeholder="01 23 45 67 89">
+            <input
+              type="tel"
+              id="phone"
+              formControlName="phone"
+              class="form-control"
+              [class.is-invalid]="f['phone'].invalid && f['phone'].touched"
+              placeholder="01 23 45 67 89"
+            >
             <small *ngIf="f['phone'].errors?.['required'] && f['phone'].touched" class="text-danger">
               Le téléphone est requis
             </small>
@@ -101,7 +130,6 @@
           </div>
         </div>
 
-        <!-- Événement -->
         <div class="form-section-title">
           <span class="icon">🎉</span>
           <h3>Votre événement</h3>
@@ -110,8 +138,12 @@
         <div class="form-row">
           <div class="form-group half">
             <label for="event_type">Type d'événement *</label>
-            <select id="event_type" formControlName="event_type" class="form-control"
-              [class.is-invalid]="f['event_type'].invalid && f['event_type'].touched">
+            <select
+              id="event_type"
+              formControlName="event_type"
+              class="form-control"
+              [class.is-invalid]="f['event_type'].invalid && f['event_type'].touched"
+            >
               <option value="">-- Sélectionnez --</option>
               <option *ngFor="let type of eventTypes" [value]="type.value">{{ type.label }}</option>
             </select>
@@ -119,11 +151,19 @@
               Le type d'événement est requis
             </small>
           </div>
+
           <div class="form-group half">
             <label for="estimated_participants">Nombre de participants *</label>
-            <input type="number" id="estimated_participants" formControlName="estimated_participants" 
-              class="form-control" placeholder="50" min="1" max="10000"
-              [class.is-invalid]="f['estimated_participants'].invalid && f['estimated_participants'].touched">
+            <input
+              type="number"
+              id="estimated_participants"
+              formControlName="estimated_participants"
+              class="form-control"
+              placeholder="50"
+              min="1"
+              max="10000"
+              [class.is-invalid]="f['estimated_participants'].invalid && f['estimated_participants'].touched"
+            >
             <small *ngIf="f['estimated_participants'].errors?.['required'] && f['estimated_participants'].touched" class="text-danger">
               Le nombre de participants est requis
             </small>
@@ -139,19 +179,37 @@
         <div class="form-row">
           <div class="form-group half">
             <label for="planned_date">Date souhaitée *</label>
-            <input type="date" id="planned_date" formControlName="planned_date" class="form-control"
-              [class.is-invalid]="f['planned_date'].invalid && f['planned_date'].touched">
+            <input
+              type="date"
+              id="planned_date"
+              formControlName="planned_date"
+              class="form-control"
+              [class.is-invalid]="f['planned_date'].invalid && f['planned_date'].touched"
+            >
             <small *ngIf="f['planned_date'].errors?.['required'] && f['planned_date'].touched" class="text-danger">
               La date est requise
             </small>
           </div>
+
           <div class="form-group half">
-            <label for="location">Lieu souhaité</label>
-            <input type="text" id="location" formControlName="location" class="form-control" placeholder="Paris, Lyon...">
+            <label for="location">Lieu *</label>
+            <input
+              type="text"
+              id="location"
+              formControlName="location"
+              class="form-control"
+              placeholder="Paris, Lyon..."
+              [class.is-invalid]="f['location'].invalid && f['location'].touched"
+            >
+            <small *ngIf="f['location'].errors?.['required'] && f['location'].touched" class="text-danger">
+              Le lieu est requis
+            </small>
+            <small *ngIf="f['location'].errors?.['minlength'] && f['location'].touched" class="text-danger">
+              Minimum 2 caractères
+            </small>
           </div>
         </div>
 
-        <!-- Image d'inspiration -->
         <div class="form-group">
           <label>Image d'inspiration (facultatif)</label>
           <div class="image-upload">
@@ -167,9 +225,14 @@
 
         <div class="form-group">
           <label for="needs_description">Décrivez votre projet *</label>
-          <textarea id="needs_description" formControlName="needs_description" class="form-control" rows="5"
+          <textarea
+            id="needs_description"
+            formControlName="needs_description"
+            class="form-control"
+            rows="5"
             placeholder="Décrivez votre événement : objectifs, ambiance souhaitée, budget estimé..."
-            [class.is-invalid]="f['needs_description'].invalid && f['needs_description'].touched"></textarea>
+            [class.is-invalid]="f['needs_description'].invalid && f['needs_description'].touched"
+          ></textarea>
           <small class="char-count">{{ quoteForm.get('needs_description')?.value?.length || 0 }} / 2000</small>
           <small *ngIf="f['needs_description'].errors?.['required'] && f['needs_description'].touched" class="text-danger">
             La description est requise
