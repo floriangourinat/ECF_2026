@@ -1,6 +1,13 @@
 <header class="header">
   <div class="logo">
-    <a routerLink="/home"><h1>Innov'Events</h1></a>
+    <a routerLink="/home" aria-label="Retour à l'accueil">
+      <img
+        src="assets/images/logo-innovevents.jpg"
+        alt="Logo Innov'Events"
+        class="logo-image"
+        (error)="onLogoError($event)"
+      >
+    </a>
   </div>
   
   <nav class="nav" [class.active]="mobileMenuOpen">

@@ -28,4 +28,15 @@ export class HeaderComponent {
     this.mobileMenuOpen = false;
     this.router.navigate(['/home']);
   }
+
+  onLogoError(event: Event): void {
+    const image = event.target as HTMLImageElement | null;
+    if (!image) {
+      return;
+    }
+
+    if (!image.src.endsWith('logo-innovevents.svg')) {
+      image.src = 'assets/images/logo-innovevents.svg';
+    }
+  }
 }

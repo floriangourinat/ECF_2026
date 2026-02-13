@@ -3,11 +3,28 @@
 
   <!-- Hero Section -->
   <section class="hero">
+    <video
+      #heroVideo
+      class="hero-video"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      [attr.poster]="null"
+    >
+      <source src="assets/videos/hero-background.mp4" type="video/mp4">
+      <source src="assets/videos/hero-background.webm" type="video/webm">
+      Votre navigateur ne supporte pas les vidéos HTML5.
+    </video>
+
+    <div class="hero-overlay"></div>
+
     <div class="hero-content">
       <h2>Des événements d'exception, sur mesure</h2>
       <p>
-        Innov'Events transforme vos idées en moments inoubliables. 
-        Séminaires, conférences, soirées d'entreprise... 
+        Innov'Events transforme vos idées en moments inoubliables.
+        Séminaires, conférences, soirées d'entreprise...
         Faites confiance à notre expertise pour créer des événements qui marquent les esprits.
       </p>
       <a routerLink="/quote-request" class="btn-primary">Demander un Devis</a>
@@ -20,12 +37,12 @@
     <div class="about-content">
       <div class="about-text">
         <p>
-          Fondée par <strong>Chloé</strong> et <strong>José</strong>, deux passionnés issus de grandes écoles de communication, 
+          Fondée par <strong>Chloé</strong> et <strong>José</strong>, deux passionnés issus de grandes écoles de communication,
           <strong>Innov'Events</strong> s'est rapidement imposée sur le marché des événements professionnels haut de gamme.
         </p>
         <p>
-          Notre crédo : des séminaires et conférences "cousus main" qui marquent les esprits. 
-          Avec une équipe de 8 personnes dévouées, nous mettons tout en œuvre pour que chaque événement 
+          Notre crédo : des séminaires et conférences "cousus main" qui marquent les esprits.
+          Avec une équipe de 8 personnes dévouées, nous mettons tout en œuvre pour que chaque événement
           soit unique et mémorable.
         </p>
         <h3>Nos valeurs</h3>
@@ -36,7 +53,7 @@
         </ul>
       </div>
       <div class="about-image">
-        <img src="assets/images/team.jpg" alt="L'équipe Innov'Events" onerror="this.src='https://via.placeholder.com/400x300?text=Innov%27Events'">
+        <img src="assets/images/event-team.jpg" alt="Équipe Innov'Events" class="about-right-image">
       </div>
     </div>
   </section>
