@@ -12,32 +12,34 @@ import { environment } from '../../../environments/environment';
   standalone: true,
   imports: [CommonModule, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonLabel, IonBadge, IonRefresher, IonRefresherContent, IonSpinner, IonIcon],
   template: `
-    <ion-header><ion-toolbar><ion-title>📅 Événements à venir</ion-title></ion-toolbar></ion-header>
+    <ion-header><ion-toolbar><ion-title>Événements à venir</ion-title></ion-toolbar></ion-header>
     <ion-content>
-      <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)"><ion-refresher-content></ion-refresher-content></ion-refresher>
-      <div *ngIf="loading" class="loading-center"><ion-spinner name="crescent" color="primary"></ion-spinner></div>
-      <div *ngIf="!loading && events.length === 0" class="empty-state"><p>Aucun événement à venir</p></div>
-      <ion-list *ngIf="!loading && events.length > 0" lines="none" class="event-list">
-        <ion-item *ngFor="let event of events" (click)="openEvent(event)" button detail class="event-card">
-          <ion-label>
-            <h2>{{ event.name }}</h2>
-            <p><ion-icon name="calendar-outline"></ion-icon> {{ formatDate(event.start_date) }}</p>
-            <p *ngIf="event.location"><ion-icon name="location-outline"></ion-icon> {{ event.location }}</p>
-            <p class="client-name">{{ event.client_company || event.client_first_name + ' ' + event.client_last_name }}</p>
-          </ion-label>
-          <ion-badge slot="end" [color]="getStatusColor(event.status)">{{ statusLabels[event.status] }}</ion-badge>
-        </ion-item>
-      </ion-list>
+      <main aria-live="polite">
+        <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)"><ion-refresher-content></ion-refresher-content></ion-refresher>
+        <div *ngIf="loading" class="loading-center"><ion-spinner name="crescent" color="primary" aria-label="Chargement"></ion-spinner></div>
+        <div *ngIf="!loading && events.length === 0" class="empty-state"><p>Aucun événement à venir</p></div>
+        <ion-list *ngIf="!loading && events.length > 0" lines="none" class="event-list" aria-label="Liste des événements">
+          <ion-item *ngFor="let event of events" (click)="openEvent(event)" button detail class="event-card" [attr.aria-label]="'Ouvrir le détail de ' + event.name">
+            <ion-label>
+              <h2>{{ event.name }}</h2>
+              <p><ion-icon name="calendar-outline" aria-hidden="true"></ion-icon> {{ formatDate(event.start_date) }}</p>
+              <p *ngIf="event.location"><ion-icon name="location-outline" aria-hidden="true"></ion-icon> {{ event.location }}</p>
+              <p class="client-name">{{ event.client_company || event.client_first_name + ' ' + event.client_last_name }}</p>
+            </ion-label>
+            <ion-badge slot="end" [color]="getStatusColor(event.status)">{{ statusLabels[event.status] }}</ion-badge>
+          </ion-item>
+        </ion-list>
+      </main>
     </ion-content>
   `,
   styles: [`
     .loading-center { display:flex; justify-content:center; padding:60px; }
-    .empty-state { text-align:center; padding:60px 20px; color:#999; font-size:1.1rem; }
+    .empty-state { text-align:center; padding:60px 20px; color:#666; font-size:1.1rem; }
     .event-list { padding:8px; }
     .event-card { --background:white; --border-radius:12px; --padding-start:16px; margin-bottom:10px; box-shadow:0 2px 8px rgba(0,0,0,0.08);
       h2 { font-weight:600; font-size:1rem; color:#2c3e50; margin-bottom:6px; }
-      p { display:flex; align-items:center; gap:6px; font-size:0.85rem; color:#7f8c8d; margin:3px 0; }
-      .client-name { color:#3498db; font-weight:500; margin-top:6px; }
+      p { display:flex; align-items:center; gap:6px; font-size:0.9rem; color:#4a5660; margin:3px 0; }
+      .client-name { color:#1d6fa2; font-weight:500; margin-top:6px; }
       ion-icon { font-size:0.9rem; }
     }
   `]

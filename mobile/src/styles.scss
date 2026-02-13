@@ -11,7 +11,7 @@
 
 :root {
   --ion-color-primary: #f39c12;
-  --ion-color-primary-rgb: 243,156,18;
+  --ion-color-primary-rgb: 243, 156, 18;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-shade: #d68910;
   --ion-color-primary-tint: #f4a62a;
@@ -23,5 +23,17 @@
   --ion-font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-body { font-family: var(--ion-font-family); background: #f5f6fa; }
-ion-toolbar { --background: #2c3e50; --color: #ffffff; }
+body {
+  font-family: var(--ion-font-family);
+  background: #f5f6fa;
+}
+
+ion-toolbar {
+  --background: #2c3e50;
+  --color: #ffffff;
+}
+
+:focus-visible {
+  outline: 3px solid #1a73e8;
+  outline-offset: 2px;
+}

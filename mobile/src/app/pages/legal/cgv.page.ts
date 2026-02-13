@@ -9,7 +9,7 @@ import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/stan
     <ion-header><ion-toolbar><ion-title>Conditions Générales de Vente</ion-title></ion-toolbar></ion-header>
     <ion-content class="ion-padding">
       <div class="legal-content">
-        <h2>Conditions Générales de Vente</h2>
+        <h1>Conditions Générales de Vente</h1>
         <p><strong>Dernière mise à jour : Février 2026</strong></p>
         <h3>Article 1 — Identification du prestataire</h3>
         <p>Innov'Events — Société spécialisée dans l'organisation d'événements professionnels haut de gamme. Siège social : Paris, France. Email : contact&#64;innovevents.com.</p>
@@ -33,6 +33,6 @@ import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/stan
       </div>
     </ion-content>
   `,
-  styles: [`.legal-content { max-width:600px; margin:0 auto; h2 { color:#2c3e50; font-size:1.3rem; } h3 { color:#f39c12; font-size:1rem; margin-top:20px; } p { color:#555; font-size:0.9rem; line-height:1.6; } .footer { text-align:center; margin-top:30px; color:#999; font-size:0.8rem; } }`]
+  styles: [`.legal-content { max-width:600px; margin:0 auto; h1 { color:#2c3e50; font-size:1.3rem; } h3 { color:#f39c12; font-size:1rem; margin-top:20px; } p { color:#555; font-size:0.9rem; line-height:1.6; } .footer { text-align:center; margin-top:30px; color:#999; font-size:0.8rem; } }`]
 })
 export class CgvPage {}

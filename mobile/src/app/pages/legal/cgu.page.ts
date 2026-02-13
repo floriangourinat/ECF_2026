@@ -9,7 +9,7 @@ import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/stan
     <ion-header><ion-toolbar><ion-title>Conditions Générales d'Utilisation</ion-title></ion-toolbar></ion-header>
     <ion-content class="ion-padding">
       <div class="legal-content">
-        <h2>Conditions Générales d'Utilisation</h2>
+        <h1>Conditions Générales d'Utilisation</h1>
         <p><strong>Dernière mise à jour : Février 2026</strong></p>
         <h3>Article 1 — Objet</h3>
         <p>Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation de l'application mobile « Innov'Events Manager », éditée par la société Innov'Events. L'utilisation de l'application implique l'acceptation pleine et entière des présentes CGU.</p>
@@ -31,6 +31,6 @@ import { IonHeader, IonToolbar, IonTitle, IonContent } from '@ionic/angular/stan
       </div>
     </ion-content>
   `,
-  styles: [`.legal-content { max-width:600px; margin:0 auto; h2 { color:#2c3e50; font-size:1.3rem; } h3 { color:#f39c12; font-size:1rem; margin-top:20px; } p { color:#555; font-size:0.9rem; line-height:1.6; } .footer { text-align:center; margin-top:30px; color:#999; font-size:0.8rem; } }`]
+  styles: [`.legal-content { max-width:600px; margin:0 auto; h1 { color:#2c3e50; font-size:1.3rem; } h3 { color:#f39c12; font-size:1rem; margin-top:20px; } p { color:#555; font-size:0.9rem; line-height:1.6; } .footer { text-align:center; margin-top:30px; color:#999; font-size:0.8rem; } }`]
 })
 export class CguPage {}
