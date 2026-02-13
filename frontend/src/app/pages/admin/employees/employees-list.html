@@ -5,23 +5,26 @@
         <h1>Gestion des Employés</h1>
         <p>{{ employees.length }} employé(s) au total</p>
       </div>
-      <button class="btn-create" (click)="openCreateModal()">+ Nouvel employé</button>
+      <button class="btn-create" (click)="openCreateModal()" aria-haspopup="dialog" [attr.aria-expanded]="showCreateModal">+ Nouvel employé</button>
     </header>
 
     <!-- Filtres -->
     <section class="filters-section">
       <div class="search-box">
+        <label class="sr-only" for="employees-search-input">Recherche</label>
         <input 
           type="text" 
           [(ngModel)]="searchTerm" 
           (keyup.enter)="onSearch()"
           placeholder="Rechercher par nom, email..."
+          id="employees-search-input"
         >
-        <button (click)="onSearch()">🔍</button>
+        <button type="button" (click)="onSearch()" aria-label="Lancer la recherche"><span aria-hidden="true">🔍</span></button>
       </div>
 
       <div class="filter-box">
-        <select [(ngModel)]="filterRole" (change)="onFilterChange()">
+        <label class="sr-only" for="employees-status-filter">Filtre</label>
+        <select id="employees-status-filter" [(ngModel)]="filterRole" (change)="onFilterChange()">
           <option value="">Tous les rôles</option>
           <option value="admin">Administrateurs</option>
           <option value="employee">Employés</option>
@@ -65,11 +68,11 @@
             </td>
             <td>{{ formatDate(employee.created_at) }}</td>
             <td class="actions">
-              <a [routerLink]="['/admin/employees', employee.id]" class="btn-icon" title="Voir">👁️</a>
-              <button (click)="toggleStatus(employee)" class="btn-icon" [title]="employee.is_active ? 'Désactiver' : 'Activer'">
-                {{ employee.is_active ? '🔒' : '🔓' }}
+              <a [routerLink]="['/admin/employees', employee.id]" class="btn-icon" title="Voir" aria-label="Voir le détail"><span aria-hidden="true">👁️</span></a>
+              <button (click)="toggleStatus(employee)" class="btn-icon" [title]="employee.is_active ? 'Désactiver' : 'Activer'" [attr.aria-label]="employee.is_active ? 'Désactiver' : 'Activer'">
+                <span aria-hidden="true">{{ employee.is_active ? '🔒' : '🔓' }}</span>
               </button>
-              <button (click)="deleteEmployee(employee)" class="btn-icon btn-danger" title="Supprimer">🗑️</button>
+              <button (click)="deleteEmployee(employee)" class="btn-icon btn-danger" title="Supprimer" aria-label="Supprimer"><span aria-hidden="true">🗑️</span></button>
             </td>
           </tr>
         </tbody>
@@ -77,39 +80,39 @@
     </section>
 
     <!-- Modal Création -->
-    <div class="modal-overlay" *ngIf="showCreateModal" (click)="closeCreateModal()">
-      <div class="modal" (click)="$event.stopPropagation()">
+    <div class="modal-overlay" *ngIf="showCreateModal" (click)="closeCreateModal()" (keydown.escape)="closeCreateModal()">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="create-employee-title" (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <h2>Nouvel Employé</h2>
-          <button class="btn-close" (click)="closeCreateModal()">×</button>
+          <h2 id="create-employee-title">Nouvel Employé</h2>
+          <button type="button" class="btn-close" aria-label="Fermer la fenêtre" (click)="closeCreateModal()">×</button>
         </div>
         <div class="modal-body">
           <div *ngIf="createError" class="alert alert-danger">{{ createError }}</div>
           
           <div class="form-row">
             <div class="form-group">
-              <label>Prénom *</label>
-              <input type="text" [(ngModel)]="newEmployee.first_name" placeholder="Prénom">
+              <label for="new-employee-first-name">Prénom *</label>
+              <input id="new-employee-first-name" type="text" [(ngModel)]="newEmployee.first_name" placeholder="Prénom">
             </div>
             <div class="form-group">
-              <label>Nom *</label>
-              <input type="text" [(ngModel)]="newEmployee.last_name" placeholder="Nom">
+              <label for="new-employee-last-name">Nom *</label>
+              <input id="new-employee-last-name" type="text" [(ngModel)]="newEmployee.last_name" placeholder="Nom">
             </div>
           </div>
 
           <div class="form-group">
-            <label>Email *</label>
-            <input type="email" [(ngModel)]="newEmployee.email" placeholder="email@exemple.com">
+            <label for="new-employee-email">Email *</label>
+            <input id="new-employee-email" type="email" [(ngModel)]="newEmployee.email" placeholder="email@exemple.com">
           </div>
 
           <div class="form-group">
-            <label>Nom d'utilisateur</label>
-            <input type="text" [(ngModel)]="newEmployee.username" placeholder="Ex: jean.dupont">
+            <label for="new-employee-username">Nom d'utilisateur</label>
+            <input id="new-employee-username" type="text" [(ngModel)]="newEmployee.username" placeholder="Ex: jean.dupont">
           </div>
 
           <div class="form-group">
-            <label>Rôle *</label>
-            <select [(ngModel)]="newEmployee.role">
+            <label for="new-employee-role">Rôle *</label>
+            <select id="new-employee-role" [(ngModel)]="newEmployee.role">
               <option value="employee">Employé</option>
               <option value="admin">Administrateur</option>
             </select>

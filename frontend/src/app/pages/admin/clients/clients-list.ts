@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -43,8 +43,12 @@ export class ClientsListComponent implements OnInit {
   };
   createLoading = false;
   createError = '';
+  private previousFocusedElement: HTMLElement | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private elementRef: ElementRef<HTMLElement>
+  ) {}
 
   ngOnInit(): void {
     this.loadClients();
@@ -82,6 +86,7 @@ export class ClientsListComponent implements OnInit {
   }
 
   openCreateModal(): void {
+    this.previousFocusedElement = document.activeElement as HTMLElement;
     this.showCreateModal = true;
     this.createError = '';
     this.newClient = {
@@ -92,10 +97,50 @@ export class ClientsListComponent implements OnInit {
       phone: '',
       address: ''
     };
+
+    setTimeout(() => {
+      const firstField = this.elementRef.nativeElement.querySelector<HTMLElement>('#new-client-first-name');
+      firstField?.focus();
+    });
   }
 
   closeCreateModal(): void {
     this.showCreateModal = false;
+    this.previousFocusedElement?.focus();
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onDocumentKeydown(event: KeyboardEvent): void {
+    if (!this.showCreateModal) return;
+
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.closeCreateModal();
+      return;
+    }
+
+    if (event.key !== 'Tab') return;
+
+    const modal = this.elementRef.nativeElement.querySelector<HTMLElement>('.modal');
+    if (!modal) return;
+
+    const focusable = modal.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'
+    );
+
+    if (focusable.length === 0) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    const active = document.activeElement as HTMLElement;
+
+    if (event.shiftKey && active === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
   }
 
   createClient(): void {

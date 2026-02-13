@@ -10,17 +10,20 @@
     <!-- Filtres -->
     <section class="filters-section">
       <div class="search-box">
+        <label class="sr-only" for="prospects-search-input">Recherche</label>
         <input 
           type="text" 
           [(ngModel)]="searchTerm" 
           (keyup.enter)="onSearch()"
           placeholder="Rechercher par nom, entreprise, email..."
+          id="prospects-search-input"
         >
-        <button (click)="onSearch()">🔍</button>
+        <button type="button" (click)="onSearch()" aria-label="Lancer la recherche"><span aria-hidden="true">🔍</span></button>
       </div>
 
       <div class="filter-box">
-        <select [(ngModel)]="filterStatus" (change)="onFilterChange()">
+        <label class="sr-only" for="prospects-status-filter">Filtre</label>
+        <select id="prospects-status-filter" [(ngModel)]="filterStatus" (change)="onFilterChange()">
           <option value="">Tous les statuts</option>
           <option value="to_contact">À contacter</option>
           <option value="qualification">Qualification</option>
@@ -80,10 +83,10 @@
               </span>
             </td>
             <td class="actions">
-              <a [routerLink]="['/admin/prospects', prospect.id]" class="btn-view" title="Voir détails">👁️</a>
+              <a [routerLink]="['/admin/prospects', prospect.id]" class="btn-view" title="Voir détails" aria-label="Voir les détails"><span aria-hidden="true">👁️</span></a>
               
               <div class="dropdown" *ngIf="prospect.status !== 'converted'">
-                <button class="btn-action">⚙️</button>
+                <button type="button" class="btn-action" aria-label="Actions du prospect"><span aria-hidden="true">⚙️</span></button>
                 <div class="dropdown-content">
                   <button *ngIf="prospect.status === 'to_contact'" (click)="updateStatus(prospect, 'qualification')">
                     Passer en qualification
