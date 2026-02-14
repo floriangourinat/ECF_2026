@@ -48,7 +48,12 @@ import { AuthService } from '../../services/auth.service';
           <ion-card>
             <ion-card-header><ion-card-title>Notes ({{ notes.length }})</ion-card-title></ion-card-header>
             <ion-card-content>
-              <div class="note-form">
+              <ion-button expand="block" fill="outline" size="small" (click)="toggleNoteForm()">
+                <ion-icon name="add-outline" slot="start" aria-hidden="true"></ion-icon>
+                {{ showNoteForm ? 'Fermer' : 'Ajouter une note' }}
+              </ion-button>
+
+              <div class="note-form" *ngIf="showNoteForm">
                 <ion-textarea
                   [(ngModel)]="newNote"
                   placeholder="Ajouter une note rapide..."
@@ -60,7 +65,7 @@ import { AuthService } from '../../services/auth.service';
 
                 <ion-button expand="block" size="small" (click)="addNote()" [disabled]="addingNote || !newNote.trim()">
                   <ion-icon name="add-outline" slot="start" aria-hidden="true"></ion-icon>
-                  {{ addingNote ? 'Ajout...' : 'Ajouter la note' }}
+                  {{ addingNote ? 'Ajout...' : 'Enregistrer la note' }}
                 </ion-button>
               </div>
 
@@ -91,6 +96,7 @@ import { AuthService } from '../../services/auth.service';
 })
 export class EventDetailPage implements OnInit {
   event: any = null; notes: any[] = []; loading = true; newNote = ''; addingNote = false;
+  showNoteForm = false;
   statusLabels: any = { 'draft':'Brouillon', 'client_review':'En attente', 'accepted':'Accepté', 'in_progress':'En cours', 'completed':'Terminé', 'cancelled':'Annulé' };
 
   constructor(private route: ActivatedRoute, private router: Router, private http: HttpClient, private auth: AuthService) {
@@ -115,9 +121,23 @@ export class EventDetailPage implements OnInit {
     if (!this.newNote.trim()) return;
     this.addingNote = true;
     this.http.post<any>(`${environment.apiUrl}/notes/create.php`, { event_id: this.event.id, author_id: this.auth.currentUserValue?.id, content: this.newNote }).subscribe({
-      next: (r) => { if (r.success) { this.notes.unshift(r.data); this.newNote = ''; } this.addingNote = false; },
+      next: (r) => {
+        if (r.success) {
+          this.notes.unshift(r.data);
+          this.newNote = '';
+          this.showNoteForm = false;
+        }
+        this.addingNote = false;
+      },
       error: () => { this.addingNote = false; }
     });
+  }
+
+  toggleNoteForm() {
+    this.showNoteForm = !this.showNoteForm;
+    if (!this.showNoteForm) {
+      this.newNote = '';
+    }
   }
 
   getStatusColor(s: string): string { return ({ draft:'medium', client_review:'warning', accepted:'primary', in_progress:'success', completed:'success', cancelled:'danger' } as any)[s] || 'medium'; }
