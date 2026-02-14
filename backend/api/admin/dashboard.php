@@ -14,14 +14,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    http_response_code(405);
+    echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
+    exit();
+}
+
 require_once '../../config/database.php';
+require_once '../../middleware/auth.php';
+
+require_auth(['admin']);
 
 try {
     $database = new Database();
     $db = $database->getConnection();
 
-    // 1. Prochains événements (3)
-    $stmtEvents = $db->prepare("
+    $stmtEvents = $db->prepare(" 
         SELECT e.id, e.name, e.start_date, e.location, e.status,
                c.company_name as client_company
         FROM events e
@@ -33,8 +41,7 @@ try {
     $stmtEvents->execute();
     $upcomingEvents = $stmtEvents->fetchAll(PDO::FETCH_ASSOC);
 
-    // 2. Notes récentes (5)
-    $stmtNotes = $db->prepare("
+    $stmtNotes = $db->prepare(" 
         SELECT n.id, n.content, n.created_at, n.is_global,
                u.first_name, u.last_name,
                e.name as event_name
@@ -47,8 +54,7 @@ try {
     $stmtNotes->execute();
     $recentNotes = $stmtNotes->fetchAll(PDO::FETCH_ASSOC);
 
-    // Notes globales récentes (10)
-    $stmtGlobalNotes = $db->prepare("
+    $stmtGlobalNotes = $db->prepare(" 
         SELECT n.id, n.content, n.created_at, n.is_global,
                u.first_name, u.last_name
         FROM notes n
@@ -60,9 +66,7 @@ try {
     $stmtGlobalNotes->execute();
     $globalNotes = $stmtGlobalNotes->fetchAll(PDO::FETCH_ASSOC);
 
-    // 3. Indicateurs clés
-    // Clients actifs (avec au moins un événement en cours)
-    $stmtActiveClients = $db->prepare("
+    $stmtActiveClients = $db->prepare(" 
         SELECT COUNT(DISTINCT c.id) as count
         FROM clients c
         JOIN events e ON c.id = e.client_id
@@ -71,49 +75,27 @@ try {
     $stmtActiveClients->execute();
     $activeClients = $stmtActiveClients->fetch(PDO::FETCH_ASSOC)['count'];
 
-    // Événements en brouillon
-    $stmtDraftEvents = $db->prepare("
-        SELECT COUNT(*) as count
-        FROM events
-        WHERE status = 'draft'
-    ");
+    $stmtDraftEvents = $db->prepare("SELECT COUNT(*) as count FROM events WHERE status = 'draft'");
     $stmtDraftEvents->execute();
     $draftEvents = $stmtDraftEvents->fetch(PDO::FETCH_ASSOC)['count'];
 
-    // Prospects à contacter
-    $stmtProspects = $db->prepare("
-        SELECT COUNT(*) as count
-        FROM prospects
-        WHERE status = 'to_contact'
-    ");
+    $stmtProspects = $db->prepare("SELECT COUNT(*) as count FROM prospects WHERE status = 'to_contact'");
     $stmtProspects->execute();
     $prospectsToContact = $stmtProspects->fetch(PDO::FETCH_ASSOC)['count'];
 
-    // Total clients
-    $stmtTotalClients = $db->prepare("SELECT COUNT(*) as count FROM clients");
+    $stmtTotalClients = $db->prepare('SELECT COUNT(*) as count FROM clients');
     $stmtTotalClients->execute();
     $totalClients = $stmtTotalClients->fetch(PDO::FETCH_ASSOC)['count'];
 
-    // Total événements
-    $stmtTotalEvents = $db->prepare("SELECT COUNT(*) as count FROM events");
+    $stmtTotalEvents = $db->prepare('SELECT COUNT(*) as count FROM events');
     $stmtTotalEvents->execute();
     $totalEvents = $stmtTotalEvents->fetch(PDO::FETCH_ASSOC)['count'];
 
-    // Devis en attente
-    $stmtPendingQuotes = $db->prepare("
-        SELECT COUNT(*) as count
-        FROM quotes
-        WHERE status = 'pending'
-    ");
+    $stmtPendingQuotes = $db->prepare("SELECT COUNT(*) as count FROM quotes WHERE status = 'pending'");
     $stmtPendingQuotes->execute();
     $pendingQuotes = $stmtPendingQuotes->fetch(PDO::FETCH_ASSOC)['count'];
 
-    // Devis acceptés
-    $stmtAcceptedQuotes = $db->prepare("
-        SELECT COUNT(*) as count
-        FROM quotes
-        WHERE status = 'accepted'
-    ");
+    $stmtAcceptedQuotes = $db->prepare("SELECT COUNT(*) as count FROM quotes WHERE status = 'accepted'");
     $stmtAcceptedQuotes->execute();
     $acceptedQuotes = $stmtAcceptedQuotes->fetch(PDO::FETCH_ASSOC)['count'];
 
@@ -135,11 +117,7 @@ try {
             ]
         ]
     ]);
-
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'message' => 'Erreur serveur: ' . $e->getMessage()
-    ]);
+    echo json_encode(['success' => false, 'message' => 'Erreur serveur']);
 }

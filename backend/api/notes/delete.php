@@ -21,10 +21,14 @@ if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
 }
 
 require_once '../../config/database.php';
+require_once '../../middleware/auth.php';
+
+$payload = require_auth(['admin', 'employee']);
+$userId = (int)$payload['user_id'];
+$userRole = $payload['role'] ?? '';
 
 $data = json_decode(file_get_contents('php://input'), true);
-
-if (empty($data['id'])) {
+if (!is_array($data) || empty($data['id'])) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'ID note requis']);
     exit();
@@ -34,27 +38,46 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
-    $stmt = $db->prepare("DELETE FROM notes WHERE id = :id");
-    $stmt->execute([':id' => $data['id']]);
+    $stmtNote = $db->prepare('SELECT id, author_id, is_global FROM notes WHERE id = :id LIMIT 1');
+    $stmtNote->execute([':id' => (int)$data['id']]);
+    $note = $stmtNote->fetch(PDO::FETCH_ASSOC);
 
-    if ($stmt->rowCount() === 0) {
+    if (!$note) {
         http_response_code(404);
         echo json_encode(['success' => false, 'message' => 'Note non trouvée']);
         exit();
     }
 
-    // Log MongoDB
+    $isOwner = (int)$note['author_id'] === $userId;
+    $isAdmin = $userRole === 'admin';
+
+    if (!$isAdmin && !$isOwner) {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'message' => 'Accès refusé']);
+        exit();
+    }
+
+    if ((int)$note['is_global'] === 1 && !$isAdmin) {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'message' => 'Seul un admin peut supprimer une note globale']);
+        exit();
+    }
+
+    $stmt = $db->prepare('DELETE FROM notes WHERE id = :id');
+    $stmt->execute([':id' => (int)$data['id']]);
+
     require_once '../../services/MongoLogger.php';
     $logger = new MongoLogger();
-    $logger->log('delete', 'note', (int)$data['id'], null, null);
+    $logger->log('delete', 'note', (int)$data['id'], $userId, [
+        'is_global' => (bool)$note['is_global']
+    ]);
 
     http_response_code(200);
     echo json_encode([
         'success' => true,
         'message' => 'Note supprimée avec succès'
     ]);
-
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);
+    echo json_encode(['success' => false, 'message' => 'Erreur serveur']);
 }

@@ -21,15 +21,30 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 require_once '../../config/database.php';
+require_once '../../middleware/auth.php';
+
+$payload = require_auth(['admin', 'employee']);
+$userId = (int)$payload['user_id'];
+$userRole = $payload['role'] ?? '';
 
 $data = json_decode(file_get_contents('php://input'), true);
+if (!is_array($data)) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'Payload JSON invalide']);
+    exit();
+}
 
 $isGlobal = !empty($data['is_global']) ? 1 : 0;
 
-// Validation
-if (empty($data['content']) || empty($data['author_id'])) {
+if (empty($data['content'])) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'author_id et content requis']);
+    echo json_encode(['success' => false, 'message' => 'content requis']);
+    exit();
+}
+
+if ($isGlobal && $userRole !== 'admin') {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Seul un admin peut créer une note globale']);
     exit();
 }
 
@@ -43,10 +58,20 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
-    $stmt = $db->prepare(" 
-        INSERT INTO notes (event_id, author_id, content, is_global, created_at)
-        VALUES (:event_id, :author_id, :content, :is_global, NOW())
-    ");
+    if (!$isGlobal) {
+        $stmtEvent = $db->prepare('SELECT id FROM events WHERE id = :id LIMIT 1');
+        $stmtEvent->execute([':id' => (int)$data['event_id']]);
+        if (!$stmtEvent->fetch(PDO::FETCH_ASSOC)) {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'message' => 'Événement introuvable']);
+            exit();
+        }
+    }
+
+    $stmt = $db->prepare(
+        'INSERT INTO notes (event_id, author_id, content, is_global, created_at)
+         VALUES (:event_id, :author_id, :content, :is_global, NOW())'
+    );
 
     if ($isGlobal) {
         $stmt->bindValue(':event_id', null, PDO::PARAM_NULL);
@@ -54,27 +79,25 @@ try {
         $stmt->bindValue(':event_id', (int)$data['event_id'], PDO::PARAM_INT);
     }
 
-    $stmt->bindValue(':author_id', (int)$data['author_id'], PDO::PARAM_INT);
-    $stmt->bindValue(':content', htmlspecialchars(strip_tags($data['content'])), PDO::PARAM_STR);
+    $stmt->bindValue(':author_id', $userId, PDO::PARAM_INT);
+    $stmt->bindValue(':content', htmlspecialchars(strip_tags(trim($data['content']))), PDO::PARAM_STR);
     $stmt->bindValue(':is_global', $isGlobal, PDO::PARAM_INT);
     $stmt->execute();
 
-    $noteId = $db->lastInsertId();
+    $noteId = (int)$db->lastInsertId();
 
-    // Récupérer la note avec les infos de l'auteur
-    $stmtNote = $db->prepare("
-        SELECT n.*, u.first_name, u.last_name
-        FROM notes n
-        JOIN users u ON n.author_id = u.id
-        WHERE n.id = :id
-    ");
+    $stmtNote = $db->prepare(
+        'SELECT n.*, u.first_name, u.last_name
+         FROM notes n
+         JOIN users u ON n.author_id = u.id
+         WHERE n.id = :id'
+    );
     $stmtNote->execute([':id' => $noteId]);
     $note = $stmtNote->fetch(PDO::FETCH_ASSOC);
 
-    // Log MongoDB
     require_once '../../services/MongoLogger.php';
     $logger = new MongoLogger();
-    $logger->log('create', 'note', $noteId, (int)$data['author_id'], [
+    $logger->log('create', 'note', $noteId, $userId, [
         'event_id' => $isGlobal ? null : (int)$data['event_id'],
         'is_global' => (bool)$isGlobal
     ]);
@@ -85,8 +108,7 @@ try {
         'message' => 'Note créée avec succès',
         'data' => $note
     ]);
-
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);
+    echo json_encode(['success' => false, 'message' => 'Erreur serveur']);
 }
