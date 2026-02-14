@@ -1,10 +1,17 @@
 <?php
 /**
  * Configuration JWT
- * IMPORTANT : en prod, mettre le secret en variable d'environnement.
  */
+
+$defaultSecret = 'CHANGE_ME_SUPER_SECRET_64CHARS_MINIMUM__________INNOVEVENTS';
+$secret = getenv('JWT_SECRET') ?: $defaultSecret;
+
+if ($secret === $defaultSecret) {
+    error_log('WARNING: JWT_SECRET environment variable is not set. Using insecure default secret.');
+}
+
 return [
-    'secret' => 'CHANGE_ME_SUPER_SECRET_64CHARS_MINIMUM__________INNOVEVENTS',
-    'issuer' => 'innovevents-api',
-    'ttl_seconds' => 86400 // 24h
+    'secret' => $secret,
+    'issuer' => getenv('JWT_ISSUER') ?: 'innovevents-api',
+    'ttl_seconds' => (int)(getenv('JWT_TTL_SECONDS') ?: 86400)
 ];

@@ -2,7 +2,6 @@
 /**
  * API: Créer un avis client
  * POST /api/reviews/create.php
- * Body JSON: { user_id, event_id, rating, comment }
  */
 
 header('Access-Control-Allow-Origin: http://localhost:4200');
@@ -22,13 +21,15 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 require_once '../../config/database.php';
+require_once '../../middleware/auth.php';
 
-$rawBody = file_get_contents('php://input');
-$data = json_decode($rawBody, true);
+$payload = require_auth(['client']);
+$authUserId = (int)$payload['user_id'];
 
+$data = json_decode(file_get_contents('php://input'), true);
 if (!is_array($data)) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'JSON invalide']);
+    echo json_encode(['success' => false, 'message' => 'Payload JSON invalide']);
     exit();
 }
 
@@ -40,6 +41,12 @@ $comment = isset($data['comment']) ? trim((string)$data['comment']) : null;
 if (!$userId || !$eventId || !$rating) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'Données incomplètes ou invalides']);
+    exit();
+}
+
+if ($userId !== $authUserId) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Accès refusé']);
     exit();
 }
 
@@ -59,7 +66,7 @@ try {
     $db->beginTransaction();
 
     $stmtClient = $db->prepare('SELECT id FROM clients WHERE user_id = :user_id LIMIT 1');
-    $stmtClient->execute([':user_id' => $userId]);
+    $stmtClient->execute([':user_id' => $authUserId]);
     $client = $stmtClient->fetch(PDO::FETCH_ASSOC);
 
     if (!$client) {

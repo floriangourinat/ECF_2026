@@ -21,11 +21,22 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 }
 
 require_once '../../config/database.php';
+require_once '../../middleware/auth.php';
+
+$payload = require_auth(['admin', 'client']);
+$authUserId = (int)$payload['user_id'];
+$role = $payload['role'] ?? '';
 
 $userId = filter_var($_GET['user_id'] ?? null, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
 if (!$userId) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'ID utilisateur invalide']);
+    exit();
+}
+
+if ($role === 'client' && $userId !== $authUserId) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'message' => 'Accès refusé']);
     exit();
 }
 

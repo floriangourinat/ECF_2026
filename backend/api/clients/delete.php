@@ -21,10 +21,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
 }
 
 require_once '../../config/database.php';
+require_once '../../middleware/auth.php';
+
+$payload = require_auth(['admin']);
+$userId = (int)$payload['user_id'];
 
 $data = json_decode(file_get_contents('php://input'), true);
-
-if (empty($data['id'])) {
+if (!is_array($data) || empty($data['id'])) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'ID client requis']);
     exit();
@@ -34,9 +37,8 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
-    // Récupérer le user_id et le nom avant suppression
-    $stmtCheck = $db->prepare("SELECT c.user_id, c.company_name FROM clients c WHERE c.id = :id");
-    $stmtCheck->execute([':id' => $data['id']]);
+    $stmtCheck = $db->prepare('SELECT c.user_id, c.company_name FROM clients c WHERE c.id = :id LIMIT 1');
+    $stmtCheck->execute([':id' => (int)$data['id']]);
     $client = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
     if (!$client) {
@@ -47,20 +49,17 @@ try {
 
     $db->beginTransaction();
 
-    // Supprimer le client
-    $stmtClient = $db->prepare("DELETE FROM clients WHERE id = :id");
-    $stmtClient->execute([':id' => $data['id']]);
+    $stmtClient = $db->prepare('DELETE FROM clients WHERE id = :id');
+    $stmtClient->execute([':id' => (int)$data['id']]);
 
-    // Supprimer l'utilisateur associé
-    $stmtUser = $db->prepare("DELETE FROM users WHERE id = :user_id");
-    $stmtUser->execute([':user_id' => $client['user_id']]);
+    $stmtUser = $db->prepare('DELETE FROM users WHERE id = :user_id');
+    $stmtUser->execute([':user_id' => (int)$client['user_id']]);
 
     $db->commit();
 
-    // Log MongoDB -Client supprimé
     require_once '../../services/MongoLogger.php';
     $logger = new MongoLogger();
-    $logger->log('SUPPRESSION_CLIENT', 'client', (int)$data['id'], null, [
+    $logger->log('SUPPRESSION_CLIENT', 'client', (int)$data['id'], $userId, [
         'id' => (int)$data['id'],
         'nom' => $client['company_name']
     ]);
@@ -70,9 +69,10 @@ try {
         'success' => true,
         'message' => 'Client supprimé avec succès'
     ]);
-
 } catch (PDOException $e) {
-    $db->rollBack();
+    if (isset($db) && $db->inTransaction()) {
+        $db->rollBack();
+    }
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);
+    echo json_encode(['success' => false, 'message' => 'Erreur serveur']);
 }

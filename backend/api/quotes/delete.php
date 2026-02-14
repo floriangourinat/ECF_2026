@@ -21,35 +21,49 @@ if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
 }
 
 require_once '../../config/database.php';
+require_once '../../middleware/auth.php';
+
+$payload = require_auth(['admin']);
+$userId = (int)$payload['user_id'];
 
 $data = json_decode(file_get_contents('php://input'), true);
-
-if (empty($data['id'])) {
+if (!is_array($data) || empty($data['id'])) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'ID devis requis']);
     exit();
 }
 
+$quoteId = (int)$data['id'];
+
 try {
     $database = new Database();
     $db = $database->getConnection();
 
-    $stmt = $db->prepare("DELETE FROM quotes WHERE id = :id");
-    $stmt->execute([':id' => $data['id']]);
+    $stmtCheck = $db->prepare('SELECT id, status FROM quotes WHERE id = :id LIMIT 1');
+    $stmtCheck->execute([':id' => $quoteId]);
+    $quote = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
-    if ($stmt->rowCount() === 0) {
+    if (!$quote) {
         http_response_code(404);
         echo json_encode(['success' => false, 'message' => 'Devis non trouvé']);
         exit();
     }
+
+    $stmt = $db->prepare('DELETE FROM quotes WHERE id = :id');
+    $stmt->execute([':id' => $quoteId]);
+
+    require_once '../../services/MongoLogger.php';
+    $logger = new MongoLogger();
+    $logger->log('SUPPRESSION_DEVIS', 'quote', $quoteId, $userId, [
+        'ancien_statut' => $quote['status']
+    ]);
 
     http_response_code(200);
     echo json_encode([
         'success' => true,
         'message' => 'Devis supprimé avec succès'
     ]);
-
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);
+    echo json_encode(['success' => false, 'message' => 'Erreur serveur']);
 }
