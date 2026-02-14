@@ -25,6 +25,28 @@ require_once '../../vendor/autoload.php';
 use PHPMailer\PHPMailer\Exception as MailException;
 use PHPMailer\PHPMailer\PHPMailer;
 
+function getQuoteSuccessMessage(PDO $db): string
+{
+    $defaultMessage = 'Merci pour votre demande. Chloé vous recontactera dans les plus brefs délais pour discuter de votre projet.';
+
+    try {
+        $query = "SELECT setting_value FROM app_settings WHERE setting_key = :setting_key LIMIT 1";
+        $stmt = $db->prepare($query);
+        $settingKey = 'quote_success_message';
+        $stmt->bindParam(':setting_key', $settingKey);
+        $stmt->execute();
+
+        $message = $stmt->fetchColumn();
+        if (is_string($message) && trim($message) !== '') {
+            return $message;
+        }
+    } catch (Throwable $e) {
+        // fallback silencieux sur message par défaut
+    }
+
+    return $defaultMessage;
+}
+
 try {
     $database = new Database();
     $db = $database->getConnection();
@@ -198,7 +220,7 @@ try {
 
     http_response_code(201);
     echo json_encode([
-        'message' => 'Merci pour votre demande. Chloé vous recontactera dans les plus brefs délais pour discuter de votre projet.',
+        'message' => getQuoteSuccessMessage($db),
         'prospect_id' => $prospect_id,
         'mail_warning' => $mailWarning
     ]);

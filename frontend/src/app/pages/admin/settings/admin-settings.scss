@@ -1,0 +1,67 @@
+.settings-page {
+  padding: 24px;
+}
+
+.settings-header {
+  margin-bottom: 16px;
+}
+
+.settings-card {
+  background: #fff;
+  border: 1px solid #e7e7e7;
+  border-radius: 10px;
+  padding: 18px;
+  max-width: 900px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+textarea {
+  width: 100%;
+  border: 1px solid #d6d6d6;
+  border-radius: 8px;
+  padding: 10px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.meta {
+  margin-top: 6px;
+  color: #666;
+  font-size: 12px;
+}
+
+.alert {
+  margin-top: 12px;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.alert-error {
+  background: #ffecec;
+  color: #9e1c1c;
+}
+
+.alert-success {
+  background: #e9f9ef;
+  color: #0b6b2b;
+}
+
+.btn-save {
+  margin-top: 14px;
+  background: #2f80ed;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

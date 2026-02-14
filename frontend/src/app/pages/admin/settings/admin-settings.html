@@ -1,0 +1,32 @@
+<app-admin-layout>
+  <div class="settings-page">
+    <div class="settings-header">
+      <h1>⚙️ Paramètres</h1>
+      <p>Personnalisez le message affiché après une demande de devis.</p>
+    </div>
+
+    <div class="settings-card" *ngIf="!loading; else loadingTpl">
+      <label for="quoteSuccessMessage">Message de remerciement (Demande de devis)</label>
+      <textarea
+        id="quoteSuccessMessage"
+        [(ngModel)]="quoteSuccessMessage"
+        rows="5"
+        maxlength="500"
+        placeholder="Saisissez le message affiché au prospect..."
+      ></textarea>
+
+      <div class="meta">{{ quoteSuccessMessage.length || 0 }} / 500</div>
+
+      <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+      <div *ngIf="success" class="alert alert-success">{{ success }}</div>
+
+      <button type="button" class="btn-save" (click)="save()" [disabled]="saving">
+        {{ saving ? 'Enregistrement...' : 'Enregistrer' }}
+      </button>
+    </div>
+
+    <ng-template #loadingTpl>
+      <div class="settings-card">Chargement...</div>
+    </ng-template>
+  </div>
+</app-admin-layout>

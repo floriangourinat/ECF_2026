@@ -19,6 +19,7 @@ export class QuoteRequestComponent {
   errorMessage = '';
   successMessage = '';
   readonly defaultSuccessMessage = 'Merci pour votre demande. Chloé vous recontactera dans les plus brefs délais pour discuter de votre projet.';
+  runtimeSuccessMessage = this.defaultSuccessMessage;
   submitted = false;
 
   selectedImage: File | null = null;
@@ -48,6 +49,22 @@ export class QuoteRequestComponent {
       estimated_participants: ['', [Validators.required, Validators.min(1), Validators.max(10000)]],
       needs_description: ['', [Validators.required, Validators.minLength(20), Validators.maxLength(2000)]]
     });
+
+    this.loadSuccessMessage();
+  }
+
+  loadSuccessMessage(): void {
+    this.http.get<any>('http://localhost:8080/api/settings/get_quote_success_message.php')
+      .subscribe({
+        next: (response) => {
+          if (response?.message) {
+            this.runtimeSuccessMessage = response.message;
+          }
+        },
+        error: () => {
+          this.runtimeSuccessMessage = this.defaultSuccessMessage;
+        }
+      });
   }
 
   onImageSelected(event: any): void {
@@ -100,7 +117,7 @@ export class QuoteRequestComponent {
           if (this.selectedImage && prospectId) {
             this.uploadImage(prospectId);
           } else {
-            this.successMessage = response.message || this.defaultSuccessMessage;
+            this.successMessage = response.message || this.runtimeSuccessMessage;
             this.loading = false;
             this.submitted = true;
             this.quoteForm.reset();
@@ -123,7 +140,7 @@ export class QuoteRequestComponent {
     this.http.post<any>('http://localhost:8080/api/prospects/upload_image.php', formData)
       .subscribe({
         next: () => {
-          this.successMessage = this.defaultSuccessMessage;
+          this.successMessage = this.runtimeSuccessMessage;
           this.loading = false;
           this.submitted = true;
           this.quoteForm.reset();
@@ -131,7 +148,7 @@ export class QuoteRequestComponent {
           this.imagePreview = null;
         },
         error: () => {
-          this.successMessage = this.defaultSuccessMessage;
+          this.successMessage = this.runtimeSuccessMessage;
           this.loading = false;
           this.submitted = true;
           this.quoteForm.reset();

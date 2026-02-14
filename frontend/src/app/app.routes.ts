@@ -223,6 +223,11 @@ export const routes: Routes = [
     canActivate: [adminGuard]
   },
   { 
+    path: 'admin/settings', 
+    loadComponent: () => import('./pages/admin/settings/admin-settings').then(m => m.AdminSettingsComponent),
+    canActivate: [adminGuard]
+  },
+  { 
     path: 'admin/change-password', 
     loadComponent: () => import('./pages/admin/change-password/admin-change-password').then(m => m.AdminChangePasswordComponent),
     canActivate: [adminGuard]
