@@ -19,6 +19,7 @@ export class QuoteDetailComponent implements OnInit {
   sending = false;
 
   statusLabels: { [key: string]: string } = {
+    'draft': 'Brouillon',
     'pending': 'Étude côté client',
     'modification': 'Modification demandée',
     'accepted': 'Accepté',
@@ -79,6 +80,7 @@ export class QuoteDetailComponent implements OnInit {
       quote_id: this.quote.id
     }).subscribe({
       next: (response) => {
+        this.quote.status = response?.data?.status || 'pending';
         alert(response.message || 'Email envoyé avec succès !');
         this.sending = false;
       },

@@ -103,9 +103,18 @@ try {
             $mail->setFrom($mailConfig['from_email'], $mailConfig['from_name']);
             $mail->addAddress($mailConfig['from_email'], $mailConfig['from_name']);
 
+            $mail->CharSet = 'UTF-8';
+            $mail->Encoding = 'base64';
+
             $clientName = $quote['company_name'] ?: ($quote['first_name'] . ' ' . $quote['last_name']);
+            $subjectMap = [
+                'accepted' => 'Devis accepté',
+                'modification' => 'Demande de modification du devis'
+            ];
             $statusLabel = $data['status'] === 'accepted' ? 'accepté' : 'demande de modification';
-            $mail->Subject = "Devis {$statusLabel} - {$quote['event_name']}";
+            $subjectPrefix = $subjectMap[$data['status']] ?? 'Mise à jour du devis';
+            $eventNameForSubject = trim(preg_replace('/\s+/', ' ', (string)($quote['event_name'] ?? '')));
+            $mail->Subject = $subjectPrefix . ($eventNameForSubject !== '' ? ' - ' . $eventNameForSubject : '');
 
             $reasonHtml = '';
             if ($data['status'] === 'modification') {

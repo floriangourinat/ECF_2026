@@ -146,6 +146,10 @@ try {
     // Envoyer
     $mail->send();
 
+    // Au moment de l'envoi au client, le devis passe en étude côté client
+    $stmtUpdateStatus = $db->prepare("UPDATE quotes SET status = 'pending', updated_at = NOW() WHERE id = :id");
+    $stmtUpdateStatus->execute([':id' => $data['quote_id']]);
+
     // Logger l'action
     try {
         require_once '../../services/MongoLogger.php';
@@ -161,7 +165,10 @@ try {
     http_response_code(200);
     echo json_encode([
         'success' => true,
-        'message' => 'Devis envoyé à ' . $quote['client_email']
+        'message' => 'Devis envoyé à ' . $quote['client_email'],
+        'data' => [
+            'status' => 'pending'
+        ]
     ]);
 
 } catch (Exception $e) {

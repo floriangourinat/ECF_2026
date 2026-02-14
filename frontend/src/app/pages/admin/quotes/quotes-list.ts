@@ -35,6 +35,7 @@ export class QuotesListComponent implements OnInit {
   filterStatus = '';
 
   statusLabels: { [key: string]: string } = {
+    'draft': 'Brouillon',
     'pending': 'Étude côté client',
     'modification': 'Modification demandée',
     'accepted': 'Accepté',
@@ -101,6 +102,7 @@ export class QuotesListComponent implements OnInit {
 
   getStatusClass(status: string): string {
     const classes: { [key: string]: string } = {
+      'draft': 'status-draft',
       'pending': 'status-pending',
       'modification': 'status-modification',
       'accepted': 'status-accepted',

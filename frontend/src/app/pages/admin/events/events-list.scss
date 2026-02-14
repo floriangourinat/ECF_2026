@@ -100,6 +100,11 @@
         color: #2c3e50;
         font-size: 0.9rem;
       }
+
+      th:last-child {
+        text-align: center;
+        width: 120px;
+      }
     }
 
     tbody tr {
@@ -113,6 +118,11 @@
         padding: 15px;
         border-bottom: 1px solid #eee;
         font-size: 0.9rem;
+        vertical-align: middle;
+
+        &.action-cell {
+          text-align: center;
+        }
 
         &.event-name strong {
           color: #2c3e50;
@@ -185,14 +195,24 @@
 
   .actions {
     display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 8px;
+    width: 120px;
+    margin: 0 auto;
 
     .btn-icon {
-      padding: 8px;
+      width: 28px;
+      height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
       background: none;
       border: none;
       cursor: pointer;
       font-size: 1rem;
+      line-height: 1;
       text-decoration: none;
       border-radius: 5px;
 

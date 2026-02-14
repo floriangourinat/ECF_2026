@@ -81,10 +81,12 @@
                 {{ event.is_visible ? '✅' : '❌' }}
               </span>
             </td>
-            <td class="actions">
-              <a [routerLink]="['/admin/events', event.id]" class="btn-icon" title="Voir" [attr.aria-label]="'Voir l\'événement ' + event.name"><span aria-hidden="true">👁️</span></a>
-              <a [routerLink]="['/admin/events', event.id, 'edit']" class="btn-icon" title="Modifier" [attr.aria-label]="'Modifier l\'événement ' + event.name"><span aria-hidden="true">✏️</span></a>
-              <button (click)="deleteEvent(event)" class="btn-icon btn-danger" title="Supprimer" [attr.aria-label]="'Supprimer l\'événement ' + event.name"><span aria-hidden="true">🗑️</span></button>
+            <td class="action-cell">
+              <div class="actions">
+                <a [routerLink]="['/admin/events', event.id]" class="btn-icon" title="Voir" [attr.aria-label]="'Voir l\'événement ' + event.name"><span aria-hidden="true">👁️</span></a>
+                <a [routerLink]="['/admin/events', event.id, 'edit']" class="btn-icon" title="Modifier" [attr.aria-label]="'Modifier l\'événement ' + event.name"><span aria-hidden="true">✏️</span></a>
+                <button (click)="deleteEvent(event)" class="btn-icon btn-danger" title="Supprimer" [attr.aria-label]="'Supprimer l\'événement ' + event.name"><span aria-hidden="true">🗑️</span></button>
+              </div>
             </td>
           </tr>
         </tbody>

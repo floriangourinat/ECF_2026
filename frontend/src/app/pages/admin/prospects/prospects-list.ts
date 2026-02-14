@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -35,6 +35,7 @@ export class ProspectsListComponent implements OnInit {
   error = '';
   searchTerm = '';
   filterStatus = '';
+  openDropdownProspectId: number | null = null;
 
   statusLabels: { [key: string]: string } = {
     'to_contact': 'À contacter',
@@ -80,6 +81,24 @@ export class ProspectsListComponent implements OnInit {
     this.loadProspects();
   }
 
+  toggleDropdown(prospectId: number, event: MouseEvent): void {
+    event.stopPropagation();
+    this.openDropdownProspectId = this.openDropdownProspectId === prospectId ? null : prospectId;
+  }
+
+  isDropdownOpen(prospectId: number): boolean {
+    return this.openDropdownProspectId === prospectId;
+  }
+
+  closeDropdown(): void {
+    this.openDropdownProspectId = null;
+  }
+
+  @HostListener('document:click')
+  onDocumentClick(): void {
+    this.closeDropdown();
+  }
+
   getImageUrl(path: string): string {
     if (path && path.startsWith('/uploads/')) {
       return 'http://localhost:8080' + path;
@@ -109,6 +128,7 @@ export class ProspectsListComponent implements OnInit {
     }).subscribe({
       next: () => {
         prospect.status = newStatus;
+        this.closeDropdown();
       },
       error: (err) => {
         alert(err.error?.message || 'Erreur lors de la mise à jour du statut');
@@ -131,6 +151,7 @@ export class ProspectsListComponent implements OnInit {
           alert(`Client créé avec succès !\nMot de passe temporaire : ${response.data.temp_password}`);
         }
         prospect.status = 'converted';
+        this.closeDropdown();
       },
       error: (err) => {
         alert(err.error?.message || 'Erreur lors de la conversion');

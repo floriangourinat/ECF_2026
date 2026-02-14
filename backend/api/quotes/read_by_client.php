@@ -42,6 +42,7 @@ try {
         FROM quotes q
         JOIN events e ON q.event_id = e.id
         WHERE e.client_id = :client_id
+          AND q.status != 'draft'
         ORDER BY q.created_at DESC
     ");
     $stmt->execute([':client_id' => $client['id']]);

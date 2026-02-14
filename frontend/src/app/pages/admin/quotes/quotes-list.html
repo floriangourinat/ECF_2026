@@ -14,6 +14,7 @@
         <label class="sr-only" for="quotes-status-filter">Filtre</label>
         <select id="quotes-status-filter" [(ngModel)]="filterStatus" (change)="onFilterChange()">
           <option value="">Tous les statuts</option>
+          <option value="draft">Brouillon</option>
           <option value="pending">Étude côté client</option>
           <option value="modification">Modification demandée</option>
           <option value="accepted">Accepté</option>

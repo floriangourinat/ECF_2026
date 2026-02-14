@@ -52,17 +52,26 @@ try {
     $taxRate = !empty($data['tax_rate']) ? floatval($data['tax_rate']) : 20.00;
     $totalTTC = $totalHT * (1 + $taxRate / 100);
 
+    $initialStatus = 'pending';
+    $stmtStatusColumn = $db->query("SHOW COLUMNS FROM quotes LIKE 'status'");
+    $statusColumn = $stmtStatusColumn ? $stmtStatusColumn->fetch(PDO::FETCH_ASSOC) : null;
+    $statusType = strtolower((string)($statusColumn['Type'] ?? ''));
+    if (strpos($statusType, "'draft'") !== false) {
+        $initialStatus = 'draft';
+    }
+
     // Créer le devis
     $stmtQuote = $db->prepare("
         INSERT INTO quotes (event_id, total_ht, tax_rate, total_ttc, issue_date, status, created_at)
-        VALUES (:event_id, :total_ht, :tax_rate, :total_ttc, :issue_date, 'pending', NOW())
+        VALUES (:event_id, :total_ht, :tax_rate, :total_ttc, :issue_date, :status, NOW())
     ");
     $stmtQuote->execute([
         ':event_id' => $data['event_id'],
         ':total_ht' => $totalHT,
         ':tax_rate' => $taxRate,
         ':total_ttc' => $totalTTC,
-        ':issue_date' => date('Y-m-d')
+        ':issue_date' => date('Y-m-d'),
+        ':status' => $initialStatus
     ]);
     $quoteId = $db->lastInsertId();
 

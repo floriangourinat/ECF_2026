@@ -82,22 +82,28 @@
                 {{ statusLabels[prospect.status] }}
               </span>
             </td>
-            <td class="actions">
+            <td class="action-cell">
+              <div class="actions">
               <a [routerLink]="['/admin/prospects', prospect.id]" class="btn-view" title="Voir détails" aria-label="Voir les détails"><span aria-hidden="true">👁️</span></a>
               
-              <div class="dropdown" *ngIf="prospect.status !== 'converted'">
-                <button type="button" class="btn-action" aria-label="Actions du prospect" aria-haspopup="menu"><span aria-hidden="true">⚙️</span></button>
-                <div class="dropdown-content" role="menu" aria-label="Actions disponibles">
+              <div class="dropdown" *ngIf="prospect.status === 'to_contact' || prospect.status === 'qualification'; else actionsSpacer" [class.open]="isDropdownOpen(prospect.id)">
+                <button type="button" class="btn-action" aria-label="Actions du prospect" aria-haspopup="menu" [attr.aria-expanded]="isDropdownOpen(prospect.id)" (click)="toggleDropdown(prospect.id, $event)"><span aria-hidden="true">⚙️</span></button>
+                <div class="dropdown-content" role="menu" aria-label="Actions disponibles" (click)="$event.stopPropagation()">
                   <button *ngIf="prospect.status === 'to_contact'" role="menuitem" (click)="updateStatus(prospect, 'qualification')">
                     Passer en qualification
                   </button>
-                  <button *ngIf="prospect.status !== 'converted' && prospect.status !== 'failed'" role="menuitem" (click)="updateStatus(prospect, 'failed')">
+                  <button role="menuitem" (click)="updateStatus(prospect, 'failed')">
                     Marquer comme échoué
                   </button>
                   <button *ngIf="prospect.status === 'qualification'" role="menuitem" (click)="convertToClient(prospect)" class="btn-convert">
                     ✅ Convertir en client
                   </button>
                 </div>
+              </div>
+
+              <ng-template #actionsSpacer>
+                <span class="actions-spacer" aria-hidden="true"></span>
+              </ng-template>
               </div>
             </td>
           </tr>
