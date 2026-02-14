@@ -21,6 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
 }
 
 require_once '../../config/database.php';
+require_once '../../middleware/auth.php';
+
+$payload = require_auth(['admin', 'employee']);
+$reviewedBy = (int)$payload['user_id'];
 
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -41,26 +45,26 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
-    $stmtCols = $db->prepare("SHOW COLUMNS FROM reviews");
+    $stmtCols = $db->prepare('SHOW COLUMNS FROM reviews');
     $stmtCols->execute();
     $columns = array_column($stmtCols->fetchAll(PDO::FETCH_ASSOC), 'Field');
 
-    $sql = "UPDATE reviews SET status = :status";
+    $sql = 'UPDATE reviews SET status = :status';
     $params = [
         ':status' => $data['status'],
-        ':id' => $data['id']
+        ':id' => (int)$data['id']
     ];
 
     if (in_array('reviewed_by', $columns, true)) {
-        $sql .= ", reviewed_by = :reviewed_by";
-        $params[':reviewed_by'] = $data['reviewed_by'] ?? null;
+        $sql .= ', reviewed_by = :reviewed_by';
+        $params[':reviewed_by'] = $reviewedBy;
     }
 
     if (in_array('updated_at', $columns, true)) {
-        $sql .= ", updated_at = NOW()";
+        $sql .= ', updated_at = NOW()';
     }
 
-    $sql .= " WHERE id = :id";
+    $sql .= ' WHERE id = :id';
 
     $stmt = $db->prepare($sql);
     $stmt->execute($params);
@@ -76,7 +80,6 @@ try {
         'success' => true,
         'message' => 'Avis modéré avec succès'
     ]);
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);

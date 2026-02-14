@@ -17,6 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 require_once '../../config/database.php';
+require_once '../../middleware/auth.php';
+
+require_auth(['admin']);
 
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -30,10 +33,7 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
-    $stmt = $db->prepare("
-        INSERT INTO tasks (event_id, assigned_to, title, description, status, due_date)
-        VALUES (:event_id, :assigned_to, :title, :description, :status, :due_date)
-    ");
+    $stmt = $db->prepare('\n        INSERT INTO tasks (event_id, assigned_to, title, description, status, due_date)\n        VALUES (:event_id, :assigned_to, :title, :description, :status, :due_date)\n    ');
 
     $stmt->execute([
         ':event_id' => (int)$data['event_id'],
@@ -44,21 +44,14 @@ try {
         ':due_date' => !empty($data['due_date']) ? $data['due_date'] : null
     ]);
 
-    $taskId = $db->lastInsertId();
+    $taskId = (int)$db->lastInsertId();
 
-    // Récupérer la tâche créée avec les infos de l'assigné
-    $stmtRead = $db->prepare("
-        SELECT t.*, u.first_name as assigned_first_name, u.last_name as assigned_last_name
-        FROM tasks t
-        LEFT JOIN users u ON t.assigned_to = u.id
-        WHERE t.id = :id
-    ");
+    $stmtRead = $db->prepare('\n        SELECT t.*, u.first_name as assigned_first_name, u.last_name as assigned_last_name\n        FROM tasks t\n        LEFT JOIN users u ON t.assigned_to = u.id\n        WHERE t.id = :id\n    ');
     $stmtRead->execute([':id' => $taskId]);
     $task = $stmtRead->fetch(PDO::FETCH_ASSOC);
 
     http_response_code(201);
     echo json_encode(['success' => true, 'message' => 'Tâche créée', 'data' => $task]);
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);

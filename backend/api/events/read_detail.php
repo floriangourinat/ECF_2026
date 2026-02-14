@@ -1,6 +1,6 @@
 <?php
 /**
- * API: Détail complet d'un événement (admin)
+ * API: Détail complet d'un événement (admin/employee)
  * GET /api/events/read_detail.php?id=1
  */
 
@@ -14,7 +14,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    http_response_code(405);
+    echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
+    exit();
+}
+
 require_once '../../config/database.php';
+require_once '../../middleware/auth.php';
+
+require_auth(['admin', 'employee']);
 
 if (empty($_GET['id'])) {
     http_response_code(400);
@@ -26,7 +35,6 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
-    // Infos événement
     $stmt = $db->prepare("
         SELECT e.*, c.company_name as client_company, c.id as client_id,
                u.first_name as client_first_name, u.last_name as client_last_name, u.email as client_email
@@ -44,14 +52,10 @@ try {
         exit();
     }
 
-    // Devis associés
-    $stmtQuotes = $db->prepare("
-        SELECT * FROM quotes WHERE event_id = :event_id ORDER BY created_at DESC
-    ");
+    $stmtQuotes = $db->prepare("SELECT * FROM quotes WHERE event_id = :event_id ORDER BY created_at DESC");
     $stmtQuotes->execute([':event_id' => $_GET['id']]);
     $quotes = $stmtQuotes->fetchAll(PDO::FETCH_ASSOC);
 
-    // Notes associées
     $stmtNotes = $db->prepare("
         SELECT n.*, u.first_name, u.last_name
         FROM notes n
@@ -62,7 +66,6 @@ try {
     $stmtNotes->execute([':event_id' => $_GET['id']]);
     $notes = $stmtNotes->fetchAll(PDO::FETCH_ASSOC);
 
-    // Tâches associées
     $stmtTasks = $db->prepare("
         SELECT t.*, u.first_name as assigned_first_name, u.last_name as assigned_last_name
         FROM tasks t
@@ -83,7 +86,6 @@ try {
             'tasks' => $tasks
         ]
     ]);
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);

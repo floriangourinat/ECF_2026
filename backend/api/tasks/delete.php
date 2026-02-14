@@ -17,6 +17,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
 }
 
 require_once '../../config/database.php';
+require_once '../../middleware/auth.php';
+
+require_auth(['admin']);
 
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -30,7 +33,7 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
-    $stmt = $db->prepare("DELETE FROM tasks WHERE id = :id");
+    $stmt = $db->prepare('DELETE FROM tasks WHERE id = :id');
     $stmt->execute([':id' => (int)$data['id']]);
 
     if ($stmt->rowCount() === 0) {
@@ -41,7 +44,6 @@ try {
 
     http_response_code(200);
     echo json_encode(['success' => true, 'message' => 'Tâche supprimée']);
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);

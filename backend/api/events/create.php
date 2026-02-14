@@ -21,10 +21,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 require_once '../../config/database.php';
+require_once '../../middleware/auth.php';
+
+$payload = require_auth(['admin']);
+$userId = (int)$payload['user_id'];
 
 $data = json_decode(file_get_contents('php://input'), true);
 
-// Validation
 $errors = [];
 if (empty($data['name'])) $errors[] = 'Nom requis';
 if (empty($data['start_date'])) $errors[] = 'Date de début requise';
@@ -60,13 +63,12 @@ try {
         ':is_visible' => !empty($data['is_visible']) ? 1 : 0
     ]);
 
-    $eventId = $db->lastInsertId();
+    $eventId = (int)$db->lastInsertId();
 
-    // Log MongoDB -Création événement
     require_once '../../services/MongoLogger.php';
     $logger = new MongoLogger();
-    $logger->log('CREATION_EVENEMENT', 'event', (int)$eventId, null, [
-        'id' => (int)$eventId,
+    $logger->log('CREATION_EVENEMENT', 'event', $eventId, $userId, [
+        'id' => $eventId,
         'name' => $data['name']
     ]);
 
@@ -76,7 +78,6 @@ try {
         'message' => 'Événement créé avec succès',
         'data' => ['id' => $eventId]
     ]);
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);

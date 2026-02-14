@@ -21,6 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'DELETE') {
 }
 
 require_once '../../config/database.php';
+require_once '../../middleware/auth.php';
+
+require_auth(['admin']);
 
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -34,8 +37,8 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
-    $stmt = $db->prepare("DELETE FROM events WHERE id = :id");
-    $stmt->execute([':id' => $data['id']]);
+    $stmt = $db->prepare('DELETE FROM events WHERE id = :id');
+    $stmt->execute([':id' => (int)$data['id']]);
 
     if ($stmt->rowCount() === 0) {
         http_response_code(404);
@@ -48,7 +51,6 @@ try {
         'success' => true,
         'message' => 'Événement supprimé avec succès'
     ]);
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);

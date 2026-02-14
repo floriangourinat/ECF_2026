@@ -1,6 +1,6 @@
 <?php
 /**
- * API: Liste de tous les avis (admin)
+ * API: Liste de tous les avis (admin/employee)
  * GET /api/reviews/read_all.php
  */
 
@@ -14,7 +14,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    http_response_code(405);
+    echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
+    exit();
+}
+
 require_once '../../config/database.php';
+require_once '../../middleware/auth.php';
+
+require_auth(['admin', 'employee']);
 
 try {
     $database = new Database();
@@ -27,10 +36,9 @@ try {
             JOIN clients c ON r.client_id = c.id
             JOIN users u ON c.user_id = u.id
             WHERE 1=1";
-    
+
     $params = [];
 
-    // Filtre par statut
     if (!empty($_GET['status'])) {
         $sql .= " AND r.status = :status";
         $params[':status'] = $_GET['status'];
@@ -49,7 +57,6 @@ try {
         'count' => count($reviews),
         'data' => $reviews
     ]);
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode([

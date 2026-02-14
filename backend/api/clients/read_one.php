@@ -1,6 +1,6 @@
 <?php
 /**
- * API: Détail d'un client
+ * API: Détail d'un client (admin/employee)
  * GET /api/clients/read_one.php?id=1
  */
 
@@ -14,7 +14,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
+if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+    http_response_code(405);
+    echo json_encode(['success' => false, 'message' => 'Méthode non autorisée']);
+    exit();
+}
+
 require_once '../../config/database.php';
+require_once '../../middleware/auth.php';
+
+require_auth(['admin', 'employee']);
 
 if (empty($_GET['id'])) {
     http_response_code(400);
@@ -26,7 +35,6 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
-    // Infos client
     $stmt = $db->prepare("
         SELECT c.id, c.company_name, c.phone, c.address, c.created_at,
                u.id as user_id, u.first_name, u.last_name, u.email, u.is_active, u.username
@@ -43,7 +51,6 @@ try {
         exit();
     }
 
-    // Événements du client
     $stmtEvents = $db->prepare("
         SELECT id, name, start_date, end_date, location, status
         FROM events
@@ -53,7 +60,6 @@ try {
     $stmtEvents->execute([':client_id' => $_GET['id']]);
     $events = $stmtEvents->fetchAll(PDO::FETCH_ASSOC);
 
-    // Devis du client
     $stmtQuotes = $db->prepare("
         SELECT q.id, q.total_ttc, q.status, q.created_at, e.name as event_name
         FROM quotes q
@@ -73,7 +79,6 @@ try {
             'quotes' => $quotes
         ]
     ]);
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);

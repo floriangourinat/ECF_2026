@@ -22,6 +22,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' && $_SERVER['REQUEST_METHOD'] !== 'PUT
 }
 
 require_once '../../config/database.php';
+require_once '../../middleware/auth.php';
+
+$payload = require_auth(['admin', 'employee']);
+$userId = (int)$payload['user_id'];
+$userRole = $payload['role'] ?? '';
 
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -32,7 +37,7 @@ if (empty($data['id']) || empty($data['status'])) {
 }
 
 $allowedStatuses = ['todo', 'in_progress', 'done'];
-if (!in_array($data['status'], $allowedStatuses)) {
+if (!in_array($data['status'], $allowedStatuses, true)) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'Statut invalide']);
     exit();
@@ -42,8 +47,7 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
-    // Vérifier que la tâche existe
-    $stmtCheck = $db->prepare("SELECT id, assigned_to, status FROM tasks WHERE id = :id");
+    $stmtCheck = $db->prepare('SELECT id, assigned_to, status FROM tasks WHERE id = :id');
     $stmtCheck->execute([':id' => (int)$data['id']]);
     $task = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
@@ -53,41 +57,31 @@ try {
         exit();
     }
 
-    // Vérification sécurité : si un user_id est fourni, vérifier qu'il est assigné ou admin
-    if (!empty($data['user_id'])) {
-        $stmtUser = $db->prepare("SELECT role FROM users WHERE id = :id");
-        $stmtUser->execute([':id' => (int)$data['user_id']]);
-        $user = $stmtUser->fetch(PDO::FETCH_ASSOC);
+    $isAdmin = $userRole === 'admin';
+    $isAssigned = (int)$task['assigned_to'] === $userId;
 
-        if ($user && $user['role'] !== 'admin' && (int)$task['assigned_to'] !== (int)$data['user_id']) {
-            http_response_code(403);
-            echo json_encode(['success' => false, 'message' => 'Vous ne pouvez modifier que vos propres tâches']);
-            exit();
-        }
+    if (!$isAdmin && !$isAssigned) {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'message' => 'Vous ne pouvez modifier que vos propres tâches']);
+        exit();
     }
 
-    // Vérifier la progression logique du statut
     $validTransitions = [
         'todo' => 'in_progress',
         'in_progress' => 'done'
     ];
-    if (isset($validTransitions[$task['status']]) && $validTransitions[$task['status']] !== $data['status']) {
-        // Un admin peut forcer n'importe quel statut
-        if (empty($data['user_id']) || (isset($user) && $user['role'] === 'admin')) {
-            // OK, admin peut forcer
-        } else {
-            http_response_code(400);
-            echo json_encode(['success' => false, 'message' => 'Transition de statut invalide']);
-            exit();
-        }
+
+    if (!$isAdmin && isset($validTransitions[$task['status']]) && $validTransitions[$task['status']] !== $data['status']) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'message' => 'Transition de statut invalide']);
+        exit();
     }
 
-    $stmt = $db->prepare("UPDATE tasks SET status = :status WHERE id = :id");
+    $stmt = $db->prepare('UPDATE tasks SET status = :status WHERE id = :id');
     $stmt->execute([':status' => $data['status'], ':id' => (int)$data['id']]);
 
     http_response_code(200);
     echo json_encode(['success' => true, 'message' => 'Statut mis à jour']);
-
 } catch (PDOException $e) {
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);
