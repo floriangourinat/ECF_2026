@@ -6,6 +6,7 @@
 
 require_once '../../vendor/autoload.php';
 require_once '../../config/database.php';
+require_once '../../middleware/auth.php';
 
 $quoteId = isset($_GET['id']) ? $_GET['id'] : null;
 $outputMode = isset($_GET['output']) ? $_GET['output'] : 'download';
@@ -14,6 +15,15 @@ if (empty($quoteId)) {
     http_response_code(400);
     echo json_encode(['success' => false, 'message' => 'ID devis requis']);
     exit();
+}
+
+// Authentification : récupérer l'utilisateur connecté si possible
+// En appel interne (ex: send_email.php via curl), il n'y a pas de token
+$authUserId = null;
+$token = getBearerToken();
+if ($token) {
+    $payload = require_auth(['admin']);
+    $authUserId = (int)$payload['user_id'];
 }
 
 try {
@@ -175,10 +185,10 @@ try {
     // Nom du fichier
     $filename = 'Devis_' . str_pad($quote['id'], 5, '0', STR_PAD_LEFT) . '.pdf';
 
-    // Log MongoDB -Génération PDF devis
+    // Log MongoDB - Génération PDF devis
     require_once '../../services/MongoLogger.php';
     $logger = new MongoLogger();
-    $logger->log('GENERATION_DEVIS_PDF', 'quote', (int)$quote['id'], null, [
+    $logger->log('GENERATION_DEVIS_PDF', 'quote', (int)$quote['id'], $authUserId, [
         'id_evenement' => (int)$quote['event_id']
     ]);
 

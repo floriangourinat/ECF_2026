@@ -21,6 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'PUT') {
 }
 
 require_once '../../config/database.php';
+require_once '../../middleware/auth.php';
+
+$payload = require_auth(['admin']);
+$authUserId = (int)$payload['user_id'];
 
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -75,10 +79,10 @@ try {
 
     $db->commit();
 
-    // Log MongoDB -Client modifié
+    // Log MongoDB - Client modifié
     require_once '../../services/MongoLogger.php';
     $logger = new MongoLogger();
-    $logger->log('MODIFICATION_CLIENT', 'client', (int)$data['id'], null, [
+    $logger->log('MODIFICATION_CLIENT', 'client', (int)$data['id'], $authUserId, [
         'id' => (int)$data['id']
     ]);
 

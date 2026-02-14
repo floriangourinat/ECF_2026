@@ -21,6 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 require_once '../../config/database.php';
+require_once '../../middleware/auth.php';
+
+$payload = require_auth(['admin']);
+$authUserId = (int)$payload['user_id'];
 
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -83,10 +87,10 @@ try {
 
     $db->commit();
 
-    // Log MongoDB -Client créé
+    // Log MongoDB - Client créé
     require_once '../../services/MongoLogger.php';
     $logger = new MongoLogger();
-    $logger->log('CREATION_CLIENT', 'client', $clientId, null, [
+    $logger->log('CREATION_CLIENT', 'client', $clientId, $authUserId, [
         'id' => (int)$clientId,
         'nom' => $data['company_name'] ?? null
     ]);
