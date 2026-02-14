@@ -25,6 +25,8 @@ export class AdminEventDetailComponent implements OnInit {
   // Notes
   newNoteContent = '';
   addingNote = false;
+  editingNoteId: number | null = null;
+  editNoteContent = '';
 
   // Tâches
   showTaskModal = false;
@@ -189,6 +191,34 @@ export class AdminEventDetailComponent implements OnInit {
         this.addingNote = false;
       },
       error: () => { alert('Erreur lors de l\'ajout'); this.addingNote = false; }
+    });
+  }
+
+  startEditNote(note: any): void {
+    this.editingNoteId = note.id;
+    this.editNoteContent = note.content;
+  }
+
+  cancelEditNote(): void {
+    this.editingNoteId = null;
+    this.editNoteContent = '';
+  }
+
+  saveEditNote(note: any): void {
+    if (!this.editNoteContent.trim()) return;
+    this.http.put<any>('http://localhost:8080/api/notes/update.php', {
+      id: note.id,
+      content: this.editNoteContent
+    }).subscribe({
+      next: (r) => {
+        if (r.success) {
+          note.content = this.editNoteContent;
+          this.cancelEditNote();
+          return;
+        }
+        alert(r.message || 'Erreur lors de la modification');
+      },
+      error: () => { alert('Erreur lors de la modification'); }
     });
   }
 

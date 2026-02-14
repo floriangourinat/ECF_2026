@@ -24,10 +24,18 @@ require_once '../../config/database.php';
 
 $data = json_decode(file_get_contents('php://input'), true);
 
+$isGlobal = !empty($data['is_global']) ? 1 : 0;
+
 // Validation
-if (empty($data['event_id']) || empty($data['content']) || empty($data['author_id'])) {
+if (empty($data['content']) || empty($data['author_id'])) {
     http_response_code(400);
-    echo json_encode(['success' => false, 'message' => 'event_id, author_id et content requis']);
+    echo json_encode(['success' => false, 'message' => 'author_id et content requis']);
+    exit();
+}
+
+if (!$isGlobal && empty($data['event_id'])) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'event_id requis pour une note projet']);
     exit();
 }
 
@@ -35,15 +43,21 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
-    $stmt = $db->prepare("
-        INSERT INTO notes (event_id, author_id, content, created_at)
-        VALUES (:event_id, :author_id, :content, NOW())
+    $stmt = $db->prepare(" 
+        INSERT INTO notes (event_id, author_id, content, is_global, created_at)
+        VALUES (:event_id, :author_id, :content, :is_global, NOW())
     ");
-    $stmt->execute([
-        ':event_id' => $data['event_id'],
-        ':author_id' => $data['author_id'],
-        ':content' => htmlspecialchars(strip_tags($data['content']))
-    ]);
+
+    if ($isGlobal) {
+        $stmt->bindValue(':event_id', null, PDO::PARAM_NULL);
+    } else {
+        $stmt->bindValue(':event_id', (int)$data['event_id'], PDO::PARAM_INT);
+    }
+
+    $stmt->bindValue(':author_id', (int)$data['author_id'], PDO::PARAM_INT);
+    $stmt->bindValue(':content', htmlspecialchars(strip_tags($data['content'])), PDO::PARAM_STR);
+    $stmt->bindValue(':is_global', $isGlobal, PDO::PARAM_INT);
+    $stmt->execute();
 
     $noteId = $db->lastInsertId();
 
@@ -61,7 +75,8 @@ try {
     require_once '../../services/MongoLogger.php';
     $logger = new MongoLogger();
     $logger->log('create', 'note', $noteId, (int)$data['author_id'], [
-        'event_id' => $data['event_id']
+        'event_id' => $isGlobal ? null : (int)$data['event_id'],
+        'is_global' => (bool)$isGlobal
     ]);
 
     http_response_code(201);

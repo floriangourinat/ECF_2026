@@ -5,17 +5,15 @@
     <div *ngIf="loading" class="loading">Chargement...</div>
     <div *ngIf="error" class="error">{{ error }}</div>
 
-    <div *ngIf="event && !loading" class="event-content">
+    <div *ngIf="!loading && event">
+      <!-- Header événement -->
       <header class="event-header">
-        <div class="header-info">
-          <span class="status-badge" [class]="getStatusClass(event.status)">
-            {{ statusLabels[event.status] }}
-          </span>
+        <div class="header-left">
+          <span class="status-badge" [class]="getStatusClass(event.status)">{{ statusLabels[event.status] }}</span>
           <h1>{{ event.name }}</h1>
           <p class="client-info">
-            Client : <a [routerLink]="['/admin/clients', event.client_id]">
-              {{ event.client_company || event.client_first_name + ' ' + event.client_last_name }}
-            </a>
+            Client :
+            <a [routerLink]="['/admin/clients', event.client_id]">{{ event.client_company || 'N/A' }}</a>
           </p>
         </div>
         <div class="header-actions">
@@ -24,69 +22,43 @@
         </div>
       </header>
 
-      <!-- Image de l'événement -->
-      <section class="event-image-section">
-        <img [src]="getEventImage(event.image_path)" [alt]="event.name" class="event-image" (error)="onImageError($event)">
+      <!-- Infos -->
+      <section class="event-info card">
+        <h3>ℹ️ Informations</h3>
+        <div class="info-grid">
+          <div><strong>Date début :</strong> {{ formatDate(event.start_date) }}</div>
+          <div><strong>Date fin :</strong> {{ formatDate(event.end_date) }}</div>
+          <div><strong>Lieu :</strong> {{ event.location || '-' }}</div>
+          <div><strong>Type :</strong> {{ event.event_type || '-' }}</div>
+          <div><strong>Thème :</strong> {{ event.theme || '-' }}</div>
+          <div><strong>Participants :</strong> {{ event.attendees_count || 0 }}</div>
+          <div><strong>Budget :</strong> {{ formatCurrency(event.budget || 0) }}</div>
+          <div><strong>Visible :</strong> {{ event.is_visible ? 'Oui' : 'Non' }}</div>
+        </div>
+        <p *ngIf="event.description"><strong>Description :</strong> {{ event.description }}</p>
       </section>
 
-      <!-- Infos principales -->
-      <div class="details-grid">
-        <section class="detail-card">
-          <h3>📅 Dates</h3>
-          <div class="detail-row">
-            <span class="label">Début</span>
-            <span class="value">{{ formatDate(event.start_date) }}</span>
-          </div>
-          <div class="detail-row">
-            <span class="label">Fin</span>
-            <span class="value">{{ formatDate(event.end_date) }}</span>
-          </div>
-        </section>
+      <!-- Image -->
+      <section class="event-image card" *ngIf="event.image_path">
+        <h3>🖼️ Image</h3>
+        <img [src]="getEventImage(event.image_path)" (error)="onImageError($event)" alt="Image événement">
+      </section>
 
-        <section class="detail-card">
-          <h3>📍 Lieu & Type</h3>
-          <div class="detail-row">
-            <span class="label">Lieu</span>
-            <span class="value">{{ event.location || '-' }}</span>
-          </div>
-          <div class="detail-row">
-            <span class="label">Type</span>
-            <span class="value">{{ event.event_type || '-' }}</span>
-          </div>
-          <div class="detail-row">
-            <span class="label">Thème</span>
-            <span class="value">{{ event.theme || '-' }}</span>
-          </div>
-        </section>
-
-        <section class="detail-card">
-          <h3>⚙️ Paramètres</h3>
-          <div class="detail-row">
-            <span class="label">Visible au public</span>
-            <span class="value">{{ event.is_visible ? 'Oui ✅' : 'Non ❌' }}</span>
-          </div>
-          <div class="detail-row">
-            <span class="label">Créé le</span>
-            <span class="value">{{ formatDate(event.created_at) }}</span>
-          </div>
-        </section>
-      </div>
-
-      <!-- Actions rapides sur le statut -->
+      <!-- Actions statut -->
       <section class="status-actions" *ngIf="event.status !== 'completed' && event.status !== 'cancelled'">
-        <h3>🔄 Changer le statut</h3>
+        <h3>⚡ Actions rapides</h3>
         <div class="status-buttons">
           <button *ngIf="event.status === 'draft'" (click)="updateStatus('client_review')" class="btn">
-            → En attente client
+            📤 Envoyer au client
           </button>
           <button *ngIf="event.status === 'client_review'" (click)="updateStatus('accepted')" class="btn btn-success">
-            ✅ Marquer comme accepté
+            ✅ Accepter
           </button>
           <button *ngIf="event.status === 'accepted'" (click)="updateStatus('in_progress')" class="btn btn-primary">
-            🚀 Démarrer l'événement
+            🚀 Démarrer
           </button>
           <button *ngIf="event.status === 'in_progress'" (click)="updateStatus('completed')" class="btn btn-success">
-            🏁 Terminer l'événement
+            🎉 Terminer
           </button>
           <button *ngIf="event.status !== 'cancelled'" (click)="updateStatus('cancelled')" class="btn btn-outline">
             ❌ Annuler
@@ -97,8 +69,8 @@
       <!-- Devis -->
       <section class="section-table">
         <div class="section-header">
-          <h3>📄 Devis</h3>
-          <a [routerLink]="['/admin/quotes/create']" [queryParams]="{event_id: event.id}" class="btn btn-sm">+ Créer un devis</a>
+          <h3>💰 Devis ({{ quotes.length }})</h3>
+          <a [routerLink]="['/admin/quotes/create']" [queryParams]="{ event_id: event.id }" class="btn btn-sm">+ Créer un devis</a>
         </div>
         <div *ngIf="quotes.length === 0" class="empty">Aucun devis pour cet événement</div>
         <table *ngIf="quotes.length > 0">
@@ -183,10 +155,20 @@
               </div>
               <div class="note-actions">
                 <span class="note-date">{{ formatDate(note.created_at) }}</span>
-                <button (click)="deleteNote(note)" class="btn-delete" title="Supprimer" aria-label="Supprimer la note">🗑️</button>
+                <button *ngIf="editingNoteId !== note.id" (click)="startEditNote(note)" class="btn-delete" title="Modifier" aria-label="Modifier la note">✏️</button>
+                <button *ngIf="editingNoteId !== note.id" (click)="deleteNote(note)" class="btn-delete" title="Supprimer" aria-label="Supprimer la note">🗑️</button>
               </div>
             </div>
-            <p class="note-content">{{ note.content }}</p>
+
+            <p *ngIf="editingNoteId !== note.id" class="note-content">{{ note.content }}</p>
+
+            <div *ngIf="editingNoteId === note.id" class="note-edit">
+              <textarea [(ngModel)]="editNoteContent" rows="3" placeholder="Modifier la note..."></textarea>
+              <div class="edit-actions">
+                <button class="btn btn-primary btn-sm" (click)="saveEditNote(note)">Enregistrer</button>
+                <button class="btn btn-secondary btn-sm" (click)="cancelEditNote()">Annuler</button>
+              </div>
+            </div>
           </div>
         </div>
       </section>

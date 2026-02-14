@@ -14,8 +14,6 @@
     </div>
 
     <div *ngIf="data && !loading" class="dashboard-content">
-      
-      <!-- Indicateurs clés -->
       <section class="stats-section">
         <div class="stat-card highlight">
           <div class="stat-icon">🎯</div>
@@ -53,6 +51,15 @@
           <a routerLink="/admin/quotes" class="stat-link">Voir →</a>
         </div>
 
+        <div class="stat-card accepted-card">
+          <div class="stat-icon">✅</div>
+          <div class="stat-info">
+            <span class="stat-value">{{ data.stats.accepted_quotes }}</span>
+            <span class="stat-label">Devis acceptés</span>
+          </div>
+          <a routerLink="/admin/quotes" [queryParams]="{ status: 'accepted' }" class="stat-link">Voir →</a>
+        </div>
+
         <div class="stat-card">
           <div class="stat-icon">🏢</div>
           <div class="stat-info">
@@ -71,7 +78,6 @@
       </section>
 
       <div class="widgets-grid">
-        <!-- Widget Prochains événements -->
         <section class="widget">
           <div class="widget-header">
             <h2>🗓️ Prochains événements</h2>
@@ -98,7 +104,6 @@
           </div>
         </section>
 
-        <!-- Widget Notes récentes -->
         <section class="widget">
           <div class="widget-header">
             <h2>📝 Notes récentes</h2>
@@ -118,8 +123,54 @@
             </div>
           </div>
         </section>
-      </div>
 
+        <section class="widget global-notes-widget">
+          <div class="widget-header">
+            <h2>🌐 Notes globales</h2>
+          </div>
+
+          <div class="widget-content">
+            <div class="global-note-form">
+              <textarea
+                [(ngModel)]="newGlobalNote"
+                rows="3"
+                placeholder="Ajouter une communication globale..."
+              ></textarea>
+              <button (click)="addGlobalNote()" [disabled]="savingGlobalNote || !newGlobalNote.trim()" class="btn-add-global-note">
+                {{ savingGlobalNote ? 'Ajout...' : '+ Ajouter la note globale' }}
+              </button>
+            </div>
+
+            <div *ngIf="data.global_notes.length === 0" class="empty-state">
+              <p>Aucune note globale</p>
+            </div>
+
+            <div class="notes-list" *ngIf="data.global_notes.length > 0">
+              <div class="note-item" *ngFor="let note of data.global_notes">
+                <div class="note-header">
+                  <span class="note-author">{{ note.first_name }} {{ note.last_name }}</span>
+                  <span class="note-date">{{ formatDateTime(note.created_at) }}</span>
+                </div>
+
+                <p *ngIf="editingGlobalNoteId !== note.id" class="note-content">{{ note.content }}</p>
+
+                <div *ngIf="editingGlobalNoteId === note.id" class="note-edit">
+                  <textarea [(ngModel)]="editGlobalNoteContent" rows="3"></textarea>
+                  <div class="edit-actions">
+                    <button class="btn-save" (click)="saveEditGlobalNote(note)">Enregistrer</button>
+                    <button class="btn-cancel" (click)="cancelEditGlobalNote()">Annuler</button>
+                  </div>
+                </div>
+
+                <div *ngIf="editingGlobalNoteId !== note.id" class="note-actions">
+                  <button class="btn-edit" (click)="startEditGlobalNote(note)" aria-label="Modifier la note globale">✏️</button>
+                  <button class="btn-delete" (click)="deleteGlobalNote(note)" aria-label="Supprimer la note globale">🗑️</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
   </div>
 </app-admin-layout>

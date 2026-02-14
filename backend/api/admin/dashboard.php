@@ -47,6 +47,19 @@ try {
     $stmtNotes->execute();
     $recentNotes = $stmtNotes->fetchAll(PDO::FETCH_ASSOC);
 
+    // Notes globales récentes (10)
+    $stmtGlobalNotes = $db->prepare("
+        SELECT n.id, n.content, n.created_at, n.is_global,
+               u.first_name, u.last_name
+        FROM notes n
+        JOIN users u ON n.author_id = u.id
+        WHERE n.is_global = 1
+        ORDER BY n.created_at DESC
+        LIMIT 10
+    ");
+    $stmtGlobalNotes->execute();
+    $globalNotes = $stmtGlobalNotes->fetchAll(PDO::FETCH_ASSOC);
+
     // 3. Indicateurs clés
     // Clients actifs (avec au moins un événement en cours)
     $stmtActiveClients = $db->prepare("
@@ -95,19 +108,30 @@ try {
     $stmtPendingQuotes->execute();
     $pendingQuotes = $stmtPendingQuotes->fetch(PDO::FETCH_ASSOC)['count'];
 
+    // Devis acceptés
+    $stmtAcceptedQuotes = $db->prepare("
+        SELECT COUNT(*) as count
+        FROM quotes
+        WHERE status = 'accepted'
+    ");
+    $stmtAcceptedQuotes->execute();
+    $acceptedQuotes = $stmtAcceptedQuotes->fetch(PDO::FETCH_ASSOC)['count'];
+
     http_response_code(200);
     echo json_encode([
         'success' => true,
         'data' => [
             'upcoming_events' => $upcomingEvents,
             'recent_notes' => $recentNotes,
+            'global_notes' => $globalNotes,
             'stats' => [
                 'active_clients' => (int)$activeClients,
                 'draft_events' => (int)$draftEvents,
                 'prospects_to_contact' => (int)$prospectsToContact,
                 'total_clients' => (int)$totalClients,
                 'total_events' => (int)$totalEvents,
-                'pending_quotes' => (int)$pendingQuotes
+                'pending_quotes' => (int)$pendingQuotes,
+                'accepted_quotes' => (int)$acceptedQuotes
             ]
         ]
     ]);
