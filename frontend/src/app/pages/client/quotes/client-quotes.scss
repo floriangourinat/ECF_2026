@@ -89,3 +89,18 @@ textarea {
 .error {
   color: #b00020;
 }
+
+.quote-notes {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.quote-notes p {
+  margin: 0 0 6px;
+}
+
+.quote-notes p:last-child {
+  margin-bottom: 0;
+}

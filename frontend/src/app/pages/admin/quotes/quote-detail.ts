@@ -2,12 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../../_services/auth.service';
 import { AdminLayoutComponent } from '../../../components/admin-layout/admin-layout';
 
 @Component({
   selector: 'app-quote-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, AdminLayoutComponent],
+  imports: [CommonModule, FormsModule, RouterLink, AdminLayoutComponent],
   templateUrl: './quote-detail.html',
   styleUrls: ['./quote-detail.scss']
 })
@@ -17,6 +19,11 @@ export class QuoteDetailComponent implements OnInit {
   loading = true;
   error = '';
   sending = false;
+
+  counterProposalText = '';
+  sendingCounterProposal = false;
+
+  private readonly counterProposalMarker = '[CONTREPROPOSITION_INNOV_EVENTS]';
 
   statusLabels: { [key: string]: string } = {
     'draft': 'Brouillon',
@@ -29,7 +36,8 @@ export class QuoteDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient
+    private http: HttpClient,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -64,6 +72,40 @@ export class QuoteDetailComponent implements OnInit {
       },
       error: () => {
         alert('Erreur lors de la mise à jour');
+      }
+    });
+  }
+
+  sendCounterProposal(): void {
+    if (!this.quote?.id) return;
+    const content = this.counterProposalText.trim();
+    if (!content) {
+      alert('Veuillez saisir une contreproposition.');
+      return;
+    }
+
+    const adminUserId = Number(this.authService.currentUserValue?.id || 0);
+    if (!adminUserId) {
+      alert('Utilisateur non connecté');
+      return;
+    }
+
+    this.sendingCounterProposal = true;
+    this.http.post<any>('http://localhost:8080/api/quotes/admin_counter_proposal.php', {
+      quote_id: this.quote.id,
+      admin_user_id: adminUserId,
+      counter_proposal: content
+    }).subscribe({
+      next: (response) => {
+        this.quote.status = response?.data?.status || 'pending';
+        this.quote.modification_reason = response?.data?.modification_reason || this.quote.modification_reason;
+        this.counterProposalText = '';
+        this.sendingCounterProposal = false;
+        alert(response?.message || 'Contreproposition envoyée');
+      },
+      error: (err) => {
+        alert(err?.error?.message || 'Erreur lors de l\'envoi de la contreproposition');
+        this.sendingCounterProposal = false;
       }
     });
   }
@@ -103,6 +145,37 @@ export class QuoteDetailComponent implements OnInit {
           alert('Erreur lors de la suppression');
         }
       });
+  }
+
+  getClientModificationReason(rawReason?: string): string {
+    const source = (rawReason || '').trim();
+    if (!source.includes(this.counterProposalMarker)) {
+      return source;
+    }
+
+    return source.split(this.counterProposalMarker)[0].trim();
+  }
+
+  getCounterProposal(rawReason?: string): string {
+    const source = (rawReason || '').trim();
+    if (!source.includes(this.counterProposalMarker)) {
+      return '';
+    }
+
+    const chunk = source.split(this.counterProposalMarker)[1] || '';
+    const messageMatch = chunk.match(/Message:\s*([\s\S]*)$/);
+    return messageMatch?.[1]?.trim() || '';
+  }
+
+  getCounterProposalDate(rawReason?: string): string {
+    const source = (rawReason || '').trim();
+    if (!source.includes(this.counterProposalMarker)) {
+      return '';
+    }
+
+    const chunk = source.split(this.counterProposalMarker)[1] || '';
+    const dateMatch = chunk.match(/Date:\s*([^\n]+)/);
+    return dateMatch?.[1]?.trim() || '';
   }
 
   formatDate(dateString: string): string {

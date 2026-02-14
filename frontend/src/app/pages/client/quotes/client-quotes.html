@@ -25,6 +25,11 @@
           <p><strong>Créé le :</strong> {{ formatDate(quote.created_at) }}</p>
         </div>
 
+        <div class="quote-notes" *ngIf="quote.modification_reason">
+          <p *ngIf="getClientModificationReason(quote)"><strong>Votre motif :</strong> {{ getClientModificationReason(quote) }}</p>
+          <p *ngIf="getCounterProposal(quote)"><strong>Contreproposition Innov'events :</strong> {{ getCounterProposal(quote) }}</p>
+        </div>
+
         <div class="quote-actions">
           <button (click)="downloadPdf(quote)" class="btn secondary">📥 Télécharger</button>
           <button (click)="updateStatus(quote, 'accepted')" class="btn success" [disabled]="actionLoading[quote.id]">

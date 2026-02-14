@@ -97,8 +97,25 @@
 
       <!-- Motif de modification -->
       <section class="modification-section" *ngIf="quote.modification_reason">
-        <h3>📝 Motif de modification demandée</h3>
-        <p>{{ quote.modification_reason }}</p>
+        <h3>📝 Demande de modification</h3>
+        <p *ngIf="getClientModificationReason(quote.modification_reason)">
+          <strong>Motif client :</strong> {{ getClientModificationReason(quote.modification_reason) }}
+        </p>
+        <p *ngIf="getCounterProposal(quote.modification_reason)">
+          <strong>Dernière contreproposition :</strong> {{ getCounterProposal(quote.modification_reason) }}
+        </p>
+        <p *ngIf="getCounterProposalDate(quote.modification_reason)">
+          <strong>Date :</strong> {{ getCounterProposalDate(quote.modification_reason) }}
+        </p>
+      </section>
+
+      <section class="counter-proposal-section" *ngIf="quote.status === 'modification'">
+        <h3>↔️ Contreproposition client</h3>
+        <p>Répondez à la demande de modification du client. Le devis repassera en étude côté client.</p>
+        <textarea rows="4" [(ngModel)]="counterProposalText" placeholder="Ex: Nous proposons une nouvelle formule à 2 450€ TTC incluant ..."></textarea>
+        <button (click)="sendCounterProposal()" class="btn btn-primary" [disabled]="sendingCounterProposal">
+          {{ sendingCounterProposal ? 'Envoi...' : 'Envoyer la contreproposition' }}
+        </button>
       </section>
 
       <!-- Actions sur le statut -->

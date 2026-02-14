@@ -193,6 +193,44 @@
     }
   }
 
+  .counter-proposal-section {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
+
+    h3 {
+      margin: 0 0 10px;
+      color: #2c3e50;
+    }
+
+    p {
+      margin: 0 0 12px;
+      color: #7f8c8d;
+    }
+
+    textarea {
+      width: 100%;
+      border: 1px solid #dcdfe6;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    .btn.btn-primary {
+      background: #e67e22;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+  }
+
   .status-actions {
     background: white;
     padding: 25px;

@@ -38,6 +38,7 @@ try {
 
     $stmt = $db->prepare("
         SELECT q.id, q.event_id, q.total_ht, q.tax_rate, q.total_ttc, q.status, q.issue_date, q.created_at,
+               q.modification_reason,
                e.name as event_name, e.start_date as event_date, e.location as event_location
         FROM quotes q
         JOIN events e ON q.event_id = e.id

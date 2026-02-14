@@ -14,6 +14,7 @@ interface Quote {
   total_ttc: number;
   status: string;
   created_at: string;
+  modification_reason?: string;
 }
 
 @Component({
@@ -30,6 +31,8 @@ export class ClientQuotesComponent implements OnInit {
   actionLoading: { [key: number]: boolean } = {};
   modificationReason: { [key: number]: string } = {};
   showModificationForm: { [key: number]: boolean } = {};
+
+  private readonly counterProposalMarker = '[CONTREPROPOSITION_INNOV_EVENTS]';
 
   statusLabels: { [key: string]: string } = {
     'pending': 'Étude côté client',
@@ -92,6 +95,24 @@ export class ClientQuotesComponent implements OnInit {
 
   toggleModification(quoteId: number): void {
     this.showModificationForm[quoteId] = !this.showModificationForm[quoteId];
+  }
+
+  getClientModificationReason(quote: Quote): string {
+    const source = quote.modification_reason || '';
+    if (!source.includes(this.counterProposalMarker)) {
+      return source;
+    }
+    return source.split(this.counterProposalMarker)[0].trim();
+  }
+
+  getCounterProposal(quote: Quote): string {
+    const source = quote.modification_reason || '';
+    if (!source.includes(this.counterProposalMarker)) {
+      return '';
+    }
+    const chunk = source.split(this.counterProposalMarker)[1] || '';
+    const messageMatch = chunk.match(/Message:\s*([\s\S]*)$/);
+    return messageMatch?.[1]?.trim() || '';
   }
 
   formatDate(dateString: string): string {
