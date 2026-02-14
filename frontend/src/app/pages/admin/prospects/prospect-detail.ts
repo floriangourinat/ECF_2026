@@ -81,17 +81,28 @@ export class ProspectDetailComponent implements OnInit {
   updateStatus(newStatus: string): void {
     if (!this.prospect) return;
 
+    let failureMessage: string | null = null;
+
+    if (newStatus === 'failed') {
+      failureMessage = prompt('Message à envoyer au prospect (obligatoire) :', 'Après qualification, votre besoin n’est pas réalisable dans les délais demandés.');
+      if (!failureMessage || !failureMessage.trim()) {
+        alert('Le message d’échec est obligatoire.');
+        return;
+      }
+    }
+
     this.http.put<any>('http://localhost:8080/api/prospects/update_status.php', {
       id: this.prospect.id,
-      status: newStatus
+      status: newStatus,
+      failure_message: failureMessage
     }).subscribe({
       next: () => {
         if (this.prospect) {
           this.prospect.status = newStatus;
         }
       },
-      error: () => {
-        alert('Erreur lors de la mise à jour du statut');
+      error: (err) => {
+        alert(err.error?.message || 'Erreur lors de la mise à jour du statut');
       }
     });
   }
@@ -107,13 +118,31 @@ export class ProspectDetailComponent implements OnInit {
       prospect_id: this.prospect.id
     }).subscribe({
       next: (response) => {
+        const clientId = response?.data?.client_id;
+
         if (response?.data?.already_existing) {
-          alert('Un utilisateur avec cet email existe déjà');
+          alert('Un utilisateur avec cet email existe déjà. Le prospect est marqué comme converti.');
         } else {
           alert(`Client créé avec succès !\n\nMot de passe temporaire : ${response.data.temp_password}\n\nCommuniquez ce mot de passe au client.`);
         }
+
         if (this.prospect) {
           this.prospect.status = 'converted';
+        }
+
+        if (clientId && this.prospect) {
+          this.router.navigate(['/admin/events'], {
+            queryParams: {
+              from_prospect: 1,
+              client_id: clientId,
+              company_name: this.prospect.company_name || '',
+              first_name: this.prospect.first_name || '',
+              last_name: this.prospect.last_name || '',
+              event_type: this.prospect.event_type || '',
+              location: this.prospect.location || '',
+              planned_date: this.prospect.planned_date || ''
+            }
+          });
         }
       },
       error: (err) => {
@@ -122,6 +151,21 @@ export class ProspectDetailComponent implements OnInit {
     });
   }
 
+  createPrefilledEvent(): void {
+    if (!this.prospect) return;
+
+    this.router.navigate(['/admin/events'], {
+      queryParams: {
+        from_prospect: 1,
+        company_name: this.prospect.company_name || '',
+        first_name: this.prospect.first_name || '',
+        last_name: this.prospect.last_name || '',
+        event_type: this.prospect.event_type || '',
+        location: this.prospect.location || '',
+        planned_date: this.prospect.planned_date || ''
+      }
+    });
+  }
 
   decodeText(value: string | null | undefined): string {
     if (!value) return '-';

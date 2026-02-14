@@ -111,11 +111,8 @@
           </div>
 
           <div class="form-group">
-            <label for="new-employee-role">Rôle *</label>
-            <select id="new-employee-role" [(ngModel)]="newEmployee.role">
-              <option value="employee">Employé</option>
-              <option value="admin">Administrateur</option>
-            </select>
+            <label for="new-employee-role">Rôle</label>
+            <input id="new-employee-role" type="text" value="Employé" disabled>
           </div>
         </div>
         <div class="modal-footer">

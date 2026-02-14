@@ -32,7 +32,7 @@ export class ClientQuotesComponent implements OnInit {
   showModificationForm: { [key: number]: boolean } = {};
 
   statusLabels: { [key: string]: string } = {
-    'pending': 'En attente',
+    'pending': 'Étude côté client',
     'modification': 'Modification demandée',
     'accepted': 'Accepté',
     'refused': 'Refusé'

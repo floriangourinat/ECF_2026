@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AdminLayoutComponent } from '../../../components/admin-layout/admin-layout';
@@ -64,7 +64,7 @@ export class EventsListComponent implements OnInit {
 
   eventTypes = ['Séminaire', 'Conférence', 'Soirée d\'entreprise', 'Team Building', 'Autre'];
   themes = ['Élégant', 'Tropical', 'Rétro', 'High-Tech', 'Nature', 'Industriel'];
-  
+
   statusLabels: { [key: string]: string } = {
     'draft': 'Brouillon',
     'client_review': 'En attente client',
@@ -74,17 +74,23 @@ export class EventsListComponent implements OnInit {
     'cancelled': 'Annulé'
   };
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.loadEvents();
     this.loadClients();
+
+    this.route.queryParams.subscribe(params => {
+      if (params['from_prospect'] === '1') {
+        this.openPrefilledModal(params);
+      }
+    });
   }
 
   loadEvents(): void {
     this.loading = true;
     let url = 'http://localhost:8080/api/events/read_all.php?';
-    
+
     if (this.filterStatus) {
       url += `status=${this.filterStatus}&`;
     }
@@ -138,6 +144,30 @@ export class EventsListComponent implements OnInit {
     };
   }
 
+  openPrefilledModal(params: any): void {
+    this.openCreateModal();
+
+    const plannedDate = (params['planned_date'] || '').split('T')[0];
+    const startDate = plannedDate ? `${plannedDate}T09:00` : '';
+    const endDate = plannedDate ? `${plannedDate}T18:00` : '';
+
+    const prospectName = [params['company_name'], params['first_name'], params['last_name']]
+      .filter((value: string) => !!value)
+      .join(' ');
+
+    this.newEvent = {
+      name: params['event_type'] ? `${params['event_type']} - ${prospectName}` : `Événement - ${prospectName}`,
+      client_id: params['client_id'] || '',
+      start_date: startDate,
+      end_date: endDate,
+      location: params['location'] || '',
+      event_type: params['event_type'] || '',
+      theme: 'Élégant',
+      status: 'draft',
+      is_visible: false
+    };
+  }
+
   closeCreateModal(): void {
     this.showCreateModal = false;
     this.selectedImage = null;
@@ -151,14 +181,14 @@ export class EventsListComponent implements OnInit {
         this.createError = 'L\'image est trop volumineuse. Maximum 5 Mo.';
         return;
       }
-      
+
       if (!file.type.startsWith('image/')) {
         this.createError = 'Le fichier doit être une image.';
         return;
       }
 
       this.selectedImage = file;
-      
+
       const reader = new FileReader();
       reader.onload = (e: any) => {
         this.imagePreview = e.target.result;
@@ -204,7 +234,7 @@ export class EventsListComponent implements OnInit {
       .subscribe({
         next: (response) => {
           const eventId = response.data?.id;
-          
+
           if (this.selectedImage && eventId) {
             this.uploadImage(eventId);
           } else {

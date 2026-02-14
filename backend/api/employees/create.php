@@ -29,8 +29,9 @@ $errors = [];
 if (empty($data['email'])) $errors[] = 'Email requis';
 if (empty($data['last_name'])) $errors[] = 'Nom requis';
 if (empty($data['first_name'])) $errors[] = 'Prénom requis';
-if (empty($data['role']) || !in_array($data['role'], ['admin', 'employee'])) {
-    $errors[] = 'Rôle invalide (admin ou employee)';
+
+if (isset($data['role']) && $data['role'] === 'admin') {
+    $errors[] = 'La création de compte administrateur est interdite depuis l\'application';
 }
 
 if (!empty($errors)) {
@@ -44,7 +45,7 @@ try {
     $db = $database->getConnection();
 
     // Vérifier si l'email existe
-    $stmtCheck = $db->prepare("SELECT id FROM users WHERE email = :email");
+    $stmtCheck = $db->prepare('SELECT id FROM users WHERE email = :email');
     $stmtCheck->execute([':email' => $data['email']]);
     if ($stmtCheck->fetch()) {
         http_response_code(400);
@@ -56,21 +57,21 @@ try {
     $tempPassword = bin2hex(random_bytes(8));
     $hashedPassword = password_hash($tempPassword, PASSWORD_BCRYPT);
 
-    // Créer l'utilisateur
-    $stmt = $db->prepare("
+    // Créer l'utilisateur (role forcé à employee)
+    $stmt = $db->prepare('
         INSERT INTO users (last_name, first_name, email, username, password, role, must_change_password, is_active, created_at)
         VALUES (:last_name, :first_name, :email, :username, :password, :role, 1, 1, NOW())
-    ");
-    
+    ');
+
     $username = !empty($data['username']) ? $data['username'] : strtolower($data['first_name'] . '.' . $data['last_name']);
-    
+
     $stmt->execute([
         ':last_name' => htmlspecialchars(strip_tags($data['last_name'])),
         ':first_name' => htmlspecialchars(strip_tags($data['first_name'])),
         ':email' => filter_var($data['email'], FILTER_SANITIZE_EMAIL),
         ':username' => htmlspecialchars(strip_tags($username)),
         ':password' => $hashedPassword,
-        ':role' => $data['role']
+        ':role' => 'employee'
     ]);
 
     $employeeId = $db->lastInsertId();

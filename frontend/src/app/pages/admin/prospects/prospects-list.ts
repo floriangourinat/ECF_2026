@@ -52,7 +52,7 @@ export class ProspectsListComponent implements OnInit {
   loadProspects(): void {
     this.loading = true;
     let url = 'http://localhost:8080/api/prospects/read.php?';
-    
+
     if (this.filterStatus) {
       url += `status=${this.filterStatus}&`;
     }
@@ -92,15 +92,26 @@ export class ProspectsListComponent implements OnInit {
   }
 
   updateStatus(prospect: Prospect, newStatus: string): void {
+    let failureMessage: string | null = null;
+
+    if (newStatus === 'failed') {
+      failureMessage = prompt('Message à envoyer au prospect (obligatoire) :', 'Après qualification, votre besoin n’est pas réalisable dans les délais demandés.');
+      if (!failureMessage || !failureMessage.trim()) {
+        alert('Le message d’échec est obligatoire.');
+        return;
+      }
+    }
+
     this.http.put<any>('http://localhost:8080/api/prospects/update_status.php', {
       id: prospect.id,
-      status: newStatus
+      status: newStatus,
+      failure_message: failureMessage
     }).subscribe({
       next: () => {
         prospect.status = newStatus;
       },
-      error: () => {
-        alert('Erreur lors de la mise à jour du statut');
+      error: (err) => {
+        alert(err.error?.message || 'Erreur lors de la mise à jour du statut');
       }
     });
   }
@@ -114,7 +125,11 @@ export class ProspectsListComponent implements OnInit {
       prospect_id: prospect.id
     }).subscribe({
       next: (response) => {
-        alert(`Client créé avec succès !\nMot de passe temporaire : ${response.data.temp_password}`);
+        if (response?.data?.already_existing) {
+          alert('Compte existant trouvé pour cet email. Le prospect est marqué comme converti.');
+        } else {
+          alert(`Client créé avec succès !\nMot de passe temporaire : ${response.data.temp_password}`);
+        }
         prospect.status = 'converted';
       },
       error: (err) => {

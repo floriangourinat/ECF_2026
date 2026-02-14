@@ -35,7 +35,7 @@ export class QuotesListComponent implements OnInit {
   filterStatus = '';
 
   statusLabels: { [key: string]: string } = {
-    'pending': 'En attente',
+    'pending': 'Étude côté client',
     'modification': 'Modification demandée',
     'accepted': 'Accepté',
     'refused': 'Refusé'

@@ -148,7 +148,7 @@ export class EmployeesListComponent implements OnInit {
     this.createLoading = true;
     this.createError = '';
 
-    this.http.post<any>('http://localhost:8080/api/employees/create.php', this.newEmployee)
+    this.http.post<any>('http://localhost:8080/api/employees/create.php', { ...this.newEmployee, role: 'employee' })
       .subscribe({
         next: (response) => {
           alert(`Employé créé avec succès !\n\nMot de passe temporaire : ${response.data.temp_password}`);

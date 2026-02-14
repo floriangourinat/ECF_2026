@@ -21,6 +21,10 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 require_once '../../config/database.php';
+require_once '../../vendor/autoload.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception as PHPMailerException;
 
 $data = json_decode(file_get_contents('php://input'), true);
 
@@ -53,6 +57,10 @@ try {
     $existingUser = $stmtCheck->fetch(PDO::FETCH_ASSOC);
 
     if ($existingUser) {
+        $stmtClientLookup = $db->prepare("SELECT id FROM clients WHERE user_id = :user_id LIMIT 1");
+        $stmtClientLookup->execute([':user_id' => $existingUser['id']]);
+        $existingClient = $stmtClientLookup->fetch(PDO::FETCH_ASSOC);
+
         // Cas demandé : déjà inscrit => considérer la conversion comme acceptée
         $stmtUpdate = $db->prepare("UPDATE prospects SET status = 'converted' WHERE id = :id");
         $stmtUpdate->execute([':id' => $data['prospect_id']]);
@@ -65,7 +73,7 @@ try {
             'message' => 'Un utilisateur avec cet email existe déjà',
             'data' => [
                 'user_id' => (int)$existingUser['id'],
-                'client_id' => null,
+                'client_id' => !empty($existingClient['id']) ? (int)$existingClient['id'] : null,
                 'temp_password' => null,
                 'already_existing' => true
             ]
@@ -78,7 +86,7 @@ try {
     $hashedPassword = password_hash($tempPassword, PASSWORD_BCRYPT);
 
     // Créer l'utilisateur
-    $stmtUser = $db->prepare("
+    $stmtUser = $db->prepare(" 
         INSERT INTO users (last_name, first_name, email, password, role, must_change_password, created_at)
         VALUES (:last_name, :first_name, :email, :password, 'client', 1, NOW())
     ");
@@ -91,7 +99,7 @@ try {
     $userId = (int)$db->lastInsertId();
 
     // Créer le client
-    $stmtClient = $db->prepare("
+    $stmtClient = $db->prepare(" 
         INSERT INTO clients (user_id, company_name, phone, address, created_at)
         VALUES (:user_id, :company_name, :phone, :address, NOW())
     ");
@@ -102,6 +110,39 @@ try {
         ':address' => $prospect['location']
     ]);
     $clientId = (int)$db->lastInsertId();
+
+    // Envoi email identifiants provisoires
+    $mailConfig = require '../../config/mail.php';
+    $mail = new PHPMailer(true);
+    $mail->isSMTP();
+    $mail->Host = $mailConfig['host'];
+    $mail->Port = $mailConfig['port'];
+    $mail->SMTPAuth = !empty($mailConfig['username']);
+
+    if ($mail->SMTPAuth) {
+        $mail->Username = $mailConfig['username'];
+        $mail->Password = $mailConfig['password'];
+        if (!empty($mailConfig['encryption'])) {
+            $mail->SMTPSecure = $mailConfig['encryption'];
+        }
+    }
+
+    $mail->setFrom($mailConfig['from_email'], $mailConfig['from_name']);
+    $mail->addAddress($prospect['email'], trim(($prospect['first_name'] ?? '') . ' ' . ($prospect['last_name'] ?? '')));
+    $mail->CharSet = 'UTF-8';
+    $mail->isHTML(true);
+    $mail->Subject = "Votre accès client Innov'Events";
+    $mail->Body = "
+        <p>Bonjour {$prospect['first_name']},</p>
+        <p>Votre compte client a été créé suite à votre demande de devis.</p>
+        <p><strong>Email :</strong> {$prospect['email']}<br>
+        <strong>Mot de passe temporaire :</strong> {$tempPassword}</p>
+        <p>Ce mot de passe est à modifier lors de votre première connexion.</p>
+        <p>Cordialement,<br>L'équipe Innov'Events</p>
+    ";
+    $mail->AltBody = "Bonjour {$prospect['first_name']},\n\nVotre compte client a été créé.\nEmail: {$prospect['email']}\nMot de passe temporaire: {$tempPassword}\n\nCe mot de passe est à modifier lors de votre première connexion.\n\nCordialement,\nL'équipe Innov'Events";
+
+    $mail->send();
 
     // Mettre à jour le statut du prospect
     $stmtUpdate = $db->prepare("UPDATE prospects SET status = 'converted' WHERE id = :id");
@@ -128,4 +169,11 @@ try {
 
     http_response_code(500);
     echo json_encode(['success' => false, 'message' => 'Erreur serveur: ' . $e->getMessage()]);
+} catch (PHPMailerException $e) {
+    if (isset($db) && $db->inTransaction()) {
+        $db->rollBack();
+    }
+
+    http_response_code(500);
+    echo json_encode(['success' => false, 'message' => 'Compte non créé: impossible d\'envoyer l\'email client']);
 }

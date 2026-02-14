@@ -30,17 +30,23 @@ if (empty($data['id'])) {
     exit();
 }
 
+if (isset($data['role']) && $data['role'] === 'admin') {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'message' => 'La création/promotion administrateur est interdite depuis l\'application']);
+    exit();
+}
+
 try {
     $database = new Database();
     $db = $database->getConnection();
 
-    $stmt = $db->prepare("
-        UPDATE users 
+    $stmt = $db->prepare(" 
+        UPDATE users
         SET first_name = :first_name,
             last_name = :last_name,
             email = :email,
             username = :username,
-            role = :role
+            role = CASE WHEN role = 'admin' THEN 'admin' ELSE 'employee' END
         WHERE id = :id AND role IN ('admin', 'employee')
     ");
 
@@ -49,8 +55,7 @@ try {
         ':first_name' => htmlspecialchars(strip_tags($data['first_name'])),
         ':last_name' => htmlspecialchars(strip_tags($data['last_name'])),
         ':email' => filter_var($data['email'], FILTER_SANITIZE_EMAIL),
-        ':username' => htmlspecialchars(strip_tags($data['username'] ?? '')),
-        ':role' => in_array($data['role'], ['admin', 'employee']) ? $data['role'] : 'employee'
+        ':username' => htmlspecialchars(strip_tags($data['username'] ?? ''))
     ]);
 
     if ($stmt->rowCount() === 0) {

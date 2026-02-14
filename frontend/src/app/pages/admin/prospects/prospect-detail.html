@@ -37,6 +37,12 @@
             Marquer comme échoué
           </button>
         </div>
+
+        <div class="header-actions" *ngIf="prospect.status === 'converted'">
+          <button (click)="createPrefilledEvent()" class="btn btn-primary">
+            ➕ Créer un événement prérempli
+          </button>
+        </div>
       </header>
 
       <!-- Image d'inspiration -->
