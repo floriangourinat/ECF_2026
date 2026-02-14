@@ -99,6 +99,8 @@ export class QuoteDetailComponent implements OnInit {
       next: (response) => {
         this.quote.status = response?.data?.status || 'pending';
         this.quote.modification_reason = response?.data?.modification_reason || this.quote.modification_reason;
+        this.quote.counter_proposal = response?.data?.counter_proposal || this.quote.counter_proposal;
+        this.quote.counter_proposed_at = response?.data?.counter_proposed_at || this.quote.counter_proposed_at;
         this.counterProposalText = '';
         this.sendingCounterProposal = false;
         alert(response?.message || 'Contreproposition envoyée');
@@ -157,6 +159,11 @@ export class QuoteDetailComponent implements OnInit {
   }
 
   getCounterProposal(rawReason?: string): string {
+    const structured = (this.quote?.counter_proposal || '').trim();
+    if (structured) {
+      return structured;
+    }
+
     const source = (rawReason || '').trim();
     if (!source.includes(this.counterProposalMarker)) {
       return '';
@@ -168,6 +175,10 @@ export class QuoteDetailComponent implements OnInit {
   }
 
   getCounterProposalDate(rawReason?: string): string {
+    if (this.quote?.counter_proposed_at) {
+      return this.formatDate(this.quote.counter_proposed_at);
+    }
+
     const source = (rawReason || '').trim();
     if (!source.includes(this.counterProposalMarker)) {
       return '';

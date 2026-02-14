@@ -25,9 +25,10 @@
           <p><strong>Créé le :</strong> {{ formatDate(quote.created_at) }}</p>
         </div>
 
-        <div class="quote-notes" *ngIf="quote.modification_reason">
+        <div class="quote-notes" *ngIf="quote.modification_reason || quote.counter_proposal">
           <p *ngIf="getClientModificationReason(quote)"><strong>Votre motif :</strong> {{ getClientModificationReason(quote) }}</p>
           <p *ngIf="getCounterProposal(quote)"><strong>Contreproposition Innov'events :</strong> {{ getCounterProposal(quote) }}</p>
+          <p *ngIf="getCounterProposalDate(quote)"><strong>Date contreproposition :</strong> {{ getCounterProposalDate(quote) }}</p>
         </div>
 
         <div class="quote-actions">

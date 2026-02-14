@@ -26,9 +26,17 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
+    $stmtHasCounterProposal = $db->query("SHOW COLUMNS FROM quotes LIKE 'counter_proposal'");
+    $hasCounterProposal = (bool)$stmtHasCounterProposal->fetch(PDO::FETCH_ASSOC);
+
+    $counterProposalSelect = $hasCounterProposal
+        ? "q.counter_proposal, q.counter_proposed_at,"
+        : "NULL AS counter_proposal, NULL AS counter_proposed_at,";
+
     // Infos devis
     $stmt = $db->prepare("
-        SELECT q.*, e.name as event_name, e.start_date as event_date, e.location as event_location,
+        SELECT q.*, {$counterProposalSelect}
+               e.name as event_name, e.start_date as event_date, e.location as event_location,
                c.company_name, c.phone as client_phone, c.address as client_address,
                u.first_name, u.last_name, u.email as client_email
         FROM quotes q

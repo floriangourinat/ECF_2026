@@ -47,8 +47,13 @@ try {
     $database = new Database();
     $db = $database->getConnection();
 
+    $stmtColumns = $db->query("SHOW COLUMNS FROM quotes LIKE 'counter_proposal'");
+    $hasCounterProposalColumn = (bool)$stmtColumns->fetch(PDO::FETCH_ASSOC);
+
     $stmt = $db->prepare("
-        SELECT q.id, q.status, q.modification_reason, e.name AS event_name,
+        SELECT q.id, q.status, q.modification_reason,
+               " . ($hasCounterProposalColumn ? "q.counter_proposal, q.counter_proposed_at," : "NULL AS counter_proposal, NULL AS counter_proposed_at,") . "
+               e.name AS event_name,
                u.email AS client_email, u.first_name, u.last_name
         FROM quotes q
         JOIN events e ON q.event_id = e.id
@@ -72,23 +77,54 @@ try {
         exit();
     }
 
-    $marker = "[CONTREPROPOSITION_INNOV_EVENTS]";
-    $baseReason = (string)($quote['modification_reason'] ?? '');
-    $baseReason = trim(explode($marker, $baseReason)[0]);
-
-    $dateLabel = date('d/m/Y H:i');
     $safeCounterProposal = htmlspecialchars(strip_tags($counterProposal));
-    $combinedReason = trim($baseReason);
-    if ($combinedReason !== '') {
-        $combinedReason .= "\n\n";
-    }
-    $combinedReason .= $marker . "\nDate: {$dateLabel}\nMessage: {$safeCounterProposal}";
 
-    $stmtUpdate = $db->prepare("UPDATE quotes SET status = 'pending', modification_reason = :reason, updated_at = NOW() WHERE id = :id");
-    $stmtUpdate->execute([
-        ':reason' => $combinedReason,
-        ':id' => (int)$data['quote_id']
-    ]);
+    if ($hasCounterProposalColumn) {
+        $stmtUpdate = $db->prepare("
+            UPDATE quotes
+            SET status = 'pending',
+                counter_proposal = :counter_proposal,
+                counter_proposed_at = NOW(),
+                updated_at = NOW()
+            WHERE id = :id
+        ");
+        $stmtUpdate->execute([
+            ':counter_proposal' => $safeCounterProposal,
+            ':id' => (int)$data['quote_id']
+        ]);
+
+        $responseReason = (string)($quote['modification_reason'] ?? '');
+        $responseCounterProposal = $safeCounterProposal;
+        $responseCounterProposedAt = date('Y-m-d H:i:s');
+    } else {
+        // Fallback rétrocompatible: historique dans modification_reason
+        $marker = '[CONTREPROPOSITION_INNOV_EVENTS]';
+        $baseReason = (string)($quote['modification_reason'] ?? '');
+        $baseReason = trim(explode($marker, $baseReason)[0]);
+
+        $dateLabel = date('d/m/Y H:i');
+        $combinedReason = trim($baseReason);
+        if ($combinedReason !== '') {
+            $combinedReason .= "\n\n";
+        }
+        $combinedReason .= $marker . "\nDate: {$dateLabel}\nMessage: {$safeCounterProposal}";
+
+        $stmtUpdate = $db->prepare("
+            UPDATE quotes
+            SET status = 'pending',
+                modification_reason = :reason,
+                updated_at = NOW()
+            WHERE id = :id
+        ");
+        $stmtUpdate->execute([
+            ':reason' => $combinedReason,
+            ':id' => (int)$data['quote_id']
+        ]);
+
+        $responseReason = $combinedReason;
+        $responseCounterProposal = $safeCounterProposal;
+        $responseCounterProposedAt = date('Y-m-d H:i:s');
+    }
 
     $mailConfig = include '../../config/mail.php';
     $mail = new PHPMailer(true);
@@ -131,7 +167,8 @@ try {
     $logger = new MongoLogger();
     $logger->log('ADMIN_COUNTER_PROPOSAL', 'quote', (int)$data['quote_id'], (int)$data['admin_user_id'], [
         'counter_proposal' => $counterProposal,
-        'status_after' => 'pending'
+        'status_after' => 'pending',
+        'storage' => $hasCounterProposalColumn ? 'structured_columns' : 'modification_reason_fallback'
     ]);
 
     http_response_code(200);
@@ -140,7 +177,10 @@ try {
         'message' => 'Contreproposition envoyée au client',
         'data' => [
             'status' => 'pending',
-            'modification_reason' => $combinedReason
+            'modification_reason' => $responseReason,
+            'counter_proposal' => $responseCounterProposal,
+            'counter_proposed_at' => $responseCounterProposedAt,
+            'storage' => $hasCounterProposalColumn ? 'structured_columns' : 'modification_reason_fallback'
         ]
     ]);
 } catch (PDOException $e) {

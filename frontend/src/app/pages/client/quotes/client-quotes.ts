@@ -15,6 +15,8 @@ interface Quote {
   status: string;
   created_at: string;
   modification_reason?: string;
+  counter_proposal?: string;
+  counter_proposed_at?: string;
 }
 
 @Component({
@@ -106,6 +108,10 @@ export class ClientQuotesComponent implements OnInit {
   }
 
   getCounterProposal(quote: Quote): string {
+    if ((quote.counter_proposal || '').trim()) {
+      return String(quote.counter_proposal).trim();
+    }
+
     const source = quote.modification_reason || '';
     if (!source.includes(this.counterProposalMarker)) {
       return '';
@@ -113,6 +119,20 @@ export class ClientQuotesComponent implements OnInit {
     const chunk = source.split(this.counterProposalMarker)[1] || '';
     const messageMatch = chunk.match(/Message:\s*([\s\S]*)$/);
     return messageMatch?.[1]?.trim() || '';
+  }
+
+  getCounterProposalDate(quote: Quote): string {
+    if (quote.counter_proposed_at) {
+      return this.formatDate(quote.counter_proposed_at);
+    }
+
+    const source = quote.modification_reason || '';
+    if (!source.includes(this.counterProposalMarker)) {
+      return '';
+    }
+    const chunk = source.split(this.counterProposalMarker)[1] || '';
+    const dateMatch = chunk.match(/Date:\s*([^\n]+)/);
+    return dateMatch?.[1]?.trim() || '';
   }
 
   formatDate(dateString: string): string {

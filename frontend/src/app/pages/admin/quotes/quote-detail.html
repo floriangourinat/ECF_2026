@@ -96,7 +96,7 @@
       </section>
 
       <!-- Motif de modification -->
-      <section class="modification-section" *ngIf="quote.modification_reason">
+      <section class="modification-section" *ngIf="quote.modification_reason || quote.counter_proposal">
         <h3>📝 Demande de modification</h3>
         <p *ngIf="getClientModificationReason(quote.modification_reason)">
           <strong>Motif client :</strong> {{ getClientModificationReason(quote.modification_reason) }}

@@ -36,9 +36,17 @@ try {
         exit();
     }
 
+    $stmtHasCounterProposal = $db->query("SHOW COLUMNS FROM quotes LIKE 'counter_proposal'");
+    $hasCounterProposal = (bool)$stmtHasCounterProposal->fetch(PDO::FETCH_ASSOC);
+
+    $counterProposalSelect = $hasCounterProposal
+        ? "q.counter_proposal, q.counter_proposed_at,"
+        : "NULL AS counter_proposal, NULL AS counter_proposed_at,";
+
     $stmt = $db->prepare("
         SELECT q.id, q.event_id, q.total_ht, q.tax_rate, q.total_ttc, q.status, q.issue_date, q.created_at,
                q.modification_reason,
+               {$counterProposalSelect}
                e.name as event_name, e.start_date as event_date, e.location as event_location
         FROM quotes q
         JOIN events e ON q.event_id = e.id
