@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
 require_once '../../config/database.php';
 require_once '../../middleware/auth.php';
 
-require_auth(['admin', 'employee']);
+$payload = require_auth(['admin', 'employee', 'client']);
 
 try {
     $database = new Database();
@@ -43,9 +43,24 @@ try {
         $params[':status'] = $_GET['status'];
     }
 
-    if (!empty($_GET['client_id'])) {
+    if (($payload['role'] ?? null) === 'client') {
+        $stmtClient = $db->prepare("SELECT id FROM clients WHERE user_id = :user_id LIMIT 1");
+        $stmtClient->execute([':user_id' => (int)$payload['user_id']]);
+        $clientRow = $stmtClient->fetch(PDO::FETCH_ASSOC);
+
+        if (!$clientRow || empty($clientRow['id'])) {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'message' => 'Profil client introuvable']);
+            exit();
+        }
+
         $sql .= " AND e.client_id = :client_id";
-        $params[':client_id'] = $_GET['client_id'];
+        $params[':client_id'] = (int)$clientRow['id'];
+    } else {
+        if (!empty($_GET['client_id'])) {
+            $sql .= " AND e.client_id = :client_id";
+            $params[':client_id'] = $_GET['client_id'];
+        }
     }
 
     if (!empty($_GET['search'])) {

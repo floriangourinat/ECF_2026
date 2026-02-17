@@ -1,9 +1,4 @@
 <?php
-/**
- * Service de journalisation MongoDB
- */
-
-require_once __DIR__ . '/../vendor/autoload.php';
 
 class MongoLogger {
     private $collection;
@@ -11,19 +6,22 @@ class MongoLogger {
 
     public function __construct() {
         try {
-            // Utiliser 'mongo' (nom du service Docker) au lieu de localhost
+            $autoloadPath = __DIR__ . '/../vendor/autoload.php';
+            if (!file_exists($autoloadPath)) {
+                $this->enabled = false;
+                return;
+            }
+
+            require_once $autoloadPath;
+
             $client = new MongoDB\Client("mongodb://root:root@mongo:27017");
             $database = $client->selectDatabase('innovevents_logs');
             $this->collection = $database->selectCollection('activity_logs');
         } catch (Exception $e) {
             $this->enabled = false;
-            error_log("MongoDB connection failed: " . $e->getMessage());
         }
     }
 
-    /**
-     * Enregistrer une action
-     */
     public function log(string $action, string $entity, ?int $entityId = null, ?int $userId = null, ?array $details = null): bool {
         if (!$this->enabled) {
             return false;
@@ -44,14 +42,10 @@ class MongoLogger {
             $this->collection->insertOne($document);
             return true;
         } catch (Exception $e) {
-            error_log("MongoDB log failed: " . $e->getMessage());
             return false;
         }
     }
 
-    /**
-     * Récupérer les logs
-     */
     public function getLogs(array $filters = [], int $limit = 100, int $skip = 0): array {
         if (!$this->enabled) {
             return [];
@@ -100,14 +94,10 @@ class MongoLogger {
 
             return $logs;
         } catch (Exception $e) {
-            error_log("MongoDB getLogs failed: " . $e->getMessage());
             return [];
         }
     }
 
-    /**
-     * Compter les logs
-     */
     public function countLogs(array $filters = []): int {
         if (!$this->enabled) {
             return 0;
