@@ -369,7 +369,3 @@ Reset complet (⚠️ destructif) :
 
 Florian Gourinat — Projet ECF 2026 — Innov’Events
 """
-path = "/mnt/data/documentation-technique.md"
-with open(path, "w", encoding="utf-8") as f:
-    f.write(content)
-path
