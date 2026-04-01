@@ -2,44 +2,63 @@
 
 class LoginService
 {
+    /**
+     * Hash factice pour limiter les écarts de timing quand l'email n'existe pas.
+     * Mot de passe: "invalid-password-placeholder"
+     */
+    private const DUMMY_PASSWORD_HASH = '$2y$10$9gA6f47yho8z5CIjM3s5be0r0EnqwyI4ezgmO6ijLJrVN6a8GN28m';
+
     public function __construct(
         private UserRepository $userRepository,
         private MongoLogger $logger,
         private JwtService $jwtService,
+        private LoginRateLimiter $rateLimiter,
         private int $jwtTtl
     ) {
     }
 
-    public function login(string $email, string $password): array
+    public function login(string $email, string $password, string $ipAddress): array
     {
+        if ($this->rateLimiter->isBlocked($email, $ipAddress)) {
+            $this->delayOnFailure();
+            throw new RuntimeException('Trop de tentatives. Réessayez plus tard.', 429);
+        }
+
         $user = $this->userRepository->findByEmail($email);
 
         if (!$user) {
-            $this->logFailedLogin($email);
-            throw new RuntimeException("Identifiants incorrects.", 401);
-        }
-
-        if (!(bool)$user['is_active']) {
-            throw new RuntimeException("Compte suspendu. Contactez l'administrateur.", 403);
-        }
-
-        if ((int)$user['email_verified'] !== 1) {
-            throw new RuntimeException("Email non vérifié. Veuillez confirmer votre email avant de vous connecter.", 403);
+            password_verify($password, self::DUMMY_PASSWORD_HASH);
+            $this->handleFailedAuth($email, $ipAddress);
         }
 
         if (!password_verify($password, $user['password'])) {
-            $this->logFailedLogin($email);
-            throw new RuntimeException("Identifiants incorrects.", 401);
+            $this->handleFailedAuth($email, $ipAddress);
         }
 
+        // Contrôles laissés après password_verify pour réduire les écarts de timing.
+        if (!(bool)$user['is_active'] || (int)$user['email_verified'] !== 1) {
+            $this->handleFailedAuth($email, $ipAddress);
+        }
+
+        if (password_needs_rehash($user['password'], PASSWORD_DEFAULT)) {
+            $newHash = password_hash($password, PASSWORD_DEFAULT);
+            if ($newHash !== false) {
+                $this->userRepository->updatePasswordHash((int)$user['id'], $newHash);
+            }
+        }
+
+        $this->rateLimiter->clear($email, $ipAddress);
+
         $this->logger->log('CONNEXION_REUSSIE', 'user', (int)$user['id'], (int)$user['id'], [
-            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+            'ip_address' => $ipAddress
         ]);
 
         $token = $this->jwtService->encode([
             'sub' => (int)$user['id'],
             'email' => $user['email'],
-            'role' => $user['role']
+            'role' => $user['role'],
+            'jti' => bin2hex(random_bytes(16)),
+            'nbf' => time()
         ], $this->jwtTtl);
 
         return [
@@ -57,11 +76,20 @@ class LoginService
         ];
     }
 
-    private function logFailedLogin(string $email): void
+    private function handleFailedAuth(string $email, string $ipAddress): void
     {
+        $this->rateLimiter->hit($email, $ipAddress);
         $this->logger->log('CONNEXION_ECHOUEE', 'user', null, null, [
             'email' => $email,
-            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
+            'ip_address' => $ipAddress
         ]);
+        $this->delayOnFailure();
+        throw new RuntimeException('Identifiants incorrects.', 401);
+    }
+
+    private function delayOnFailure(): void
+    {
+        $delayMicroseconds = random_int(180000, 420000);
+        usleep($delayMicroseconds);
     }
 }

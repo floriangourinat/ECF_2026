@@ -22,4 +22,13 @@ class UserRepository
 
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function updatePasswordHash(int $userId, string $newHash): void
+    {
+        $query = "UPDATE users SET password = :password WHERE id = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindParam(':password', $newHash, PDO::PARAM_STR);
+        $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+    }
 }
