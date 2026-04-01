@@ -1,6 +1,6 @@
 <?php
 /**
- * API Endpoint: Connexion utilisateur
+ * API Endpoint: Connexion utilisateur (version orientée objet)
  * backend/api/auth/login.php
  */
 
@@ -10,7 +10,7 @@ header("Access-Control-Allow-Methods: POST, OPTIONS");
 header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
     exit;
 }
@@ -18,106 +18,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 include_once '../../config/database.php';
 require_once '../../services/MongoLogger.php';
 require_once '../../services/JwtService.php';
+require_once '../../services/Auth/UserRepository.php';
+require_once '../../services/Auth/LoginValidator.php';
+require_once '../../services/Auth/LoginService.php';
 
 $jwtConfig = require '../../config/jwt.php';
-
 $database = new Database();
 $db = $database->getConnection();
+
+$validator = new LoginValidator();
+$userRepository = new UserRepository($db);
 $logger = new MongoLogger();
-
-$data = json_decode(file_get_contents("php://input"));
-
-// Validation
-if (empty($data->email) || empty($data->password)) {
-    http_response_code(400);
-    echo json_encode(["message" => "Données incomplètes. Email et mot de passe requis."]);
-    exit;
-}
-
-$email = filter_var(trim($data->email), FILTER_VALIDATE_EMAIL);
-if (!$email) {
-    http_response_code(400);
-    echo json_encode(["message" => "Format d'email invalide."]);
-    exit;
-}
+$jwtService = new JwtService($jwtConfig['secret'], $jwtConfig['issuer']);
+$loginService = new LoginService($userRepository, $logger, $jwtService, (int)$jwtConfig['ttl_seconds']);
 
 try {
-    $query = "SELECT id, last_name, first_name, username, email, password, role,
-                     is_active, must_change_password, email_verified
-              FROM users WHERE email = :email LIMIT 1";
-
-    $stmt = $db->prepare($query);
-    $stmt->bindParam(':email', $email, PDO::PARAM_STR);
-    $stmt->execute();
-
-    if ($stmt->rowCount() === 0) {
-        $logger->log('CONNEXION_ECHOUEE', 'user', null, null, [
-            'email' => $email,
-            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
-        ]);
-
-        http_response_code(401);
-        echo json_encode(["message" => "Identifiants incorrects."]);
-        exit;
-    }
-
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    // Compte suspendu ?
-    if (!(bool)$user['is_active']) {
-        http_response_code(403);
-        echo json_encode(["message" => "Compte suspendu. Contactez l'administrateur."]);
-        exit;
-    }
-
-    // Email non vérifié ?
-    if ((int)$user['email_verified'] !== 1) {
-        http_response_code(403);
-        echo json_encode(["message" => "Email non vérifié. Veuillez confirmer votre email avant de vous connecter."]);
-        exit;
-    }
-
-    // Vérification mot de passe
-    if (!password_verify($data->password, $user['password'])) {
-        $logger->log('CONNEXION_ECHOUEE', 'user', null, null, [
-            'email' => $email,
-            'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
-        ]);
-
-        http_response_code(401);
-        echo json_encode(["message" => "Identifiants incorrects."]);
-        exit;
-    }
-
-    $logger->log('CONNEXION_REUSSIE', 'user', $user['id'], $user['id'], [
-        'ip_address' => $_SERVER['REMOTE_ADDR'] ?? 'unknown'
-    ]);
-
-    // ✅ JWT signé (non forgeable)
-    $jwt = new JwtService($jwtConfig['secret'], $jwtConfig['issuer']);
-    $token = $jwt->encode([
-        "sub" => (int)$user['id'],
-        "email" => $user['email'],
-        "role" => $user['role']
-    ], (int)$jwtConfig['ttl_seconds']);
+    $data = json_decode(file_get_contents('php://input'));
+    $credentials = $validator->validate($data);
+    $response = $loginService->login($credentials['email'], $credentials['password']);
 
     http_response_code(200);
-    echo json_encode([
-        "message" => "Connexion réussie.",
-        "token" => $token,
-        "user" => [
-            "id" => (int)$user['id'],
-            "last_name" => $user['last_name'],
-            "first_name" => $user['first_name'],
-            "username" => $user['username'],
-            "email" => $user['email'],
-            "role" => $user['role'],
-            "must_change_password" => (bool)$user['must_change_password']
-        ]
-    ]);
-
+    echo json_encode($response);
+} catch (InvalidArgumentException $e) {
+    http_response_code(400);
+    echo json_encode(['message' => $e->getMessage()]);
+} catch (RuntimeException $e) {
+    http_response_code($e->getCode() ?: 401);
+    echo json_encode(['message' => $e->getMessage()]);
 } catch (PDOException $e) {
     http_response_code(500);
-    echo json_encode(["message" => "Erreur serveur."]);
+    echo json_encode(['message' => 'Erreur serveur.']);
 }
-?>
