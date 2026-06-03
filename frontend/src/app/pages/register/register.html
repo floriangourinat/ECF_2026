@@ -1,9 +1,9 @@
-<app-header></app-header>
+﻿<app-header></app-header>
 
 <div class="register-page">
   <div class="register-container">
     <div class="register-card">
-      <h1>Créer un compte</h1>
+      <h1>CrÃ©er un compte</h1>
       <p class="subtitle">Rejoignez Innov'Events</p>
 
       <div *ngIf="errorMessage" class="alert alert-danger">
@@ -21,7 +21,7 @@
             <input type="text" id="last_name" formControlName="last_name" class="form-control" placeholder="Dupont">
           </div>
           <div class="form-group half">
-            <label for="first_name">Prénom *</label>
+            <label for="first_name">PrÃ©nom *</label>
             <input type="text" id="first_name" formControlName="first_name" class="form-control" placeholder="Jean">
           </div>
         </div>
@@ -38,21 +38,21 @@
 
         <div class="form-group">
           <label for="password">Mot de passe *</label>
-          <input type="password" id="password" formControlName="password" class="form-control" placeholder="••••••••">
-          <small class="password-hint">8 caractères min, 1 majuscule, 1 minuscule, 1 chiffre, 1 spécial</small>
+          <input type="password" id="password" formControlName="password" class="form-control" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
+          <small class="password-hint">8 caractÃ¨res min, 1 majuscule, 1 minuscule, 1 chiffre, 1 spÃ©cial</small>
         </div>
 
         <button type="submit" [disabled]="registerForm.invalid || loading" class="btn-submit">
-          {{ loading ? 'Création...' : 'Créer mon compte' }}
+          {{ loading ? 'CrÃ©ation...' : 'CrÃ©er mon compte' }}
         </button>
       </form>
 
       <div class="login-link">
-        <p>Déjà un compte ? <a routerLink="/login">Se connecter</a></p>
+        <p>DÃ©jÃ  un compte ? <a routerLink="/login">Se connecter</a></p>
       </div>
 
       <div class="back-home">
-        <a routerLink="/home">← Retour à l'accueil</a>
+        <a routerLink="/home">â† Retour Ã  l'accueil</a>
       </div>
     </div>
   </div>

@@ -1,30 +1,30 @@
-<app-client-layout>
+﻿<app-client-layout>
   <div class="dashboard">
     <header class="page-header">
-      <h1>Bienvenue, {{ authService.currentUserValue?.first_name }} 👋</h1>
-      <p>Suivez vos devis et vos événements en cours.</p>
+      <h1>Bienvenue, {{ authService.currentUserValue?.first_name }} ðŸ‘‹</h1>
+      <p>Suivez vos devis et vos Ã©vÃ©nements en cours.</p>
     </header>
 
     <div class="widgets-grid">
       <section class="widget">
         <div class="widget-header">
-          <h3>📅 Prochains événements</h3>
-          <a routerLink="/client/events" class="link">Voir tout →</a>
+          <h3>ðŸ“… Prochains Ã©vÃ©nements</h3>
+          <a routerLink="/client/events" class="link">Voir tout â†’</a>
         </div>
         <div *ngIf="loading" class="empty">Chargement...</div>
-        <div *ngIf="!loading && upcomingEvents.length === 0" class="empty">Aucun événement à venir</div>
+        <div *ngIf="!loading && upcomingEvents.length === 0" class="empty">Aucun Ã©vÃ©nement Ã  venir</div>
         <div class="event-list">
           <div *ngFor="let event of upcomingEvents" class="event-item">
             <strong>{{ event.name }}</strong>
-            <small>{{ formatDate(event.start_date) }} · {{ event.location || '-' }}</small>
+            <small>{{ formatDate(event.start_date) }} Â· {{ event.location || '-' }}</small>
           </div>
         </div>
       </section>
 
       <section class="widget">
         <div class="widget-header">
-          <h3>📄 Derniers devis</h3>
-          <a routerLink="/client/quotes" class="link">Gérer →</a>
+          <h3>ðŸ“„ Derniers devis</h3>
+          <a routerLink="/client/quotes" class="link">GÃ©rer â†’</a>
         </div>
         <div *ngIf="latestQuotes.length === 0" class="empty">Aucun devis disponible</div>
         <div class="quote-list">

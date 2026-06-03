@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -45,7 +45,7 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   loadDashboard(): void {
-    this.http.get<any>('http://localhost:8080/api/admin/dashboard.php')
+    this.http.get<any>('/api/admin/dashboard.php')
       .subscribe({
         next: (response) => {
           this.data = response.data;
@@ -64,7 +64,7 @@ export class AdminDashboardComponent implements OnInit {
     if (!content || !currentUserId) return;
 
     this.savingGlobalNote = true;
-    this.http.post<any>('http://localhost:8080/api/notes/create.php', {
+    this.http.post<any>('/api/notes/create.php', {
       author_id: currentUserId,
       content,
       is_global: true
@@ -78,7 +78,7 @@ export class AdminDashboardComponent implements OnInit {
         this.savingGlobalNote = false;
       },
       error: () => {
-        alert('Erreur lors de la création de la note globale');
+        alert('Erreur lors de la crÃ©ation de la note globale');
         this.savingGlobalNote = false;
       }
     });
@@ -98,7 +98,7 @@ export class AdminDashboardComponent implements OnInit {
     const content = this.editGlobalNoteContent.trim();
     if (!content) return;
 
-    this.http.put<any>('http://localhost:8080/api/notes/update.php', {
+    this.http.put<any>('/api/notes/update.php', {
       id: note.id,
       content
     }).subscribe({
@@ -109,10 +109,10 @@ export class AdminDashboardComponent implements OnInit {
           this.cancelEditGlobalNote();
           return;
         }
-        alert(response?.message || 'Erreur lors de la mise à jour');
+        alert(response?.message || 'Erreur lors de la mise Ã  jour');
       },
       error: () => {
-        alert('Erreur lors de la mise à jour');
+        alert('Erreur lors de la mise Ã  jour');
       }
     });
   }
@@ -120,7 +120,7 @@ export class AdminDashboardComponent implements OnInit {
   deleteGlobalNote(note: any): void {
     if (!confirm('Supprimer cette note globale ?')) return;
 
-    this.http.delete<any>('http://localhost:8080/api/notes/delete.php', { body: { id: note.id } }).subscribe({
+    this.http.delete<any>('/api/notes/delete.php', { body: { id: note.id } }).subscribe({
       next: () => {
         if (!this.data) return;
         this.data.global_notes = (this.data.global_notes || []).filter(n => n.id !== note.id);
@@ -153,10 +153,10 @@ export class AdminDashboardComponent implements OnInit {
     const labels: { [key: string]: string } = {
       'draft': 'Brouillon',
       'client_review': 'En attente client',
-      'accepted': 'Accepté',
+      'accepted': 'AcceptÃ©',
       'in_progress': 'En cours',
-      'completed': 'Terminé',
-      'cancelled': 'Annulé'
+      'completed': 'TerminÃ©',
+      'cancelled': 'AnnulÃ©'
     };
     return labels[status] || status;
   }

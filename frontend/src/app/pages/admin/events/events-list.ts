@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -62,16 +62,16 @@ export class EventsListComponent implements OnInit {
   selectedImage: File | null = null;
   imagePreview: string | null = null;
 
-  eventTypes = ['Séminaire', 'Conférence', 'Soirée d\'entreprise', 'Team Building', 'Autre'];
-  themes = ['Élégant', 'Tropical', 'Rétro', 'High-Tech', 'Nature', 'Industriel'];
+  eventTypes = ['SÃ©minaire', 'ConfÃ©rence', 'SoirÃ©e d\'entreprise', 'Team Building', 'Autre'];
+  themes = ['Ã‰lÃ©gant', 'Tropical', 'RÃ©tro', 'High-Tech', 'Nature', 'Industriel'];
 
   statusLabels: { [key: string]: string } = {
     'draft': 'Brouillon',
     'client_review': 'En attente client',
-    'accepted': 'Accepté',
+    'accepted': 'AcceptÃ©',
     'in_progress': 'En cours',
-    'completed': 'Terminé',
-    'cancelled': 'Annulé'
+    'completed': 'TerminÃ©',
+    'cancelled': 'AnnulÃ©'
   };
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {}
@@ -89,7 +89,7 @@ export class EventsListComponent implements OnInit {
 
   loadEvents(): void {
     this.loading = true;
-    let url = 'http://localhost:8080/api/events/read_all.php?';
+    let url = '/api/events/read_all.php?';
 
     if (this.filterStatus) {
       url += `status=${this.filterStatus}&`;
@@ -104,14 +104,14 @@ export class EventsListComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.error = 'Impossible de charger les événements';
+        this.error = 'Impossible de charger les Ã©vÃ©nements';
         this.loading = false;
       }
     });
   }
 
   loadClients(): void {
-    this.http.get<any>('http://localhost:8080/api/clients/read.php').subscribe({
+    this.http.get<any>('/api/clients/read.php').subscribe({
       next: (response) => {
         this.clients = response.data || [];
       }
@@ -156,13 +156,13 @@ export class EventsListComponent implements OnInit {
       .join(' ');
 
     this.newEvent = {
-      name: params['event_type'] ? `${params['event_type']} - ${prospectName}` : `Événement - ${prospectName}`,
+      name: params['event_type'] ? `${params['event_type']} - ${prospectName}` : `Ã‰vÃ©nement - ${prospectName}`,
       client_id: params['client_id'] || '',
       start_date: startDate,
       end_date: endDate,
       location: params['location'] || '',
       event_type: params['event_type'] || '',
-      theme: 'Élégant',
+      theme: 'Ã‰lÃ©gant',
       status: 'draft',
       is_visible: false
     };
@@ -183,7 +183,7 @@ export class EventsListComponent implements OnInit {
       }
 
       if (!file.type.startsWith('image/')) {
-        this.createError = 'Le fichier doit être une image.';
+        this.createError = 'Le fichier doit Ãªtre une image.';
         return;
       }
 
@@ -205,7 +205,7 @@ export class EventsListComponent implements OnInit {
 
   getImageUrl(path: string): string {
     if (path && path.startsWith('/uploads/')) {
-      return 'http://localhost:8080' + path;
+      return '/api' + path;
     }
     return path;
   }
@@ -223,14 +223,14 @@ export class EventsListComponent implements OnInit {
       !this.newEvent.event_type ||
       !this.newEvent.theme
     ) {
-      this.createError = 'Nom, client, dates, type et thème sont requis';
+      this.createError = 'Nom, client, dates, type et thÃ¨me sont requis';
       return;
     }
 
     this.createLoading = true;
     this.createError = '';
 
-    this.http.post<any>('http://localhost:8080/api/events/create.php', this.newEvent)
+    this.http.post<any>('/api/events/create.php', this.newEvent)
       .subscribe({
         next: (response) => {
           const eventId = response.data?.id;
@@ -244,7 +244,7 @@ export class EventsListComponent implements OnInit {
           }
         },
         error: (err) => {
-          this.createError = err.error?.message || 'Erreur lors de la création';
+          this.createError = err.error?.message || 'Erreur lors de la crÃ©ation';
           this.createLoading = false;
         }
       });
@@ -257,7 +257,7 @@ export class EventsListComponent implements OnInit {
     formData.append('image', this.selectedImage);
     formData.append('event_id', eventId.toString());
 
-    this.http.post<any>('http://localhost:8080/api/events/upload_image.php', formData)
+    this.http.post<any>('/api/events/upload_image.php', formData)
       .subscribe({
         next: () => {
           this.closeCreateModal();
@@ -273,11 +273,11 @@ export class EventsListComponent implements OnInit {
   }
 
   deleteEvent(event: Event): void {
-    if (!confirm(`Supprimer l'événement "${event.name}" ?\n\nCette action supprimera également tous les devis, notes et tâches associés.`)) {
+    if (!confirm(`Supprimer l'Ã©vÃ©nement "${event.name}" ?\n\nCette action supprimera Ã©galement tous les devis, notes et tÃ¢ches associÃ©s.`)) {
       return;
     }
 
-    this.http.delete<any>('http://localhost:8080/api/events/delete.php', { body: { id: event.id } })
+    this.http.delete<any>('/api/events/delete.php', { body: { id: event.id } })
       .subscribe({
         next: () => {
           this.events = this.events.filter(e => e.id !== event.id);

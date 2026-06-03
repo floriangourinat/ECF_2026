@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -38,7 +38,7 @@ export class ForgotPasswordComponent {
 
     this.authService.forgotPassword(this.forgotForm.value.email).subscribe({
       next: (response: any) => {
-        this.successMessage = response.message || 'Si cet email existe, un nouveau mot de passe a été envoyé.';
+        this.successMessage = response.message || 'Si cet email existe, un nouveau mot de passe a Ã©tÃ© envoyÃ©.';
         this.loading = false;
         this.submitted = true;
       },

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -27,10 +27,10 @@ export class QuoteDetailComponent implements OnInit {
 
   statusLabels: { [key: string]: string } = {
     'draft': 'Brouillon',
-    'pending': 'Étude côté client',
-    'modification': 'Modification demandée',
-    'accepted': 'Accepté',
-    'refused': 'Refusé'
+    'pending': 'Ã‰tude cÃ´tÃ© client',
+    'modification': 'Modification demandÃ©e',
+    'accepted': 'AcceptÃ©',
+    'refused': 'RefusÃ©'
   };
 
   constructor(
@@ -48,7 +48,7 @@ export class QuoteDetailComponent implements OnInit {
   }
 
   loadQuote(id: string): void {
-    this.http.get<any>(`http://localhost:8080/api/quotes/read_one.php?id=${id}`)
+    this.http.get<any>(`/api/quotes/read_one.php?id=${id}`)
       .subscribe({
         next: (response) => {
           this.quote = response.data.quote;
@@ -56,14 +56,14 @@ export class QuoteDetailComponent implements OnInit {
           this.loading = false;
         },
         error: () => {
-          this.error = 'Devis non trouvé';
+          this.error = 'Devis non trouvÃ©';
           this.loading = false;
         }
       });
   }
 
   updateStatus(newStatus: string): void {
-    this.http.put<any>('http://localhost:8080/api/quotes/update_status.php', {
+    this.http.put<any>('/api/quotes/update_status.php', {
       id: this.quote.id,
       status: newStatus
     }).subscribe({
@@ -71,7 +71,7 @@ export class QuoteDetailComponent implements OnInit {
         this.quote.status = newStatus;
       },
       error: () => {
-        alert('Erreur lors de la mise à jour');
+        alert('Erreur lors de la mise Ã  jour');
       }
     });
   }
@@ -86,12 +86,12 @@ export class QuoteDetailComponent implements OnInit {
 
     const adminUserId = Number(this.authService.currentUserValue?.id || 0);
     if (!adminUserId) {
-      alert('Utilisateur non connecté');
+      alert('Utilisateur non connectÃ©');
       return;
     }
 
     this.sendingCounterProposal = true;
-    this.http.post<any>('http://localhost:8080/api/quotes/admin_counter_proposal.php', {
+    this.http.post<any>('/api/quotes/admin_counter_proposal.php', {
       quote_id: this.quote.id,
       admin_user_id: adminUserId,
       counter_proposal: content
@@ -103,7 +103,7 @@ export class QuoteDetailComponent implements OnInit {
         this.quote.counter_proposed_at = response?.data?.counter_proposed_at || this.quote.counter_proposed_at;
         this.counterProposalText = '';
         this.sendingCounterProposal = false;
-        alert(response?.message || 'Contreproposition envoyée');
+        alert(response?.message || 'Contreproposition envoyÃ©e');
       },
       error: (err) => {
         alert(err?.error?.message || 'Erreur lors de l\'envoi de la contreproposition');
@@ -113,19 +113,19 @@ export class QuoteDetailComponent implements OnInit {
   }
 
   downloadPdf(): void {
-    window.open(`http://localhost:8080/api/quotes/generate_pdf.php?id=${this.quote.id}`, '_blank');
+    window.open(`/api/quotes/generate_pdf.php?id=${this.quote.id}`, '_blank');
   }
 
   sendByEmail(): void {
     if (!confirm('Envoyer ce devis par email au client ?')) return;
 
     this.sending = true;
-    this.http.post<any>('http://localhost:8080/api/quotes/send_email.php', {
+    this.http.post<any>('/api/quotes/send_email.php', {
       quote_id: this.quote.id
     }).subscribe({
       next: (response) => {
         this.quote.status = response?.data?.status || 'pending';
-        alert(response.message || 'Email envoyé avec succès !');
+        alert(response.message || 'Email envoyÃ© avec succÃ¨s !');
         this.sending = false;
       },
       error: (err) => {
@@ -138,7 +138,7 @@ export class QuoteDetailComponent implements OnInit {
   deleteQuote(): void {
     if (!confirm('Supprimer ce devis ?')) return;
 
-    this.http.delete<any>('http://localhost:8080/api/quotes/delete.php', { body: { id: this.quote.id } })
+    this.http.delete<any>('/api/quotes/delete.php', { body: { id: this.quote.id } })
       .subscribe({
         next: () => {
           this.router.navigate(['/admin/quotes']);

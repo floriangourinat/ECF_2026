@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -18,7 +18,7 @@ export class AdminSettingsComponent implements OnInit {
   success = '';
 
   quoteSuccessMessage = '';
-  readonly defaultMessage = 'Merci pour votre demande. Chloé vous recontactera dans les plus brefs délais pour discuter de votre projet.';
+  readonly defaultMessage = 'Merci pour votre demande. ChloÃ© vous recontactera dans les plus brefs dÃ©lais pour discuter de votre projet.';
 
   constructor(private http: HttpClient) {}
 
@@ -30,7 +30,7 @@ export class AdminSettingsComponent implements OnInit {
     this.loading = true;
     this.error = '';
 
-    this.http.get<any>('http://localhost:8080/api/settings/get_quote_success_message.php').subscribe({
+    this.http.get<any>('/api/settings/get_quote_success_message.php').subscribe({
       next: (response) => {
         this.quoteSuccessMessage = response?.message || this.defaultMessage;
         this.loading = false;
@@ -45,7 +45,7 @@ export class AdminSettingsComponent implements OnInit {
 
   save(): void {
     if (!this.quoteSuccessMessage || this.quoteSuccessMessage.trim().length < 10) {
-      this.error = 'Le message doit contenir au moins 10 caractères.';
+      this.error = 'Le message doit contenir au moins 10 caractÃ¨res.';
       return;
     }
 
@@ -53,11 +53,11 @@ export class AdminSettingsComponent implements OnInit {
     this.error = '';
     this.success = '';
 
-    this.http.put<any>('http://localhost:8080/api/settings/update_quote_success_message.php', {
+    this.http.put<any>('/api/settings/update_quote_success_message.php', {
       message: this.quoteSuccessMessage.trim()
     }).subscribe({
       next: (response) => {
-        this.success = response?.message || 'Message enregistré.';
+        this.success = response?.message || 'Message enregistrÃ©.';
         this.saving = false;
       },
       error: (err) => {

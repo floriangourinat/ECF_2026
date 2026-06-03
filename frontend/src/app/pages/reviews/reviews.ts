@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -36,7 +36,7 @@ export class ReviewsComponent implements OnInit {
   }
 
   loadReviews(): void {
-    this.http.get<any>('http://localhost:8080/api/reviews/read_public.php')
+    this.http.get<any>('/api/reviews/read_public.php')
       .subscribe({
         next: (response) => {
           this.reviews = response.data || [];
@@ -52,7 +52,7 @@ export class ReviewsComponent implements OnInit {
   getStars(rating: number): string[] {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
-      stars.push(i <= rating ? '★' : '☆');
+      stars.push(i <= rating ? 'â˜…' : 'â˜†');
     }
     return stars;
   }

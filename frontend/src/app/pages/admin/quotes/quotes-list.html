@@ -1,4 +1,4 @@
-<app-admin-layout>
+﻿<app-admin-layout>
   <div class="quotes-page">
     <header class="page-header">
       <div class="header-title">
@@ -15,10 +15,10 @@
         <select id="quotes-status-filter" [(ngModel)]="filterStatus" (change)="onFilterChange()">
           <option value="">Tous les statuts</option>
           <option value="draft">Brouillon</option>
-          <option value="pending">Étude côté client</option>
-          <option value="modification">Modification demandée</option>
-          <option value="accepted">Accepté</option>
-          <option value="refused">Refusé</option>
+          <option value="pending">Ã‰tude cÃ´tÃ© client</option>
+          <option value="modification">Modification demandÃ©e</option>
+          <option value="accepted">AcceptÃ©</option>
+          <option value="refused">RefusÃ©</option>
         </select>
       </div>
     </section>
@@ -27,18 +27,18 @@
     <section class="quotes-list">
       <div *ngIf="loading" class="loading">Chargement...</div>
       <div *ngIf="error" class="error">{{ error }}</div>
-      <div *ngIf="!loading && quotes.length === 0" class="empty">Aucun devis trouvé</div>
+      <div *ngIf="!loading && quotes.length === 0" class="empty">Aucun devis trouvÃ©</div>
 
       <table *ngIf="!loading && quotes.length > 0" class="quotes-table">
         <thead>
           <tr>
-            <th>N° Devis</th>
-            <th>Événement</th>
+            <th>NÂ° Devis</th>
+            <th>Ã‰vÃ©nement</th>
             <th>Client</th>
             <th>Montant HT</th>
             <th>Montant TTC</th>
             <th>Statut</th>
-            <th>Date émission</th>
+            <th>Date Ã©mission</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -63,14 +63,14 @@
             </td>
             <td>{{ formatDate(quote.issue_date) }}</td>
             <td class="actions">
-              <a [routerLink]="['/admin/quotes', quote.id]" class="btn-icon" title="Voir détails">
-                👁️
+              <a [routerLink]="['/admin/quotes', quote.id]" class="btn-icon" title="Voir dÃ©tails">
+                ðŸ‘ï¸
               </a>
-              <button (click)="downloadPdf(quote)" class="btn-icon" title="Télécharger PDF">
-                📄
+              <button (click)="downloadPdf(quote)" class="btn-icon" title="TÃ©lÃ©charger PDF">
+                ðŸ“„
               </button>
               <button (click)="deleteQuote(quote)" class="btn-icon btn-danger" title="Supprimer">
-                🗑️
+                ðŸ—‘ï¸
               </button>
             </td>
           </tr>

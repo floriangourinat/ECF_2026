@@ -1,6 +1,6 @@
-<app-admin-layout>
+﻿<app-admin-layout>
   <div class="quote-create-page">
-    <a routerLink="/admin/quotes" class="btn-back">← Retour à la liste</a>
+    <a routerLink="/admin/quotes" class="btn-back">â† Retour Ã  la liste</a>
 
     <header class="page-header">
       <h1>Nouveau Devis</h1>
@@ -9,13 +9,13 @@
     <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
 
     <form (ngSubmit)="createQuote()" class="quote-form">
-      <!-- Sélection événement -->
+      <!-- SÃ©lection Ã©vÃ©nement -->
       <section class="form-section">
-        <h3>📅 Événement</h3>
+        <h3>ðŸ“… Ã‰vÃ©nement</h3>
         <div class="form-group">
-          <label>Sélectionner l'événement *</label>
+          <label>SÃ©lectionner l'Ã©vÃ©nement *</label>
           <select [(ngModel)]="selectedEventId" name="event_id" required>
-            <option value="">-- Choisir un événement --</option>
+            <option value="">-- Choisir un Ã©vÃ©nement --</option>
             <option *ngFor="let event of events" [value]="event.id">
               {{ event.name }} - {{ event.client_company || event.client_first_name + ' ' + event.client_last_name }}
             </option>
@@ -26,7 +26,7 @@
       <!-- Prestations -->
       <section class="form-section">
         <div class="section-header">
-          <h3>📋 Prestations</h3>
+          <h3>ðŸ“‹ Prestations</h3>
           <button type="button" class="btn-add" (click)="addService()">+ Ajouter une prestation</button>
         </div>
 
@@ -35,15 +35,15 @@
             <div class="service-number">{{ i + 1 }}</div>
             <div class="service-fields">
               <div class="form-group">
-                <label>Libellé *</label>
+                <label>LibellÃ© *</label>
                 <input type="text" [(ngModel)]="service.label" [name]="'label_' + i" 
-                       placeholder="Ex: Location salle de conférence">
+                       placeholder="Ex: Location salle de confÃ©rence">
               </div>
               <div class="form-row">
                 <div class="form-group">
                   <label>Description</label>
                   <input type="text" [(ngModel)]="service.description" [name]="'desc_' + i"
-                         placeholder="Détails optionnels">
+                         placeholder="DÃ©tails optionnels">
                 </div>
                 <div class="form-group price-group">
                   <label>Montant HT *</label>
@@ -53,14 +53,14 @@
               </div>
             </div>
             <button type="button" class="btn-remove" (click)="removeService(i)" 
-                    *ngIf="services.length > 1" title="Supprimer">×</button>
+                    *ngIf="services.length > 1" title="Supprimer">Ã—</button>
           </div>
         </div>
       </section>
 
       <!-- Totaux -->
       <section class="form-section totals-section">
-        <h3>💰 Récapitulatif</h3>
+        <h3>ðŸ’° RÃ©capitulatif</h3>
         <div class="form-group tva-group">
           <label>Taux de TVA (%)</label>
           <input type="number" [(ngModel)]="taxRate" name="tax_rate" min="0" max="100" step="0.1">
@@ -85,7 +85,7 @@
       <div class="form-actions">
         <a routerLink="/admin/quotes" class="btn btn-secondary">Annuler</a>
         <button type="submit" class="btn btn-primary" [disabled]="loading">
-          {{ loading ? 'Création...' : 'Créer le devis' }}
+          {{ loading ? 'CrÃ©ation...' : 'CrÃ©er le devis' }}
         </button>
       </div>
     </form>

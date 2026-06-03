@@ -1,6 +1,6 @@
-<app-admin-layout>
+﻿<app-admin-layout>
   <div class="client-detail-page">
-    <a routerLink="/admin/clients" class="btn-back">← Retour à la liste</a>
+    <a routerLink="/admin/clients" class="btn-back">â† Retour Ã  la liste</a>
 
     <div *ngIf="loading" class="loading">Chargement...</div>
     <div *ngIf="error" class="error">{{ error }}</div>
@@ -15,19 +15,19 @@
           </span>
         </div>
         <div class="header-actions">
-          <a [routerLink]="['/admin/clients', client.id, 'edit']" class="btn btn-primary">✏️ Modifier</a>
+          <a [routerLink]="['/admin/clients', client.id, 'edit']" class="btn btn-primary">âœï¸ Modifier</a>
         </div>
       </header>
 
       <div class="details-grid">
         <section class="detail-card">
-          <h3>📋 Informations</h3>
+          <h3>ðŸ“‹ Informations</h3>
           <div class="detail-row">
             <span class="label">Email</span>
             <span class="value"><a href="mailto:{{ client.email }}">{{ client.email }}</a></span>
           </div>
           <div class="detail-row">
-            <span class="label">Téléphone</span>
+            <span class="label">TÃ©lÃ©phone</span>
             <span class="value">{{ client.phone || '-' }}</span>
           </div>
           <div class="detail-row">
@@ -41,11 +41,11 @@
         </section>
 
         <section class="detail-card">
-          <h3>📊 Statistiques</h3>
+          <h3>ðŸ“Š Statistiques</h3>
           <div class="stats-grid">
             <div class="stat">
               <span class="stat-value">{{ events.length }}</span>
-              <span class="stat-label">Événements</span>
+              <span class="stat-label">Ã‰vÃ©nements</span>
             </div>
             <div class="stat">
               <span class="stat-value">{{ quotes.length }}</span>
@@ -55,10 +55,10 @@
         </section>
       </div>
 
-      <!-- Événements -->
+      <!-- Ã‰vÃ©nements -->
       <section class="section-table">
-        <h3>🎉 Événements</h3>
-        <div *ngIf="events.length === 0" class="empty">Aucun événement</div>
+        <h3>ðŸŽ‰ Ã‰vÃ©nements</h3>
+        <div *ngIf="events.length === 0" class="empty">Aucun Ã©vÃ©nement</div>
         <table *ngIf="events.length > 0">
           <thead>
             <tr>
@@ -81,12 +81,12 @@
 
       <!-- Devis -->
       <section class="section-table">
-        <h3>📄 Devis</h3>
+        <h3>ðŸ“„ Devis</h3>
         <div *ngIf="quotes.length === 0" class="empty">Aucun devis</div>
         <table *ngIf="quotes.length > 0">
           <thead>
             <tr>
-              <th>Événement</th>
+              <th>Ã‰vÃ©nement</th>
               <th>Montant TTC</th>
               <th>Statut</th>
               <th>Date</th>

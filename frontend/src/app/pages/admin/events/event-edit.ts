@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -29,8 +29,8 @@ export class EventEditComponent implements OnInit {
     image_path: '',
     is_visible: false
   };
-  eventTypes: string[] = ['Séminaire', 'Conférence', 'Soirée d\'entreprise', 'Team Building', 'Autre'];
-  themes: string[] = ['Élégant', 'Tropical', 'Rétro', 'High-Tech', 'Nature', 'Industriel'];
+  eventTypes: string[] = ['SÃ©minaire', 'ConfÃ©rence', 'SoirÃ©e d\'entreprise', 'Team Building', 'Autre'];
+  themes: string[] = ['Ã‰lÃ©gant', 'Tropical', 'RÃ©tro', 'High-Tech', 'Nature', 'Industriel'];
   loading = true;
   saving = false;
   error = '';
@@ -53,7 +53,7 @@ export class EventEditComponent implements OnInit {
   }
 
   loadEvent(): void {
-    this.http.get<any>(`http://localhost:8080/api/events/read_detail.php?id=${this.eventId}`)
+    this.http.get<any>(`/api/events/read_detail.php?id=${this.eventId}`)
       .subscribe({
         next: (response) => {
           if (response.data && response.data.event) {
@@ -77,7 +77,7 @@ export class EventEditComponent implements OnInit {
           this.loading = false;
         },
         error: () => {
-          this.error = 'Événement non trouvé';
+          this.error = 'Ã‰vÃ©nement non trouvÃ©';
           this.loading = false;
         }
       });
@@ -91,7 +91,7 @@ export class EventEditComponent implements OnInit {
         return;
       }
       if (!file.type.startsWith('image/')) {
-        this.error = 'Le fichier doit être une image.';
+        this.error = 'Le fichier doit Ãªtre une image.';
         return;
       }
       this.selectedImage = file;
@@ -113,24 +113,24 @@ export class EventEditComponent implements OnInit {
 
   getImageUrl(path: string): string {
     if (path && path.startsWith('/uploads/')) {
-      return 'http://localhost:8080' + path;
+      return '/api' + path;
     }
     return path || 'assets/images/event-default.jpg';
   }
 
   saveEvent(): void {
     if (!this.event.name) {
-      this.error = 'Le nom de l\'événement est requis';
+      this.error = 'Le nom de l\'Ã©vÃ©nement est requis';
       return;
     }
 
     if (!this.event.event_type) {
-      this.error = 'Le type d\'événement est requis';
+      this.error = 'Le type d\'Ã©vÃ©nement est requis';
       return;
     }
 
     if (!this.event.theme) {
-      this.error = 'Le thème est requis';
+      this.error = 'Le thÃ¨me est requis';
       return;
     }
 
@@ -144,14 +144,14 @@ export class EventEditComponent implements OnInit {
       is_visible: this.event.is_visible ? 1 : 0
     };
 
-    this.http.put<any>('http://localhost:8080/api/events/update.php', payload)
+    this.http.put<any>('/api/events/update.php', payload)
       .subscribe({
         next: (response) => {
           if (response.success) {
             if (this.selectedImage) {
               this.uploadImage();
             } else {
-              this.success = 'Événement modifié avec succès';
+              this.success = 'Ã‰vÃ©nement modifiÃ© avec succÃ¨s';
               setTimeout(() => { this.router.navigate(['/admin/events', this.eventId]); }, 1500);
               this.saving = false;
             }
@@ -174,15 +174,15 @@ export class EventEditComponent implements OnInit {
     formData.append('image', this.selectedImage);
     formData.append('event_id', this.eventId);
 
-    this.http.post<any>('http://localhost:8080/api/events/upload_image.php', formData)
+    this.http.post<any>('/api/events/upload_image.php', formData)
       .subscribe({
         next: () => {
-          this.success = 'Événement et image modifiés avec succès';
+          this.success = 'Ã‰vÃ©nement et image modifiÃ©s avec succÃ¨s';
           setTimeout(() => { this.router.navigate(['/admin/events', this.eventId]); }, 1500);
           this.saving = false;
         },
         error: () => {
-          this.success = 'Événement modifié (erreur upload image)';
+          this.success = 'Ã‰vÃ©nement modifiÃ© (erreur upload image)';
           this.saving = false;
         }
       });

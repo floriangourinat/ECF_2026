@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -45,16 +45,16 @@ export class ClientEventsComponent implements OnInit {
   statusLabels: Record<string, string> = {
     draft: 'Brouillon',
     client_review: 'En attente client',
-    accepted: 'Accepté',
+    accepted: 'AcceptÃ©',
     in_progress: 'En cours',
-    completed: 'Terminé',
-    cancelled: 'Annulé'
+    completed: 'TerminÃ©',
+    cancelled: 'AnnulÃ©'
   };
 
   reviewStatusLabels: Record<string, string> = {
-    pending: 'En attente de modération',
-    approved: 'Approuvé',
-    rejected: 'Rejeté'
+    pending: 'En attente de modÃ©ration',
+    approved: 'ApprouvÃ©',
+    rejected: 'RejetÃ©'
   };
 
   constructor(private http: HttpClient, private authService: AuthService) {}
@@ -63,13 +63,13 @@ export class ClientEventsComponent implements OnInit {
     const userId = this.authService.currentUserValue?.id;
     if (!userId) {
       this.loading = false;
-      this.error = 'Utilisateur non connecté';
+      this.error = 'Utilisateur non connectÃ©';
       return;
     }
 
     this.loadMyReviews(userId);
 
-    this.http.get<any>(`http://localhost:8080/api/clients/read_by_user.php?user_id=${userId}`).subscribe({
+    this.http.get<any>(`/api/clients/read_by_user.php?user_id=${userId}`).subscribe({
       next: (response) => {
         this.clientId = response?.data?.client_id ?? null;
 
@@ -82,14 +82,14 @@ export class ClientEventsComponent implements OnInit {
         this.loadEvents();
       },
       error: () => {
-        this.error = 'Impossible de récupérer le profil client';
+        this.error = 'Impossible de rÃ©cupÃ©rer le profil client';
         this.loading = false;
       }
     });
   }
 
   loadMyReviews(userId: number): void {
-    this.http.get<any>(`http://localhost:8080/api/reviews/read_by_client.php?user_id=${userId}`).subscribe({
+    this.http.get<any>(`/api/reviews/read_by_client.php?user_id=${userId}`).subscribe({
       next: (response) => {
         this.myReviews = response?.data || [];
       },
@@ -105,13 +105,13 @@ export class ClientEventsComponent implements OnInit {
       return;
     }
 
-    this.http.get<any>(`http://localhost:8080/api/events/read_all.php?client_id=${this.clientId}`).subscribe({
+    this.http.get<any>(`/api/events/read_all.php?client_id=${this.clientId}`).subscribe({
       next: (response) => {
         this.events = response?.data || [];
         this.loading = false;
       },
       error: () => {
-        this.error = 'Impossible de charger les événements';
+        this.error = 'Impossible de charger les Ã©vÃ©nements';
         this.loading = false;
       }
     });
@@ -132,20 +132,20 @@ export class ClientEventsComponent implements OnInit {
     }
 
     if (this.hasReview(event.id)) {
-      alert('Vous avez déjà laissé un avis pour cet événement.');
+      alert('Vous avez dÃ©jÃ  laissÃ© un avis pour cet Ã©vÃ©nement.');
       return;
     }
 
     const rating = Number(this.reviewRating[event.id] || 0);
     if (!rating || rating < 1 || rating > 5) {
-      alert('Merci de sélectionner une note entre 1 et 5.');
+      alert('Merci de sÃ©lectionner une note entre 1 et 5.');
       return;
     }
 
     this.submittingReview[event.id] = true;
     this.reviewSuccessMessage[event.id] = '';
 
-    this.http.post<any>('http://localhost:8080/api/reviews/create.php', {
+    this.http.post<any>('/api/reviews/create.php', {
       user_id: userId,
       event_id: event.id,
       rating,
@@ -168,7 +168,7 @@ export class ClientEventsComponent implements OnInit {
 
         this.reviewRating[event.id] = 0;
         this.reviewComment[event.id] = '';
-        this.reviewSuccessMessage[event.id] = '✅ Avis envoyé avec succès.';
+        this.reviewSuccessMessage[event.id] = 'âœ… Avis envoyÃ© avec succÃ¨s.';
         this.submittingReview[event.id] = false;
       },
       error: (err) => {

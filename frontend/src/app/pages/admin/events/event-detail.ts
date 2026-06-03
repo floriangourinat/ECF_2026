@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+﻿import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
@@ -28,7 +28,7 @@ export class AdminEventDetailComponent implements OnInit {
   editingNoteId: number | null = null;
   editNoteContent = '';
 
-  // Tâches
+  // TÃ¢ches
   showTaskModal = false;
   taskLoading = false;
   taskError = '';
@@ -39,14 +39,14 @@ export class AdminEventDetailComponent implements OnInit {
   defaultImage = 'assets/images/event-default.jpg';
 
   statusLabels: { [key: string]: string } = {
-    'draft': 'Brouillon', 'client_review': 'En attente client', 'accepted': 'Accepté',
-    'in_progress': 'En cours', 'completed': 'Terminé', 'cancelled': 'Annulé'
+    'draft': 'Brouillon', 'client_review': 'En attente client', 'accepted': 'AcceptÃ©',
+    'in_progress': 'En cours', 'completed': 'TerminÃ©', 'cancelled': 'AnnulÃ©'
   };
   taskStatusLabels: { [key: string]: string } = {
-    'todo': 'À faire', 'in_progress': 'En cours', 'done': 'Terminé'
+    'todo': 'Ã€ faire', 'in_progress': 'En cours', 'done': 'TerminÃ©'
   };
   quoteStatusLabels: { [key: string]: string } = {
-    'pending': 'En attente', 'modification': 'Modification demandée', 'accepted': 'Accepté', 'refused': 'Refusé'
+    'pending': 'En attente', 'modification': 'Modification demandÃ©e', 'accepted': 'AcceptÃ©', 'refused': 'RefusÃ©'
   };
 
   constructor(
@@ -65,7 +65,7 @@ export class AdminEventDetailComponent implements OnInit {
   }
 
   loadEvent(id: string): void {
-    this.http.get<any>(`http://localhost:8080/api/events/read_detail.php?id=${id}`)
+    this.http.get<any>(`/api/events/read_detail.php?id=${id}`)
       .subscribe({
         next: (response) => {
           this.event = response.data.event;
@@ -75,21 +75,21 @@ export class AdminEventDetailComponent implements OnInit {
           this.loading = false;
         },
         error: () => {
-          this.error = 'Événement non trouvé';
+          this.error = 'Ã‰vÃ©nement non trouvÃ©';
           this.loading = false;
         }
       });
   }
 
   loadEmployees(): void {
-    this.http.get<any>('http://localhost:8080/api/employees/read.php').subscribe({
+    this.http.get<any>('/api/employees/read.php').subscribe({
       next: (r) => { this.employees = r.data || []; }
     });
   }
 
   getEventImage(imagePath: string | null): string {
     if (imagePath && imagePath.trim() !== '') {
-      if (imagePath.startsWith('/uploads/')) return 'http://localhost:8080' + imagePath;
+      if (imagePath.startsWith('/uploads/')) return '/api' + imagePath;
       return imagePath;
     }
     return this.defaultImage;
@@ -98,24 +98,24 @@ export class AdminEventDetailComponent implements OnInit {
   onImageError(event: any): void { event.target.src = this.defaultImage; }
 
   updateStatus(newStatus: string): void {
-    this.http.put<any>('http://localhost:8080/api/events/update.php', {
+    this.http.put<any>('/api/events/update.php', {
       ...this.event, status: newStatus
     }).subscribe({
       next: () => { this.event.status = newStatus; },
-      error: () => { alert('Erreur lors de la mise à jour du statut'); }
+      error: () => { alert('Erreur lors de la mise Ã  jour du statut'); }
     });
   }
 
   deleteEvent(): void {
-    if (!confirm(`Supprimer l'événement "${this.event.name}" ?\n\nCette action est irréversible.`)) return;
-    this.http.delete<any>('http://localhost:8080/api/events/delete.php', { body: { id: this.event.id } })
+    if (!confirm(`Supprimer l'Ã©vÃ©nement "${this.event.name}" ?\n\nCette action est irrÃ©versible.`)) return;
+    this.http.delete<any>('/api/events/delete.php', { body: { id: this.event.id } })
       .subscribe({
         next: () => { this.router.navigate(['/admin/events']); },
         error: () => { alert('Erreur lors de la suppression'); }
       });
   }
 
-  // ===== TÂCHES =====
+  // ===== TÃ‚CHES =====
 
   openTaskModal(): void {
     this.showTaskModal = true;
@@ -148,7 +148,7 @@ export class AdminEventDetailComponent implements OnInit {
       status: 'todo'
     };
 
-    this.http.post<any>('http://localhost:8080/api/tasks/create.php', payload).subscribe({
+    this.http.post<any>('/api/tasks/create.php', payload).subscribe({
       next: (r) => {
         if (r.success) {
           this.tasks.push(r.data);
@@ -166,8 +166,8 @@ export class AdminEventDetailComponent implements OnInit {
   }
 
   deleteTask(task: any): void {
-    if (!confirm(`Supprimer la tâche "${task.title}" ?`)) return;
-    this.http.delete<any>('http://localhost:8080/api/tasks/delete.php', { body: { id: task.id } }).subscribe({
+    if (!confirm(`Supprimer la tÃ¢che "${task.title}" ?`)) return;
+    this.http.delete<any>('/api/tasks/delete.php', { body: { id: task.id } }).subscribe({
       next: () => { this.tasks = this.tasks.filter(t => t.id !== task.id); },
       error: () => { alert('Erreur lors de la suppression'); }
     });
@@ -178,10 +178,10 @@ export class AdminEventDetailComponent implements OnInit {
   addNote(): void {
     if (!this.newNoteContent.trim()) return;
     const currentUser = this.authService.currentUserValue;
-    if (!currentUser) { alert('Vous devez être connecté'); return; }
+    if (!currentUser) { alert('Vous devez Ãªtre connectÃ©'); return; }
 
     this.addingNote = true;
-    this.http.post<any>('http://localhost:8080/api/notes/create.php', {
+    this.http.post<any>('/api/notes/create.php', {
       event_id: this.event.id,
       author_id: currentUser.id,
       content: this.newNoteContent
@@ -206,7 +206,7 @@ export class AdminEventDetailComponent implements OnInit {
 
   saveEditNote(note: any): void {
     if (!this.editNoteContent.trim()) return;
-    this.http.put<any>('http://localhost:8080/api/notes/update.php', {
+    this.http.put<any>('/api/notes/update.php', {
       id: note.id,
       content: this.editNoteContent
     }).subscribe({
@@ -224,7 +224,7 @@ export class AdminEventDetailComponent implements OnInit {
 
   deleteNote(note: any): void {
     if (!confirm('Supprimer cette note ?')) return;
-    this.http.delete<any>('http://localhost:8080/api/notes/delete.php', { body: { id: note.id } }).subscribe({
+    this.http.delete<any>('/api/notes/delete.php', { body: { id: note.id } }).subscribe({
       next: () => { this.notes = this.notes.filter(n => n.id !== note.id); },
       error: () => { alert('Erreur lors de la suppression'); }
     });

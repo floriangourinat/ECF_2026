@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -42,20 +42,20 @@ export class LogsListComponent implements OnInit {
   filterDateTo = '';
 
   actionLabels: { [key: string]: string } = {
-    'CONNEXION_REUSSIE': 'Connexion réussie',
-    'CONNEXION_ECHOUEE': 'Connexion échouée',
-    'CREATION_CLIENT': 'Création client',
+    'CONNEXION_REUSSIE': 'Connexion rÃ©ussie',
+    'CONNEXION_ECHOUEE': 'Connexion Ã©chouÃ©e',
+    'CREATION_CLIENT': 'CrÃ©ation client',
     'MODIFICATION_CLIENT': 'Modification client',
     'SUPPRESSION_CLIENT': 'Suppression client',
-    'CREATION_EVENEMENT': 'Création événement',
-    'MODIFICATION_STATUT_EVENEMENT': 'Modification statut événement',
-    'GENERATION_DEVIS_PDF': 'Génération PDF devis'
+    'CREATION_EVENEMENT': 'CrÃ©ation Ã©vÃ©nement',
+    'MODIFICATION_STATUT_EVENEMENT': 'Modification statut Ã©vÃ©nement',
+    'GENERATION_DEVIS_PDF': 'GÃ©nÃ©ration PDF devis'
   };
 
   entityLabels: { [key: string]: string } = {
     'user': 'Utilisateur',
     'client': 'Client',
-    'event': 'Événement',
+    'event': 'Ã‰vÃ©nement',
     'quote': 'Devis'
   };
 
@@ -67,7 +67,7 @@ export class LogsListComponent implements OnInit {
   }
 
   loadStats(): void {
-    this.http.get<any>('http://localhost:8080/api/logs/stats.php').subscribe({
+    this.http.get<any>('/api/logs/stats.php').subscribe({
       next: (response) => {
         this.stats = response.data;
         this.users = response.data.users || {};
@@ -77,7 +77,7 @@ export class LogsListComponent implements OnInit {
 
   loadLogs(): void {
     this.loading = true;
-    let url = 'http://localhost:8080/api/logs/read.php?';
+    let url = '/api/logs/read.php?';
 
     if (this.filterAction) url += `action=${this.filterAction}&`;
     if (this.filterEntity) url += `entity=${this.filterEntity}&`;
@@ -132,16 +132,16 @@ export class LogsListComponent implements OnInit {
 
   getActionIcon(action: string): string {
     const icons: { [key: string]: string } = {
-      'CONNEXION_REUSSIE': '🔑',
-      'CONNEXION_ECHOUEE': '🚫',
-      'CREATION_CLIENT': '➕',
-      'MODIFICATION_CLIENT': '✏️',
-      'SUPPRESSION_CLIENT': '🗑️',
-      'CREATION_EVENEMENT': '🎉',
-      'MODIFICATION_STATUT_EVENEMENT': '🔄',
-      'GENERATION_DEVIS_PDF': '📄'
+      'CONNEXION_REUSSIE': 'ðŸ”‘',
+      'CONNEXION_ECHOUEE': 'ðŸš«',
+      'CREATION_CLIENT': 'âž•',
+      'MODIFICATION_CLIENT': 'âœï¸',
+      'SUPPRESSION_CLIENT': 'ðŸ—‘ï¸',
+      'CREATION_EVENEMENT': 'ðŸŽ‰',
+      'MODIFICATION_STATUT_EVENEMENT': 'ðŸ”„',
+      'GENERATION_DEVIS_PDF': 'ðŸ“„'
     };
-    return icons[action] || '📝';
+    return icons[action] || 'ðŸ“';
   }
 
   private countActions(predicate: (actionKey: string) => boolean): number {

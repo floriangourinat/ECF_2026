@@ -1,11 +1,11 @@
-<app-admin-layout>
+﻿<app-admin-layout>
   <div class="employees-page">
     <header class="page-header">
       <div class="header-title">
-        <h1>Gestion des Employés</h1>
-        <p>{{ employees.length }} employé(s) au total</p>
+        <h1>Gestion des EmployÃ©s</h1>
+        <p>{{ employees.length }} employÃ©(s) au total</p>
       </div>
-      <button class="btn-create" (click)="openCreateModal()" aria-haspopup="dialog" [attr.aria-expanded]="showCreateModal">+ Nouvel employé</button>
+      <button class="btn-create" (click)="openCreateModal()" aria-haspopup="dialog" [attr.aria-expanded]="showCreateModal">+ Nouvel employÃ©</button>
     </header>
 
     <!-- Filtres -->
@@ -19,15 +19,15 @@
           placeholder="Rechercher par nom, email..."
           id="employees-search-input"
         >
-        <button type="button" (click)="onSearch()" aria-label="Lancer la recherche"><span aria-hidden="true">🔍</span></button>
+        <button type="button" (click)="onSearch()" aria-label="Lancer la recherche"><span aria-hidden="true">ðŸ”</span></button>
       </div>
 
       <div class="filter-box">
         <label class="sr-only" for="employees-status-filter">Filtre</label>
         <select id="employees-status-filter" [(ngModel)]="filterRole" (change)="onFilterChange()">
-          <option value="">Tous les rôles</option>
+          <option value="">Tous les rÃ´les</option>
           <option value="admin">Administrateurs</option>
-          <option value="employee">Employés</option>
+          <option value="employee">EmployÃ©s</option>
         </select>
       </div>
     </section>
@@ -36,16 +36,16 @@
     <section class="employees-list">
       <div *ngIf="loading" class="loading">Chargement...</div>
       <div *ngIf="error" class="error">{{ error }}</div>
-      <div *ngIf="!loading && employees.length === 0" class="empty">Aucun employé trouvé</div>
+      <div *ngIf="!loading && employees.length === 0" class="empty">Aucun employÃ© trouvÃ©</div>
 
       <table *ngIf="!loading && employees.length > 0" class="employees-table">
         <thead>
           <tr>
             <th>Nom</th>
             <th>Email</th>
-            <th>Rôle</th>
+            <th>RÃ´le</th>
             <th>Statut</th>
-            <th>Créé le</th>
+            <th>CrÃ©Ã© le</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -68,31 +68,31 @@
             </td>
             <td>{{ formatDate(employee.created_at) }}</td>
             <td class="actions">
-              <a [routerLink]="['/admin/employees', employee.id]" class="btn-icon" title="Voir" aria-label="Voir le détail"><span aria-hidden="true">👁️</span></a>
-              <button (click)="toggleStatus(employee)" class="btn-icon" [title]="employee.is_active ? 'Désactiver' : 'Activer'" [attr.aria-label]="employee.is_active ? 'Désactiver' : 'Activer'">
-                <span aria-hidden="true">{{ employee.is_active ? '🔒' : '🔓' }}</span>
+              <a [routerLink]="['/admin/employees', employee.id]" class="btn-icon" title="Voir" aria-label="Voir le dÃ©tail"><span aria-hidden="true">ðŸ‘ï¸</span></a>
+              <button (click)="toggleStatus(employee)" class="btn-icon" [title]="employee.is_active ? 'DÃ©sactiver' : 'Activer'" [attr.aria-label]="employee.is_active ? 'DÃ©sactiver' : 'Activer'">
+                <span aria-hidden="true">{{ employee.is_active ? 'ðŸ”’' : 'ðŸ”“' }}</span>
               </button>
-              <button (click)="deleteEmployee(employee)" class="btn-icon btn-danger" title="Supprimer" aria-label="Supprimer"><span aria-hidden="true">🗑️</span></button>
+              <button (click)="deleteEmployee(employee)" class="btn-icon btn-danger" title="Supprimer" aria-label="Supprimer"><span aria-hidden="true">ðŸ—‘ï¸</span></button>
             </td>
           </tr>
         </tbody>
       </table>
     </section>
 
-    <!-- Modal Création -->
+    <!-- Modal CrÃ©ation -->
     <div class="modal-overlay" *ngIf="showCreateModal" (click)="closeCreateModal()" (keydown.escape)="closeCreateModal()">
       <div class="modal" role="dialog" aria-modal="true" aria-labelledby="create-employee-title" (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <h2 id="create-employee-title">Nouvel Employé</h2>
-          <button type="button" class="btn-close" aria-label="Fermer la fenêtre" (click)="closeCreateModal()">×</button>
+          <h2 id="create-employee-title">Nouvel EmployÃ©</h2>
+          <button type="button" class="btn-close" aria-label="Fermer la fenÃªtre" (click)="closeCreateModal()">Ã—</button>
         </div>
         <div class="modal-body">
           <div *ngIf="createError" class="alert alert-danger">{{ createError }}</div>
           
           <div class="form-row">
             <div class="form-group">
-              <label for="new-employee-first-name">Prénom *</label>
-              <input id="new-employee-first-name" type="text" [(ngModel)]="newEmployee.first_name" placeholder="Prénom">
+              <label for="new-employee-first-name">PrÃ©nom *</label>
+              <input id="new-employee-first-name" type="text" [(ngModel)]="newEmployee.first_name" placeholder="PrÃ©nom">
             </div>
             <div class="form-group">
               <label for="new-employee-last-name">Nom *</label>
@@ -111,14 +111,14 @@
           </div>
 
           <div class="form-group">
-            <label for="new-employee-role">Rôle</label>
-            <input id="new-employee-role" type="text" value="Employé" disabled>
+            <label for="new-employee-role">RÃ´le</label>
+            <input id="new-employee-role" type="text" value="EmployÃ©" disabled>
           </div>
         </div>
         <div class="modal-footer">
           <button class="btn btn-secondary" (click)="closeCreateModal()">Annuler</button>
           <button class="btn btn-primary" (click)="createEmployee()" [disabled]="createLoading">
-            {{ createLoading ? 'Création...' : 'Créer l\'employé' }}
+            {{ createLoading ? 'CrÃ©ation...' : 'CrÃ©er l\'employÃ©' }}
           </button>
         </div>
       </div>

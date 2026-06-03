@@ -1,4 +1,4 @@
-<app-header></app-header>
+﻿<app-header></app-header>
 
 <div class="login-page">
   <div class="login-container">
@@ -15,7 +15,7 @@
       </div>
 
       <div *ngIf="showResendVerification" class="alert-warning">
-        <p>Votre email n’est pas confirmé.</p>
+        <p>Votre email nâ€™est pas confirmÃ©.</p>
         <button type="button" class="btn-secondary" (click)="resendVerification()" [disabled]="resendLoading">
           {{ resendLoading ? "Renvoi en cours..." : "Renvoyer l'email de confirmation" }}
         </button>
@@ -50,7 +50,7 @@
         </div>
 
         <div class="forgot-password">
-          <a routerLink="/forgot-password">Mot de passe oublié ?</a>
+          <a routerLink="/forgot-password">Mot de passe oubliÃ© ?</a>
         </div>
 
         <button type="submit" class="btn-primary" [disabled]="loading">

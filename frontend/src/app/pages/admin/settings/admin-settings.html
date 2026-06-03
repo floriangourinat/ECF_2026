@@ -1,8 +1,8 @@
-<app-admin-layout>
+﻿<app-admin-layout>
   <div class="settings-page">
     <div class="settings-header">
-      <h1>⚙️ Paramètres</h1>
-      <p>Personnalisez le message affiché après une demande de devis.</p>
+      <h1>âš™ï¸ ParamÃ¨tres</h1>
+      <p>Personnalisez le message affichÃ© aprÃ¨s une demande de devis.</p>
     </div>
 
     <div class="settings-card" *ngIf="!loading; else loadingTpl">
@@ -12,7 +12,7 @@
         [(ngModel)]="quoteSuccessMessage"
         rows="5"
         maxlength="500"
-        placeholder="Saisissez le message affiché au prospect..."
+        placeholder="Saisissez le message affichÃ© au prospect..."
       ></textarea>
 
       <div class="meta">{{ quoteSuccessMessage.length || 0 }} / 500</div>

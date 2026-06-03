@@ -1,6 +1,6 @@
-<header class="header">
+﻿<header class="header">
   <div class="logo">
-    <a routerLink="/home" aria-label="Retour à l'accueil">
+    <a routerLink="/home" aria-label="Retour Ã  l'accueil">
       <img
         src="assets/images/logo-innovevents.jpg"
         alt="Logo Innov'Events"
@@ -12,7 +12,7 @@
   
   <nav id="main-navigation" class="nav" [class.active]="mobileMenuOpen" aria-label="Navigation principale">
     <a routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link" (click)="closeMobileMenu()">Accueil</a>
-    <a routerLink="/events" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">Événements</a>
+    <a routerLink="/events" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">Ã‰vÃ©nements</a>
     <a routerLink="/reviews" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">Avis</a>
     <a routerLink="/contact" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">Contact</a>
     <a routerLink="/quote-request" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">Demande de devis</a>
@@ -24,7 +24,7 @@
     
     <ng-template #loggedIn>
       <a routerLink="/dashboard" routerLinkActive="active" class="nav-link btn-login" (click)="closeMobileMenu()">Mon espace</a>
-      <button type="button" class="nav-link btn-logout" (click)="onLogout()">Déconnexion</button>
+      <button type="button" class="nav-link btn-logout" (click)="onLogout()">DÃ©connexion</button>
     </ng-template>
   </nav>
 

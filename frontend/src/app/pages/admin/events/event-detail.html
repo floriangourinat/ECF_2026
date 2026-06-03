@@ -1,12 +1,12 @@
-<app-admin-layout>
+﻿<app-admin-layout>
   <div class="event-detail-page">
-    <a routerLink="/admin/events" class="btn-back">← Retour à la liste</a>
+    <a routerLink="/admin/events" class="btn-back">â† Retour Ã  la liste</a>
 
     <div *ngIf="loading" class="loading">Chargement...</div>
     <div *ngIf="error" class="error">{{ error }}</div>
 
     <div *ngIf="!loading && event">
-      <!-- Header événement -->
+      <!-- Header Ã©vÃ©nement -->
       <header class="event-header">
         <div class="header-left">
           <span class="status-badge" [class]="getStatusClass(event.status)">{{ statusLabels[event.status] }}</span>
@@ -17,20 +17,20 @@
           </p>
         </div>
         <div class="header-actions">
-          <a [routerLink]="['/admin/events', event.id, 'edit']" class="btn btn-primary">✏️ Modifier</a>
-          <button (click)="deleteEvent()" class="btn btn-danger">🗑️ Supprimer</button>
+          <a [routerLink]="['/admin/events', event.id, 'edit']" class="btn btn-primary">âœï¸ Modifier</a>
+          <button (click)="deleteEvent()" class="btn btn-danger">ðŸ—‘ï¸ Supprimer</button>
         </div>
       </header>
 
       <!-- Infos -->
       <section class="event-info card">
-        <h3>ℹ️ Informations</h3>
+        <h3>â„¹ï¸ Informations</h3>
         <div class="info-grid">
-          <div><strong>Date début :</strong> {{ formatDate(event.start_date) }}</div>
+          <div><strong>Date dÃ©but :</strong> {{ formatDate(event.start_date) }}</div>
           <div><strong>Date fin :</strong> {{ formatDate(event.end_date) }}</div>
           <div><strong>Lieu :</strong> {{ event.location || '-' }}</div>
           <div><strong>Type :</strong> {{ event.event_type || '-' }}</div>
-          <div><strong>Thème :</strong> {{ event.theme || '-' }}</div>
+          <div><strong>ThÃ¨me :</strong> {{ event.theme || '-' }}</div>
           <div><strong>Participants :</strong> {{ event.attendees_count || 0 }}</div>
           <div><strong>Budget :</strong> {{ formatCurrency(event.budget || 0) }}</div>
           <div><strong>Visible :</strong> {{ event.is_visible ? 'Oui' : 'Non' }}</div>
@@ -40,28 +40,28 @@
 
       <!-- Image -->
       <section class="event-image card" *ngIf="event.image_path">
-        <h3>🖼️ Image</h3>
-        <img [src]="getEventImage(event.image_path)" (error)="onImageError($event)" alt="Image événement">
+        <h3>ðŸ–¼ï¸ Image</h3>
+        <img [src]="getEventImage(event.image_path)" (error)="onImageError($event)" alt="Image Ã©vÃ©nement">
       </section>
 
       <!-- Actions statut -->
       <section class="status-actions" *ngIf="event.status !== 'completed' && event.status !== 'cancelled'">
-        <h3>⚡ Actions rapides</h3>
+        <h3>âš¡ Actions rapides</h3>
         <div class="status-buttons">
           <button *ngIf="event.status === 'draft'" (click)="updateStatus('client_review')" class="btn">
-            📤 Envoyer au client
+            ðŸ“¤ Envoyer au client
           </button>
           <button *ngIf="event.status === 'client_review'" (click)="updateStatus('accepted')" class="btn btn-success">
-            ✅ Accepter
+            âœ… Accepter
           </button>
           <button *ngIf="event.status === 'accepted'" (click)="updateStatus('in_progress')" class="btn btn-primary">
-            🚀 Démarrer
+            ðŸš€ DÃ©marrer
           </button>
           <button *ngIf="event.status === 'in_progress'" (click)="updateStatus('completed')" class="btn btn-success">
-            🎉 Terminer
+            ðŸŽ‰ Terminer
           </button>
           <button *ngIf="event.status !== 'cancelled'" (click)="updateStatus('cancelled')" class="btn btn-outline">
-            ❌ Annuler
+            âŒ Annuler
           </button>
         </div>
       </section>
@@ -69,10 +69,10 @@
       <!-- Devis -->
       <section class="section-table">
         <div class="section-header">
-          <h3>💰 Devis ({{ quotes.length }})</h3>
-          <a [routerLink]="['/admin/quotes/create']" [queryParams]="{ event_id: event.id }" class="btn btn-sm">+ Créer un devis</a>
+          <h3>ðŸ’° Devis ({{ quotes.length }})</h3>
+          <a [routerLink]="['/admin/quotes/create']" [queryParams]="{ event_id: event.id }" class="btn btn-sm">+ CrÃ©er un devis</a>
         </div>
-        <div *ngIf="quotes.length === 0" class="empty">Aucun devis pour cet événement</div>
+        <div *ngIf="quotes.length === 0" class="empty">Aucun devis pour cet Ã©vÃ©nement</div>
         <table *ngIf="quotes.length > 0">
           <thead>
             <tr>
@@ -93,19 +93,19 @@
         </table>
       </section>
 
-      <!-- Tâches -->
+      <!-- TÃ¢ches -->
       <section class="section-table">
         <div class="section-header">
-          <h3>✅ Tâches ({{ tasks.length }})</h3>
-          <button class="btn btn-sm" (click)="openTaskModal()">+ Ajouter une tâche</button>
+          <h3>âœ… TÃ¢ches ({{ tasks.length }})</h3>
+          <button class="btn btn-sm" (click)="openTaskModal()">+ Ajouter une tÃ¢che</button>
         </div>
-        <div *ngIf="tasks.length === 0" class="empty">Aucune tâche — ajoutez-en pour organiser cet événement</div>
+        <div *ngIf="tasks.length === 0" class="empty">Aucune tÃ¢che â€” ajoutez-en pour organiser cet Ã©vÃ©nement</div>
         <table *ngIf="tasks.length > 0">
           <thead>
             <tr>
-              <th>Tâche</th>
-              <th>Assigné à</th>
-              <th>Échéance</th>
+              <th>TÃ¢che</th>
+              <th>AssignÃ© Ã </th>
+              <th>Ã‰chÃ©ance</th>
               <th>Statut</th>
               <th>Actions</th>
             </tr>
@@ -116,11 +116,11 @@
                 <strong>{{ task.title }}</strong>
                 <small *ngIf="task.description" class="task-desc">{{ task.description }}</small>
               </td>
-              <td>{{ task.assigned_first_name ? task.assigned_first_name + ' ' + task.assigned_last_name : 'Non assigné' }}</td>
+              <td>{{ task.assigned_first_name ? task.assigned_first_name + ' ' + task.assigned_last_name : 'Non assignÃ©' }}</td>
               <td>{{ task.due_date ? formatDate(task.due_date) : '-' }}</td>
               <td><span class="task-status" [class]="'task-' + task.status">{{ taskStatusLabels[task.status] }}</span></td>
               <td>
-                <button (click)="deleteTask(task)" class="btn-icon btn-danger" title="Supprimer" [attr.aria-label]="'Supprimer la tâche '+ task.title">🗑️</button>
+                <button (click)="deleteTask(task)" class="btn-icon btn-danger" title="Supprimer" [attr.aria-label]="'Supprimer la tÃ¢che '+ task.title">ðŸ—‘ï¸</button>
               </td>
             </tr>
           </tbody>
@@ -130,7 +130,7 @@
       <!-- Notes -->
       <section class="section-notes">
         <div class="section-header">
-          <h3>📝 Notes internes</h3>
+          <h3>ðŸ“ Notes internes</h3>
         </div>
         
         <div class="add-note-form">
@@ -144,7 +144,7 @@
           </button>
         </div>
 
-        <div *ngIf="notes.length === 0" class="empty">Aucune note pour cet événement</div>
+        <div *ngIf="notes.length === 0" class="empty">Aucune note pour cet Ã©vÃ©nement</div>
         
         <div class="notes-list" *ngIf="notes.length > 0">
           <div class="note-item" *ngFor="let note of notes">
@@ -155,8 +155,8 @@
               </div>
               <div class="note-actions">
                 <span class="note-date">{{ formatDate(note.created_at) }}</span>
-                <button *ngIf="editingNoteId !== note.id" (click)="startEditNote(note)" class="btn-delete" title="Modifier" aria-label="Modifier la note">✏️</button>
-                <button *ngIf="editingNoteId !== note.id" (click)="deleteNote(note)" class="btn-delete" title="Supprimer" aria-label="Supprimer la note">🗑️</button>
+                <button *ngIf="editingNoteId !== note.id" (click)="startEditNote(note)" class="btn-delete" title="Modifier" aria-label="Modifier la note">âœï¸</button>
+                <button *ngIf="editingNoteId !== note.id" (click)="deleteNote(note)" class="btn-delete" title="Supprimer" aria-label="Supprimer la note">ðŸ—‘ï¸</button>
               </div>
             </div>
 
@@ -174,38 +174,38 @@
       </section>
     </div>
 
-    <!-- Modal Ajouter une tâche -->
+    <!-- Modal Ajouter une tÃ¢che -->
     <div class="modal-overlay" *ngIf="showTaskModal" (click)="closeTaskModal()" (keydown.escape)="closeTaskModal()">
       <div class="modal" role="dialog" aria-modal="true" aria-labelledby="task-modal-title" (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <h2 id="task-modal-title">Nouvelle tâche</h2>
-          <button class="btn-close" aria-label="Fermer la fenêtre" (click)="closeTaskModal()">×</button>
+          <h2 id="task-modal-title">Nouvelle tÃ¢che</h2>
+          <button class="btn-close" aria-label="Fermer la fenÃªtre" (click)="closeTaskModal()">Ã—</button>
         </div>
         <div class="modal-body">
           <div *ngIf="taskError" class="alert alert-danger">{{ taskError }}</div>
 
           <div class="form-group">
-            <label for="new-task-title">Titre de la tâche *</label>
-            <input id="new-task-title" #taskTitleInput type="text" [(ngModel)]="newTask.title" placeholder="Ex: Réserver la salle">
+            <label for="new-task-title">Titre de la tÃ¢che *</label>
+            <input id="new-task-title" #taskTitleInput type="text" [(ngModel)]="newTask.title" placeholder="Ex: RÃ©server la salle">
           </div>
 
           <div class="form-group">
             <label for="new-task-description">Description</label>
-            <textarea id="new-task-description" [(ngModel)]="newTask.description" rows="3" placeholder="Détails optionnels..."></textarea>
+            <textarea id="new-task-description" [(ngModel)]="newTask.description" rows="3" placeholder="DÃ©tails optionnels..."></textarea>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label for="new-task-assigned-to">Assigner à</label>
+              <label for="new-task-assigned-to">Assigner Ã </label>
               <select id="new-task-assigned-to" [(ngModel)]="newTask.assigned_to">
-                <option value="">Non assigné</option>
+                <option value="">Non assignÃ©</option>
                 <option *ngFor="let emp of employees" [value]="emp.id">
                   {{ emp.first_name }} {{ emp.last_name }}
                 </option>
               </select>
             </div>
             <div class="form-group">
-              <label for="new-task-due-date">Échéance</label>
+              <label for="new-task-due-date">Ã‰chÃ©ance</label>
               <input id="new-task-due-date" type="date" [(ngModel)]="newTask.due_date">
             </div>
           </div>
@@ -213,7 +213,7 @@
         <div class="modal-footer">
           <button class="btn btn-secondary" (click)="closeTaskModal()">Annuler</button>
           <button class="btn btn-primary" (click)="createTask()" [disabled]="taskLoading">
-            {{ taskLoading ? 'Création...' : 'Créer la tâche' }}
+            {{ taskLoading ? 'CrÃ©ation...' : 'CrÃ©er la tÃ¢che' }}
           </button>
         </div>
       </div>

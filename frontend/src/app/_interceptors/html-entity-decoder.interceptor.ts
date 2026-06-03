@@ -1,4 +1,4 @@
-import { HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpResponse } from '@angular/common/http';
+﻿import { HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 
 function decodeHtmlEntities(value: string): string {

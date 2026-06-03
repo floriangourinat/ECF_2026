@@ -1,4 +1,4 @@
-<div class="event-detail-container">
+﻿<div class="event-detail-container">
   <app-header></app-header>
 
   <main class="content">
@@ -8,7 +8,7 @@
 
     <div *ngIf="error" class="error">
       <p>{{ error }}</p>
-      <a routerLink="/events" class="btn-back">← Retour aux événements</a>
+      <a routerLink="/events" class="btn-back">â† Retour aux Ã©vÃ©nements</a>
     </div>
 
     <article *ngIf="event && !loading" class="event-detail">
@@ -23,16 +23,16 @@
       <div class="event-body">
         <div class="event-info-grid">
           <div class="info-card">
-            <span class="icon">📅</span>
+            <span class="icon">ðŸ“…</span>
             <div>
-              <strong>Date de début</strong>
+              <strong>Date de dÃ©but</strong>
               <p>{{ formatDate(event.start_date) }}</p>
               <p class="time">{{ formatTime(event.start_date) }}</p>
             </div>
           </div>
 
           <div class="info-card">
-            <span class="icon">🏁</span>
+            <span class="icon">ðŸ</span>
             <div>
               <strong>Date de fin</strong>
               <p>{{ formatDate(event.end_date) }}</p>
@@ -41,7 +41,7 @@
           </div>
 
           <div class="info-card">
-            <span class="icon">📍</span>
+            <span class="icon">ðŸ“</span>
             <div>
               <strong>Lieu</strong>
               <p>{{ event.location }}</p>
@@ -49,15 +49,15 @@
           </div>
 
           <div class="info-card" *ngIf="event.theme">
-            <span class="icon">🎨</span>
+            <span class="icon">ðŸŽ¨</span>
             <div>
-              <strong>Thème</strong>
+              <strong>ThÃ¨me</strong>
               <p>{{ event.theme }}</p>
             </div>
           </div>
 
           <div class="info-card" *ngIf="event.client_company">
-            <span class="icon">🏢</span>
+            <span class="icon">ðŸ¢</span>
             <div>
               <strong>Entreprise cliente</strong>
               <p>{{ event.client_company }}</p>
@@ -65,7 +65,7 @@
           </div>
 
           <div class="info-card">
-            <span class="icon">📌</span>
+            <span class="icon">ðŸ“Œ</span>
             <div>
               <strong>Statut</strong>
               <p>{{ getStatusLabel(event.status) }}</p>
@@ -75,11 +75,11 @@
 
         <section class="cta-section">
           <h2>Prestations et Devis</h2>
-          <p>Vous souhaitez organiser un événement similaire ? Notre équipe est à votre disposition pour créer un événement sur mesure.</p>
+          <p>Vous souhaitez organiser un Ã©vÃ©nement similaire ? Notre Ã©quipe est Ã  votre disposition pour crÃ©er un Ã©vÃ©nement sur mesure.</p>
           <a routerLink="/quote-request" class="btn-cta">Demander un Devis</a>
         </section>
 
-        <a routerLink="/events" class="btn-back">← Retour aux événements</a>
+        <a routerLink="/events" class="btn-back">â† Retour aux Ã©vÃ©nements</a>
       </div>
     </article>
   </main>

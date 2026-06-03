@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
+﻿import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -56,7 +56,7 @@ export class ClientsListComponent implements OnInit {
 
   loadClients(): void {
     this.loading = true;
-    let url = 'http://localhost:8080/api/clients/read.php?';
+    let url = '/api/clients/read.php?';
     
     if (this.filterActive !== '') {
       url += `is_active=${this.filterActive}&`;
@@ -145,23 +145,23 @@ export class ClientsListComponent implements OnInit {
 
   createClient(): void {
     if (!this.newClient.email || !this.newClient.last_name || !this.newClient.first_name) {
-      this.createError = 'Email, nom et prénom sont requis';
+      this.createError = 'Email, nom et prÃ©nom sont requis';
       return;
     }
 
     this.createLoading = true;
     this.createError = '';
 
-    this.http.post<any>('http://localhost:8080/api/clients/create.php', this.newClient)
+    this.http.post<any>('/api/clients/create.php', this.newClient)
       .subscribe({
         next: (response) => {
-          alert(`Client créé avec succès !\n\nMot de passe temporaire : ${response.data.temp_password}`);
+          alert(`Client crÃ©Ã© avec succÃ¨s !\n\nMot de passe temporaire : ${response.data.temp_password}`);
           this.closeCreateModal();
           this.loadClients();
           this.createLoading = false;
         },
         error: (err) => {
-          this.createError = err.error?.message || 'Erreur lors de la création';
+          this.createError = err.error?.message || 'Erreur lors de la crÃ©ation';
           this.createLoading = false;
         }
       });
@@ -173,7 +173,7 @@ export class ClientsListComponent implements OnInit {
       return;
     }
 
-    this.http.put<any>('http://localhost:8080/api/clients/toggle_status.php', { id: client.id })
+    this.http.put<any>('/api/clients/toggle_status.php', { id: client.id })
       .subscribe({
         next: (response) => {
           client.is_active = response.data.is_active;
@@ -185,11 +185,11 @@ export class ClientsListComponent implements OnInit {
   }
 
   deleteClient(client: Client): void {
-    if (!confirm(`Supprimer définitivement ${client.company_name || client.first_name + ' ' + client.last_name} ?\n\nCette action supprimera également tous les événements et devis associés.`)) {
+    if (!confirm(`Supprimer dÃ©finitivement ${client.company_name || client.first_name + ' ' + client.last_name} ?\n\nCette action supprimera Ã©galement tous les Ã©vÃ©nements et devis associÃ©s.`)) {
       return;
     }
 
-    this.http.delete<any>('http://localhost:8080/api/clients/delete.php', { body: { id: client.id } })
+    this.http.delete<any>('/api/clients/delete.php', { body: { id: client.id } })
       .subscribe({
         next: () => {
           this.clients = this.clients.filter(c => c.id !== client.id);

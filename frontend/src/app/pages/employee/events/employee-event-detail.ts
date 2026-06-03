@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -25,8 +25,8 @@ export class EmployeeEventDetailComponent implements OnInit {
   editingNoteId: number | null = null;
   editNoteContent = '';
 
-  statusLabels: any = { 'draft': 'Brouillon', 'client_review': 'En attente', 'accepted': 'Accepté', 'in_progress': 'En cours', 'completed': 'Terminé', 'cancelled': 'Annulé' };
-  taskStatusLabels: any = { 'todo': 'À faire', 'in_progress': 'En cours', 'done': 'Terminé' };
+  statusLabels: any = { 'draft': 'Brouillon', 'client_review': 'En attente', 'accepted': 'AcceptÃ©', 'in_progress': 'En cours', 'completed': 'TerminÃ©', 'cancelled': 'AnnulÃ©' };
+  taskStatusLabels: any = { 'todo': 'Ã€ faire', 'in_progress': 'En cours', 'done': 'TerminÃ©' };
 
   constructor(private route: ActivatedRoute, private http: HttpClient, private authService: AuthService) {}
 
@@ -38,7 +38,7 @@ export class EmployeeEventDetailComponent implements OnInit {
   get currentUser() { return this.authService.currentUserValue; }
 
   loadEvent(): void {
-    this.http.get<any>(`http://localhost:8080/api/events/read_detail.php?id=${this.eventId}`).subscribe({
+    this.http.get<any>(`/api/events/read_detail.php?id=${this.eventId}`).subscribe({
       next: (r) => {
         this.event = r.data.event;
         this.notes = r.data.notes || [];
@@ -49,11 +49,11 @@ export class EmployeeEventDetailComponent implements OnInit {
     });
   }
 
-  // ===== NOTES CRUD (inchangé) =====
+  // ===== NOTES CRUD (inchangÃ©) =====
   addNote(): void {
     if (!this.newNoteContent.trim()) return;
     this.addingNote = true;
-    this.http.post<any>('http://localhost:8080/api/notes/create.php', {
+    this.http.post<any>('/api/notes/create.php', {
       event_id: this.event.id,
       author_id: this.currentUser?.id,
       content: this.newNoteContent
@@ -78,7 +78,7 @@ export class EmployeeEventDetailComponent implements OnInit {
 
   saveEditNote(note: any): void {
     if (!this.editNoteContent.trim()) return;
-    this.http.put<any>('http://localhost:8080/api/notes/update.php', {
+    this.http.put<any>('/api/notes/update.php', {
       id: note.id,
       content: this.editNoteContent
     }).subscribe({
@@ -91,7 +91,7 @@ export class EmployeeEventDetailComponent implements OnInit {
 
   deleteNote(note: any): void {
     if (!confirm('Supprimer cette note ?')) return;
-    this.http.delete<any>('http://localhost:8080/api/notes/delete.php', { body: { id: note.id } }).subscribe({
+    this.http.delete<any>('/api/notes/delete.php', { body: { id: note.id } }).subscribe({
       next: () => { this.notes = this.notes.filter(n => n.id !== note.id); }
     });
   }
@@ -100,13 +100,13 @@ export class EmployeeEventDetailComponent implements OnInit {
     return String(note.author_id) === String(this.currentUser?.id);
   }
 
-  // ===== TÂCHES =====
+  // ===== TÃ‚CHES =====
   onAdvanceTask(task: any): void {
     const next = this.getNextStatus(task.status);
     if (!next) return;
 
-    // POST au lieu de PUT pour éviter le blocage CORS preflight
-    this.http.post<any>('http://localhost:8080/api/tasks/update_status.php', {
+    // POST au lieu de PUT pour Ã©viter le blocage CORS preflight
+    this.http.post<any>('/api/tasks/update_status.php', {
       id: Number(task.id),
       status: next,
       user_id: Number(this.currentUser?.id)
@@ -115,7 +115,7 @@ export class EmployeeEventDetailComponent implements OnInit {
         if (r.success) {
           task.status = next;
         } else {
-          alert(r.message || 'Impossible de mettre à jour');
+          alert(r.message || 'Impossible de mettre Ã  jour');
         }
       },
       error: (err) => {

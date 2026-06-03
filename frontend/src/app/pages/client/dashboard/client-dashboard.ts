@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -36,9 +36,9 @@ export class ClientDashboardComponent implements OnInit {
 
   statusLabels: { [key: string]: string } = {
     'pending': 'En attente',
-    'modification': 'Modification demandée',
-    'accepted': 'Accepté',
-    'refused': 'Refusé'
+    'modification': 'Modification demandÃ©e',
+    'accepted': 'AcceptÃ©',
+    'refused': 'RefusÃ©'
   };
 
   constructor(private http: HttpClient, public authService: AuthService) {}
@@ -47,7 +47,7 @@ export class ClientDashboardComponent implements OnInit {
     const userId = this.authService.currentUserValue?.id;
     if (!userId) return;
 
-    this.http.get<any>(`http://localhost:8080/api/clients/read_by_user.php?user_id=${userId}`).subscribe({
+    this.http.get<any>(`/api/clients/read_by_user.php?user_id=${userId}`).subscribe({
       next: (response) => {
         this.clientId = response.data?.client_id;
         this.loadUpcomingEvents();
@@ -61,7 +61,7 @@ export class ClientDashboardComponent implements OnInit {
 
   loadUpcomingEvents(): void {
     if (!this.clientId) return;
-    this.http.get<any>(`http://localhost:8080/api/events/read_all.php?client_id=${this.clientId}`).subscribe({
+    this.http.get<any>(`/api/events/read_all.php?client_id=${this.clientId}`).subscribe({
       next: (response) => {
         const now = new Date();
         const events = response.data || [];
@@ -80,7 +80,7 @@ export class ClientDashboardComponent implements OnInit {
   loadLatestQuotes(): void {
     const userId = this.authService.currentUserValue?.id;
     if (!userId) return;
-    this.http.get<any>(`http://localhost:8080/api/quotes/read_by_client.php?user_id=${userId}`).subscribe({
+    this.http.get<any>(`/api/quotes/read_by_client.php?user_id=${userId}`).subscribe({
       next: (response) => {
         this.latestQuotes = (response.data || []).slice(0, 3);
       },

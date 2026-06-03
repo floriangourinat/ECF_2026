@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -29,18 +29,18 @@ export class EventsComponent implements OnInit {
 
   eventTypes = [
     { value: '', label: 'Tous les types' },
-    { value: 'Séminaire', label: 'Séminaire' },
-    { value: 'Conférence', label: 'Conférence' },
-    { value: 'Soirée d\'entreprise', label: 'Soirée d\'entreprise' },
+    { value: 'SÃ©minaire', label: 'SÃ©minaire' },
+    { value: 'ConfÃ©rence', label: 'ConfÃ©rence' },
+    { value: 'SoirÃ©e d\'entreprise', label: 'SoirÃ©e d\'entreprise' },
     { value: 'Team Building', label: 'Team Building' },
     { value: 'Autre', label: 'Autre' }
   ];
 
   themes = [
-    { value: '', label: 'Tous les thèmes' },
-    { value: 'Élégant', label: 'Élégant' },
+    { value: '', label: 'Tous les thÃ¨mes' },
+    { value: 'Ã‰lÃ©gant', label: 'Ã‰lÃ©gant' },
     { value: 'Tropical', label: 'Tropical' },
-    { value: 'Rétro', label: 'Rétro' },
+    { value: 'RÃ©tro', label: 'RÃ©tro' },
     { value: 'High-Tech', label: 'High-Tech' },
     { value: 'Nature', label: 'Nature' },
     { value: 'Industriel', label: 'Industriel' }
@@ -73,7 +73,7 @@ export class EventsComponent implements OnInit {
       params = params.set('date_end', this.filterDateEnd);
     }
 
-    this.http.get<any>('http://localhost:8080/api/events/read_public.php', { params })
+    this.http.get<any>('/api/events/read_public.php', { params })
       .subscribe({
         next: (response) => {
           this.events = response.data || [];
@@ -81,7 +81,7 @@ export class EventsComponent implements OnInit {
           this.loading = false;
         },
         error: () => {
-          this.error = 'Impossible de charger les événements';
+          this.error = 'Impossible de charger les Ã©vÃ©nements';
           this.loading = false;
         }
       });
@@ -124,7 +124,7 @@ export class EventsComponent implements OnInit {
   getEventImage(imagePath: string | null): string {
     if (imagePath && imagePath.trim() !== '') {
       if (imagePath.startsWith('/uploads/')) {
-        return 'http://localhost:8080' + imagePath;
+        return '/api' + imagePath;
       }
       return imagePath;
     }

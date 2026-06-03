@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -37,10 +37,10 @@ export class ClientQuotesComponent implements OnInit {
   private readonly counterProposalMarker = '[CONTREPROPOSITION_INNOV_EVENTS]';
 
   statusLabels: { [key: string]: string } = {
-    'pending': 'Étude côté client',
-    'modification': 'Modification demandée',
-    'accepted': 'Accepté',
-    'refused': 'Refusé'
+    'pending': 'Ã‰tude cÃ´tÃ© client',
+    'modification': 'Modification demandÃ©e',
+    'accepted': 'AcceptÃ©',
+    'refused': 'RefusÃ©'
   };
 
   constructor(private http: HttpClient, private authService: AuthService) {}
@@ -54,7 +54,7 @@ export class ClientQuotesComponent implements OnInit {
     if (!userId) return;
 
     this.loading = true;
-    this.http.get<any>(`http://localhost:8080/api/quotes/read_by_client.php?user_id=${userId}`).subscribe({
+    this.http.get<any>(`/api/quotes/read_by_client.php?user_id=${userId}`).subscribe({
       next: (response) => {
         this.quotes = response.data || [];
         this.loading = false;
@@ -71,13 +71,13 @@ export class ClientQuotesComponent implements OnInit {
     if (!userId) return;
 
     if (status === 'modification' && !this.modificationReason[quote.id]) {
-      alert('Veuillez préciser un motif de modification.');
+      alert('Veuillez prÃ©ciser un motif de modification.');
       return;
     }
 
     this.actionLoading[quote.id] = true;
 
-    this.http.put<any>('http://localhost:8080/api/quotes/client_update_status.php', {
+    this.http.put<any>('/api/quotes/client_update_status.php', {
       user_id: userId,
       quote_id: quote.id,
       status,
@@ -89,7 +89,7 @@ export class ClientQuotesComponent implements OnInit {
         this.actionLoading[quote.id] = false;
       },
       error: (err) => {
-        alert(err?.error?.message || 'Erreur lors de la mise à jour');
+        alert(err?.error?.message || 'Erreur lors de la mise Ã  jour');
         this.actionLoading[quote.id] = false;
       }
     });
@@ -144,6 +144,6 @@ export class ClientQuotesComponent implements OnInit {
   }
 
   downloadPdf(quote: Quote): void {
-    window.open(`http://localhost:8080/api/quotes/generate_pdf.php?id=${quote.id}`, '_blank');
+    window.open(`/api/quotes/generate_pdf.php?id=${quote.id}`, '_blank');
   }
 }

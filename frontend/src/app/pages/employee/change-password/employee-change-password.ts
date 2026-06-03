@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -29,7 +29,7 @@ export class EmployeeChangePasswordComponent {
     this.errorMessage = '';
 
     if (!this.auth.currentUserValue?.id) {
-      this.errorMessage = 'Utilisateur non connecté.';
+      this.errorMessage = 'Utilisateur non connectÃ©.';
       return;
     }
 
@@ -39,19 +39,19 @@ export class EmployeeChangePasswordComponent {
     }
 
     if (!this.passwordPattern.test(this.newPassword)) {
-      this.errorMessage = 'Le mot de passe ne respecte pas les règles.';
+      this.errorMessage = 'Le mot de passe ne respecte pas les rÃ¨gles.';
       return;
     }
 
     this.loading = true;
 
-    this.http.post<any>('http://localhost:8080/api/auth/change-password.php', {
+    this.http.post<any>('/api/auth/change-password.php', {
       user_id: this.auth.currentUserValue.id,
       current_password: this.currentPassword,
       new_password: this.newPassword
     }).subscribe({
       next: (response) => {
-        this.successMessage = response.message || 'Mot de passe modifié.';
+        this.successMessage = response.message || 'Mot de passe modifiÃ©.';
         this.currentPassword = '';
         this.newPassword = '';
         this.confirmPassword = '';

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -39,7 +39,7 @@ export class ClientProfileComponent implements OnInit {
     const userId = this.authService.currentUserValue?.id;
     if (!userId) return;
 
-    this.http.get<any>(`http://localhost:8080/api/clients/read_by_user.php?user_id=${userId}`).subscribe({
+    this.http.get<any>(`/api/clients/read_by_user.php?user_id=${userId}`).subscribe({
       next: (response) => {
         this.profile = response.data || this.profile;
         this.loading = false;
@@ -57,7 +57,7 @@ export class ClientProfileComponent implements OnInit {
     this.success = '';
     this.error = '';
 
-    this.http.put<any>('http://localhost:8080/api/clients/update_profile.php', {
+    this.http.put<any>('/api/clients/update_profile.php', {
       user_id: userId,
       first_name: this.profile.first_name,
       last_name: this.profile.last_name,
@@ -67,10 +67,10 @@ export class ClientProfileComponent implements OnInit {
       address: this.profile.address
     }).subscribe({
       next: (response) => {
-        this.success = response.message || 'Profil mis à jour';
+        this.success = response.message || 'Profil mis Ã  jour';
       },
       error: (err) => {
-        this.error = err?.error?.message || 'Erreur lors de la mise à jour';
+        this.error = err?.error?.message || 'Erreur lors de la mise Ã  jour';
       }
     });
   }
@@ -88,17 +88,17 @@ export class ClientProfileComponent implements OnInit {
     }
 
     if (!this.passwordPattern.test(this.newPassword)) {
-      this.passwordError = 'Le mot de passe ne respecte pas les règles.';
+      this.passwordError = 'Le mot de passe ne respecte pas les rÃ¨gles.';
       return;
     }
 
-    this.http.post<any>('http://localhost:8080/api/auth/change-password.php', {
+    this.http.post<any>('/api/auth/change-password.php', {
       user_id: userId,
       current_password: this.currentPassword,
       new_password: this.newPassword
     }).subscribe({
       next: (response) => {
-        this.passwordSuccess = response.message || 'Mot de passe modifié.';
+        this.passwordSuccess = response.message || 'Mot de passe modifiÃ©.';
         this.currentPassword = '';
         this.newPassword = '';
         this.confirmPassword = '';
@@ -114,7 +114,7 @@ export class ClientProfileComponent implements OnInit {
     if (!userId) return;
     if (!confirm('Confirmez-vous la suppression totale de votre compte ?')) return;
 
-    this.http.delete<any>('http://localhost:8080/api/clients/delete_self.php', {
+    this.http.delete<any>('/api/clients/delete_self.php', {
       body: { user_id: userId }
     }).subscribe({
       next: () => {

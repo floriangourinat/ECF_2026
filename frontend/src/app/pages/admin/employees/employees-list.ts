@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
+﻿import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -53,7 +53,7 @@ export class EmployeesListComponent implements OnInit {
 
   loadEmployees(): void {
     this.loading = true;
-    let url = 'http://localhost:8080/api/employees/read.php?';
+    let url = '/api/employees/read.php?';
 
     if (this.filterRole) {
       url += `role=${this.filterRole}&`;
@@ -68,7 +68,7 @@ export class EmployeesListComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.error = 'Impossible de charger les employés';
+        this.error = 'Impossible de charger les employÃ©s';
         this.loading = false;
       }
     });
@@ -141,35 +141,35 @@ export class EmployeesListComponent implements OnInit {
 
   createEmployee(): void {
     if (!this.newEmployee.email || !this.newEmployee.last_name || !this.newEmployee.first_name) {
-      this.createError = 'Email, nom et prénom sont requis';
+      this.createError = 'Email, nom et prÃ©nom sont requis';
       return;
     }
 
     this.createLoading = true;
     this.createError = '';
 
-    this.http.post<any>('http://localhost:8080/api/employees/create.php', { ...this.newEmployee, role: 'employee' })
+    this.http.post<any>('/api/employees/create.php', { ...this.newEmployee, role: 'employee' })
       .subscribe({
         next: (response) => {
-          alert(`Employé créé avec succès !\n\nMot de passe temporaire : ${response.data.temp_password}`);
+          alert(`EmployÃ© crÃ©Ã© avec succÃ¨s !\n\nMot de passe temporaire : ${response.data.temp_password}`);
           this.closeCreateModal();
           this.loadEmployees();
           this.createLoading = false;
         },
         error: (err) => {
-          this.createError = err.error?.message || 'Erreur lors de la création';
+          this.createError = err.error?.message || 'Erreur lors de la crÃ©ation';
           this.createLoading = false;
         }
       });
   }
 
   toggleStatus(employee: Employee): void {
-    const action = employee.is_active ? 'désactiver' : 'activer';
+    const action = employee.is_active ? 'dÃ©sactiver' : 'activer';
     if (!confirm(`Voulez-vous ${action} ${employee.first_name} ${employee.last_name} ?`)) {
       return;
     }
 
-    this.http.put<any>('http://localhost:8080/api/employees/toggle_status.php', { id: employee.id })
+    this.http.put<any>('/api/employees/toggle_status.php', { id: employee.id })
       .subscribe({
         next: (response) => {
           employee.is_active = response.data.is_active;
@@ -181,11 +181,11 @@ export class EmployeesListComponent implements OnInit {
   }
 
   deleteEmployee(employee: Employee): void {
-    if (!confirm(`Supprimer définitivement ${employee.first_name} ${employee.last_name} ?`)) {
+    if (!confirm(`Supprimer dÃ©finitivement ${employee.first_name} ${employee.last_name} ?`)) {
       return;
     }
 
-    this.http.delete<any>('http://localhost:8080/api/employees/delete.php', { body: { id: employee.id } })
+    this.http.delete<any>('/api/employees/delete.php', { body: { id: employee.id } })
       .subscribe({
         next: () => {
           this.employees = this.employees.filter(e => e.id !== employee.id);
@@ -201,6 +201,6 @@ export class EmployeesListComponent implements OnInit {
   }
 
   getRoleLabel(role: string): string {
-    return role === 'admin' ? 'Administrateur' : 'Employé';
+    return role === 'admin' ? 'Administrateur' : 'EmployÃ©';
   }
 }

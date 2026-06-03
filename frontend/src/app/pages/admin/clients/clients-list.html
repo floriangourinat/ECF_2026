@@ -1,4 +1,4 @@
-<app-admin-layout>
+﻿<app-admin-layout>
   <div class="clients-page">
     <header class="page-header">
       <div class="header-title">
@@ -19,7 +19,7 @@
           placeholder="Rechercher par nom, entreprise, email..."
           id="clients-search-input"
         >
-        <button type="button" (click)="onSearch()" aria-label="Lancer la recherche"><span aria-hidden="true">🔍</span></button>
+        <button type="button" (click)="onSearch()" aria-label="Lancer la recherche"><span aria-hidden="true">ðŸ”</span></button>
       </div>
 
       <div class="filter-box">
@@ -43,7 +43,7 @@
       </div>
 
       <div *ngIf="!loading && clients.length === 0" class="empty">
-        <p>Aucun client trouvé</p>
+        <p>Aucun client trouvÃ©</p>
       </div>
 
       <table *ngIf="!loading && clients.length > 0" class="clients-table">
@@ -52,9 +52,9 @@
             <th>Entreprise</th>
             <th>Contact</th>
             <th>Email</th>
-            <th>Téléphone</th>
+            <th>TÃ©lÃ©phone</th>
             <th>Statut</th>
-            <th>Créé le</th>
+            <th>CrÃ©Ã© le</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -73,32 +73,32 @@
             </td>
             <td>{{ formatDate(client.created_at) }}</td>
             <td class="actions">
-              <a [routerLink]="['/admin/clients', client.id]" class="btn-icon" title="Voir" aria-label="Voir le détail"><span aria-hidden="true">👁️</span></a>
-              <a [routerLink]="['/admin/clients', client.id, 'edit']" class="btn-icon" title="Modifier" aria-label="Modifier"><span aria-hidden="true">✏️</span></a>
+              <a [routerLink]="['/admin/clients', client.id]" class="btn-icon" title="Voir" aria-label="Voir le dÃ©tail"><span aria-hidden="true">ðŸ‘ï¸</span></a>
+              <a [routerLink]="['/admin/clients', client.id, 'edit']" class="btn-icon" title="Modifier" aria-label="Modifier"><span aria-hidden="true">âœï¸</span></a>
               <button (click)="toggleStatus(client)" class="btn-icon" [title]="client.is_active ? 'Suspendre' : 'Activer'" [attr.aria-label]="client.is_active ? 'Suspendre' : 'Activer'">
-                <span aria-hidden="true">{{ client.is_active ? '🔒' : '🔓' }}</span>
+                <span aria-hidden="true">{{ client.is_active ? 'ðŸ”’' : 'ðŸ”“' }}</span>
               </button>
-              <button (click)="deleteClient(client)" class="btn-icon btn-danger" title="Supprimer" aria-label="Supprimer"><span aria-hidden="true">🗑️</span></button>
+              <button (click)="deleteClient(client)" class="btn-icon btn-danger" title="Supprimer" aria-label="Supprimer"><span aria-hidden="true">ðŸ—‘ï¸</span></button>
             </td>
           </tr>
         </tbody>
       </table>
     </section>
 
-    <!-- Modal Création -->
+    <!-- Modal CrÃ©ation -->
     <div class="modal-overlay" *ngIf="showCreateModal" (click)="closeCreateModal()" (keydown.escape)="closeCreateModal()">
       <div class="modal" role="dialog" aria-modal="true" aria-labelledby="create-client-title" (click)="$event.stopPropagation()">
         <div class="modal-header">
           <h2 id="create-client-title">Nouveau Client</h2>
-          <button type="button" class="btn-close" aria-label="Fermer la fenêtre" (click)="closeCreateModal()">×</button>
+          <button type="button" class="btn-close" aria-label="Fermer la fenÃªtre" (click)="closeCreateModal()">Ã—</button>
         </div>
         <div class="modal-body">
           <div *ngIf="createError" class="alert alert-danger">{{ createError }}</div>
           
           <div class="form-row">
             <div class="form-group">
-              <label for="new-client-first-name">Prénom *</label>
-              <input id="new-client-first-name" type="text" [(ngModel)]="newClient.first_name" placeholder="Prénom">
+              <label for="new-client-first-name">PrÃ©nom *</label>
+              <input id="new-client-first-name" type="text" [(ngModel)]="newClient.first_name" placeholder="PrÃ©nom">
             </div>
             <div class="form-group">
               <label for="new-client-last-name">Nom *</label>
@@ -118,7 +118,7 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label for="new-client-phone">Téléphone</label>
+              <label for="new-client-phone">TÃ©lÃ©phone</label>
               <input id="new-client-phone" type="tel" [(ngModel)]="newClient.phone" placeholder="01 23 45 67 89">
             </div>
             <div class="form-group">
@@ -130,7 +130,7 @@
         <div class="modal-footer">
           <button class="btn btn-secondary" (click)="closeCreateModal()">Annuler</button>
           <button class="btn btn-primary" (click)="createClient()" [disabled]="createLoading">
-            {{ createLoading ? 'Création...' : 'Créer le client' }}
+            {{ createLoading ? 'CrÃ©ation...' : 'CrÃ©er le client' }}
           </button>
         </div>
       </div>

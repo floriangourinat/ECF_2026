@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -21,17 +21,17 @@ export class ClientDetailComponent implements OnInit {
   statusLabels: { [key: string]: string } = {
     'draft': 'Brouillon',
     'client_review': 'En attente',
-    'accepted': 'Accepté',
+    'accepted': 'AcceptÃ©',
     'in_progress': 'En cours',
-    'completed': 'Terminé',
-    'cancelled': 'Annulé'
+    'completed': 'TerminÃ©',
+    'cancelled': 'AnnulÃ©'
   };
 
   quoteStatusLabels: { [key: string]: string } = {
     'pending': 'En attente',
-    'modification': 'Modification demandée',
-    'accepted': 'Accepté',
-    'refused': 'Refusé'
+    'modification': 'Modification demandÃ©e',
+    'accepted': 'AcceptÃ©',
+    'refused': 'RefusÃ©'
   };
 
   constructor(
@@ -47,7 +47,7 @@ export class ClientDetailComponent implements OnInit {
   }
 
   loadClient(id: string): void {
-    this.http.get<any>(`http://localhost:8080/api/clients/read_one.php?id=${id}`)
+    this.http.get<any>(`/api/clients/read_one.php?id=${id}`)
       .subscribe({
         next: (response) => {
           this.client = response.data.client;
@@ -56,7 +56,7 @@ export class ClientDetailComponent implements OnInit {
           this.loading = false;
         },
         error: () => {
-          this.error = 'Client non trouvé';
+          this.error = 'Client non trouvÃ©';
           this.loading = false;
         }
       });

@@ -1,53 +1,53 @@
-<div class="admin-container" [class.sidebar-collapsed]="sidebarCollapsed">
+﻿<div class="admin-container" [class.sidebar-collapsed]="sidebarCollapsed">
   <!-- Sidebar -->
   <aside class="sidebar">
     <div class="sidebar-header">
       <h2 *ngIf="!sidebarCollapsed">Innov'Events</h2>
       <span *ngIf="sidebarCollapsed" class="logo-mini">IE</span>
       <button class="toggle-btn" (click)="toggleSidebar()">
-        {{ sidebarCollapsed ? '→' : '←' }}
+        {{ sidebarCollapsed ? 'â†’' : 'â†' }}
       </button>
     </div>
 
     <nav class="sidebar-nav">
       <a routerLink="/admin/dashboard" routerLinkActive="active" class="nav-item">
-        <span class="icon">📊</span>
+        <span class="icon">ðŸ“Š</span>
         <span class="label" *ngIf="!sidebarCollapsed">Dashboard</span>
       </a>
       <a routerLink="/admin/prospects" routerLinkActive="active" class="nav-item">
-        <span class="icon">🎯</span>
+        <span class="icon">ðŸŽ¯</span>
         <span class="label" *ngIf="!sidebarCollapsed">Prospects</span>
       </a>
       <a routerLink="/admin/clients" routerLinkActive="active" class="nav-item">
-        <span class="icon">👥</span>
+        <span class="icon">ðŸ‘¥</span>
         <span class="label" *ngIf="!sidebarCollapsed">Clients</span>
       </a>
       <a routerLink="/admin/events" routerLinkActive="active" class="nav-item">
-        <span class="icon">🎉</span>
-        <span class="label" *ngIf="!sidebarCollapsed">Événements</span>
+        <span class="icon">ðŸŽ‰</span>
+        <span class="label" *ngIf="!sidebarCollapsed">Ã‰vÃ©nements</span>
       </a>
       <a routerLink="/admin/quotes" routerLinkActive="active" class="nav-item">
-        <span class="icon">📄</span>
+        <span class="icon">ðŸ“„</span>
         <span class="label" *ngIf="!sidebarCollapsed">Devis</span>
       </a>
       <a routerLink="/admin/employees" routerLinkActive="active" class="nav-item">
-        <span class="icon">👔</span>
-        <span class="label" *ngIf="!sidebarCollapsed">Employés</span>
+        <span class="icon">ðŸ‘”</span>
+        <span class="label" *ngIf="!sidebarCollapsed">EmployÃ©s</span>
       </a>
       <a routerLink="/admin/reviews" routerLinkActive="active" class="nav-item">
-        <span class="icon">⭐</span>
+        <span class="icon">â­</span>
         <span class="label" *ngIf="!sidebarCollapsed">Avis</span>
       </a>
       <a routerLink="/admin/logs" routerLinkActive="active" class="nav-item">
-        <span class="icon">📋</span>
+        <span class="icon">ðŸ“‹</span>
         <span class="label" *ngIf="!sidebarCollapsed">Journalisation</span>
       </a>
       <a routerLink="/admin/settings" routerLinkActive="active" class="nav-item">
-        <span class="icon">⚙️</span>
-        <span class="label" *ngIf="!sidebarCollapsed">Paramètres</span>
+        <span class="icon">âš™ï¸</span>
+        <span class="label" *ngIf="!sidebarCollapsed">ParamÃ¨tres</span>
       </a>
       <a routerLink="/admin/change-password" routerLinkActive="active" class="nav-item">
-        <span class="icon">🔒</span>
+        <span class="icon">ðŸ”’</span>
         <span class="label" *ngIf="!sidebarCollapsed">Mot de passe</span>
       </a>
     </nav>
@@ -58,8 +58,8 @@
         <p class="user-role">Administrateur</p>
       </div>
       <button class="logout-btn" (click)="logout()">
-        <span class="icon">🚪</span>
-        <span class="label" *ngIf="!sidebarCollapsed">Déconnexion</span>
+        <span class="icon">ðŸšª</span>
+        <span class="label" *ngIf="!sidebarCollapsed">DÃ©connexion</span>
       </button>
     </div>
   </aside>

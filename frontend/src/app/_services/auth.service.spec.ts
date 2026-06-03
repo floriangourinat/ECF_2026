@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+﻿import { TestBed } from '@angular/core/testing';
 import { AuthService } from './auth.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
@@ -33,7 +33,7 @@ describe('AuthService', () => {
   // Test login
   it('should login successfully', () => {
     const mockResponse = {
-      message: 'Connexion réussie',
+      message: 'Connexion rÃ©ussie',
       token: 'fake-jwt-token',
       user: {
         id: 1,
@@ -51,7 +51,7 @@ describe('AuthService', () => {
       expect(user.email).toBe('test@test.com');
     });
 
-    const req = httpMock.expectOne('http://localhost:8080/api/auth/login.php');
+    const req = httpMock.expectOne('/api/auth/login.php');
     expect(req.request.method).toBe('POST');
     req.flush(mockResponse);
   });
@@ -70,7 +70,7 @@ describe('AuthService', () => {
 
   // Test register
   it('should register a new user', () => {
-    const mockResponse = { message: 'Compte créé avec succès', user_id: 2 };
+    const mockResponse = { message: 'Compte crÃ©Ã© avec succÃ¨s', user_id: 2 };
     const userData = {
       email: 'new@test.com',
       password: 'Password123!',
@@ -80,23 +80,23 @@ describe('AuthService', () => {
     };
 
     service.register(userData).subscribe(response => {
-      expect(response.message).toBe('Compte créé avec succès');
+      expect(response.message).toBe('Compte crÃ©Ã© avec succÃ¨s');
     });
 
-    const req = httpMock.expectOne('http://localhost:8080/api/auth/register.php');
+    const req = httpMock.expectOne('/api/auth/register.php');
     expect(req.request.method).toBe('POST');
     req.flush(mockResponse);
   });
 
   // Test forgot password
   it('should send forgot password request', () => {
-    const mockResponse = { message: 'Email envoyé' };
+    const mockResponse = { message: 'Email envoyÃ©' };
 
     service.forgotPassword('test@test.com').subscribe(response => {
       expect(response.message).toBeTruthy();
     });
 
-    const req = httpMock.expectOne('http://localhost:8080/api/auth/forgot-password.php');
+    const req = httpMock.expectOne('/api/auth/forgot-password.php');
     expect(req.request.method).toBe('POST');
     req.flush(mockResponse);
   });

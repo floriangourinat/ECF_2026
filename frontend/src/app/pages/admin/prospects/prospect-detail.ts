@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -34,9 +34,9 @@ export class ProspectDetailComponent implements OnInit {
   error = '';
 
   statusLabels: { [key: string]: string } = {
-    'to_contact': 'À contacter',
+    'to_contact': 'Ã€ contacter',
     'qualification': 'Qualification',
-    'failed': 'Échoué',
+    'failed': 'Ã‰chouÃ©',
     'converted': 'Converti'
   };
 
@@ -54,14 +54,14 @@ export class ProspectDetailComponent implements OnInit {
   }
 
   loadProspect(id: string): void {
-    this.http.get<any>(`http://localhost:8080/api/prospects/read_one.php?id=${id}`)
+    this.http.get<any>(`/api/prospects/read_one.php?id=${id}`)
       .subscribe({
         next: (response) => {
           this.prospect = response.data;
           this.loading = false;
         },
         error: () => {
-          this.error = 'Prospect non trouvé';
+          this.error = 'Prospect non trouvÃ©';
           this.loading = false;
         }
       });
@@ -69,7 +69,7 @@ export class ProspectDetailComponent implements OnInit {
 
   getImageUrl(path: string): string {
     if (path && path.startsWith('/uploads/')) {
-      return 'http://localhost:8080' + path;
+      return '/api' + path;
     }
     return path;
   }
@@ -84,14 +84,14 @@ export class ProspectDetailComponent implements OnInit {
     let failureMessage: string | null = null;
 
     if (newStatus === 'failed') {
-      failureMessage = prompt('Message à envoyer au prospect (obligatoire) :', 'Après qualification, votre besoin n’est pas réalisable dans les délais demandés.');
+      failureMessage = prompt('Message Ã  envoyer au prospect (obligatoire) :', 'AprÃ¨s qualification, votre besoin nâ€™est pas rÃ©alisable dans les dÃ©lais demandÃ©s.');
       if (!failureMessage || !failureMessage.trim()) {
-        alert('Le message d’échec est obligatoire.');
+        alert('Le message dâ€™Ã©chec est obligatoire.');
         return;
       }
     }
 
-    this.http.put<any>('http://localhost:8080/api/prospects/update_status.php', {
+    this.http.put<any>('/api/prospects/update_status.php', {
       id: this.prospect.id,
       status: newStatus,
       failure_message: failureMessage
@@ -102,7 +102,7 @@ export class ProspectDetailComponent implements OnInit {
         }
       },
       error: (err) => {
-        alert(err.error?.message || 'Erreur lors de la mise à jour du statut');
+        alert(err.error?.message || 'Erreur lors de la mise Ã  jour du statut');
       }
     });
   }
@@ -114,16 +114,16 @@ export class ProspectDetailComponent implements OnInit {
       return;
     }
 
-    this.http.post<any>('http://localhost:8080/api/prospects/convert.php', {
+    this.http.post<any>('/api/prospects/convert.php', {
       prospect_id: this.prospect.id
     }).subscribe({
       next: (response) => {
         const clientId = response?.data?.client_id;
 
         if (response?.data?.already_existing) {
-          alert('Un utilisateur avec cet email existe déjà. Le prospect est marqué comme converti.');
+          alert('Un utilisateur avec cet email existe dÃ©jÃ . Le prospect est marquÃ© comme converti.');
         } else {
-          alert(`Client créé avec succès !\n\nMot de passe temporaire : ${response.data.temp_password}\n\nCommuniquez ce mot de passe au client.`);
+          alert(`Client crÃ©Ã© avec succÃ¨s !\n\nMot de passe temporaire : ${response.data.temp_password}\n\nCommuniquez ce mot de passe au client.`);
         }
 
         if (this.prospect) {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -27,8 +27,8 @@ export class EmployeeDashboardComponent implements OnInit {
   loadDashboard(): void {
     const userId = String(this.authService.currentUserValue?.id);
 
-    // Toutes les tâches, filtrées côté frontend par userId
-    this.http.get<any>('http://localhost:8080/api/tasks/read.php').subscribe({
+    // Toutes les tÃ¢ches, filtrÃ©es cÃ´tÃ© frontend par userId
+    this.http.get<any>('/api/tasks/read.php').subscribe({
       next: (r) => {
         const allTasks = r.data || [];
         this.myTasks = allTasks
@@ -38,8 +38,8 @@ export class EmployeeDashboardComponent implements OnInit {
       error: () => {}
     });
 
-    // Tous les événements non terminés/annulés
-    this.http.get<any>('http://localhost:8080/api/events/read_all.php').subscribe({
+    // Tous les Ã©vÃ©nements non terminÃ©s/annulÃ©s
+    this.http.get<any>('/api/events/read_all.php').subscribe({
       next: (r) => {
         this.upcomingEvents = (r.data || [])
           .filter((e: any) => e.status !== 'cancelled' && e.status !== 'completed')
@@ -50,7 +50,7 @@ export class EmployeeDashboardComponent implements OnInit {
     });
 
     // Avis en attente
-    this.http.get<any>('http://localhost:8080/api/reviews/read_all.php').subscribe({
+    this.http.get<any>('/api/reviews/read_all.php').subscribe({
       next: (r) => {
         this.pendingReviews = (r.data || []).filter((rev: any) => rev.status === 'pending');
       },
@@ -65,5 +65,5 @@ export class EmployeeDashboardComponent implements OnInit {
     return new Date(d).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
   }
 
-  taskStatusLabels: any = { 'todo': 'À faire', 'in_progress': 'En cours', 'done': 'Terminé' };
+  taskStatusLabels: any = { 'todo': 'Ã€ faire', 'in_progress': 'En cours', 'done': 'TerminÃ©' };
 }

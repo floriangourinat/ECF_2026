@@ -1,4 +1,4 @@
-<app-admin-layout>
+﻿<app-admin-layout>
   <div class="prospects-page">
     <header class="page-header">
       <div class="header-title">
@@ -18,16 +18,16 @@
           placeholder="Rechercher par nom, entreprise, email..."
           id="prospects-search-input"
         >
-        <button type="button" (click)="onSearch()" aria-label="Lancer la recherche"><span aria-hidden="true">🔍</span></button>
+        <button type="button" (click)="onSearch()" aria-label="Lancer la recherche"><span aria-hidden="true">ðŸ”</span></button>
       </div>
 
       <div class="filter-box">
         <label class="sr-only" for="prospects-status-filter">Filtre</label>
         <select id="prospects-status-filter" [(ngModel)]="filterStatus" (change)="onFilterChange()">
           <option value="">Tous les statuts</option>
-          <option value="to_contact">À contacter</option>
+          <option value="to_contact">Ã€ contacter</option>
           <option value="qualification">Qualification</option>
-          <option value="failed">Échoué</option>
+          <option value="failed">Ã‰chouÃ©</option>
           <option value="converted">Converti</option>
         </select>
       </div>
@@ -44,7 +44,7 @@
       </div>
 
       <div *ngIf="!loading && prospects.length === 0" class="empty">
-        <p>Aucun prospect trouvé</p>
+        <p>Aucun prospect trouvÃ©</p>
       </div>
 
       <table *ngIf="!loading && prospects.length > 0" class="prospects-table">
@@ -54,8 +54,8 @@
             <th>Entreprise</th>
             <th>Contact</th>
             <th>Email</th>
-            <th>Type événement</th>
-            <th>Date souhaitée</th>
+            <th>Type Ã©vÃ©nement</th>
+            <th>Date souhaitÃ©e</th>
             <th>Statut</th>
             <th>Actions</th>
           </tr>
@@ -68,7 +68,7 @@
                    [alt]="prospect.company_name"
                    class="prospect-thumbnail"
                    (error)="onImageError($event)">
-              <span *ngIf="!prospect.image_path" class="no-image" aria-hidden="true">📷</span>
+              <span *ngIf="!prospect.image_path" class="no-image" aria-hidden="true">ðŸ“·</span>
             </td>
             <td class="company">
               <strong>{{ prospect.company_name || '-' }}</strong>
@@ -84,19 +84,19 @@
             </td>
             <td class="action-cell">
               <div class="actions">
-              <a [routerLink]="['/admin/prospects', prospect.id]" class="btn-view" title="Voir détails" aria-label="Voir les détails"><span aria-hidden="true">👁️</span></a>
+              <a [routerLink]="['/admin/prospects', prospect.id]" class="btn-view" title="Voir dÃ©tails" aria-label="Voir les dÃ©tails"><span aria-hidden="true">ðŸ‘ï¸</span></a>
               
               <div class="dropdown" *ngIf="prospect.status === 'to_contact' || prospect.status === 'qualification'; else actionsSpacer" [class.open]="isDropdownOpen(prospect.id)">
-                <button type="button" class="btn-action" aria-label="Actions du prospect" aria-haspopup="menu" [attr.aria-expanded]="isDropdownOpen(prospect.id)" (click)="toggleDropdown(prospect.id, $event)"><span aria-hidden="true">⚙️</span></button>
+                <button type="button" class="btn-action" aria-label="Actions du prospect" aria-haspopup="menu" [attr.aria-expanded]="isDropdownOpen(prospect.id)" (click)="toggleDropdown(prospect.id, $event)"><span aria-hidden="true">âš™ï¸</span></button>
                 <div class="dropdown-content" role="menu" aria-label="Actions disponibles" (click)="$event.stopPropagation()">
                   <button *ngIf="prospect.status === 'to_contact'" role="menuitem" (click)="updateStatus(prospect, 'qualification')">
                     Passer en qualification
                   </button>
                   <button role="menuitem" (click)="updateStatus(prospect, 'failed')">
-                    Marquer comme échoué
+                    Marquer comme Ã©chouÃ©
                   </button>
                   <button *ngIf="prospect.status === 'qualification'" role="menuitem" (click)="convertToClient(prospect)" class="btn-convert">
-                    ✅ Convertir en client
+                    âœ… Convertir en client
                   </button>
                 </div>
               </div>

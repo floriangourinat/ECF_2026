@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -34,10 +34,10 @@ export class EventDetailComponent implements OnInit {
   statusLabels: Record<string, string> = {
     draft: 'Brouillon',
     client_review: 'En attente client',
-    accepted: 'Accepté',
+    accepted: 'AcceptÃ©',
     in_progress: 'En cours',
-    completed: 'Terminé',
-    cancelled: 'Annulé'
+    completed: 'TerminÃ©',
+    cancelled: 'AnnulÃ©'
   };
 
   constructor(
@@ -53,14 +53,14 @@ export class EventDetailComponent implements OnInit {
   }
 
   loadEvent(id: string): void {
-    this.http.get<any>(`http://localhost:8080/api/events/read_one.php?id=${id}`)
+    this.http.get<any>(`/api/events/read_one.php?id=${id}`)
       .subscribe({
         next: (response) => {
           this.event = response.data;
           this.loading = false;
         },
         error: () => {
-          this.error = 'Événement non trouvé';
+          this.error = 'Ã‰vÃ©nement non trouvÃ©';
           this.loading = false;
         }
       });
@@ -85,7 +85,7 @@ export class EventDetailComponent implements OnInit {
   getEventImage(imagePath: string | null): string {
     if (imagePath && imagePath.trim() !== '') {
       if (imagePath.startsWith('/uploads/')) {
-        return 'http://localhost:8080' + imagePath;
+        return '/api' + imagePath;
       }
       return imagePath;
     }

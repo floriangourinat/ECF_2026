@@ -1,30 +1,30 @@
-<app-client-layout>
+﻿<app-client-layout>
   <div class="page">
     <header class="page-header">
-      <h1>🎉 Mes événements</h1>
-      <p>Suivez l'évolution et évaluez vos événements terminés.</p>
+      <h1>ðŸŽ‰ Mes Ã©vÃ©nements</h1>
+      <p>Suivez l'Ã©volution et Ã©valuez vos Ã©vÃ©nements terminÃ©s.</p>
     </header>
 
     <div *ngIf="loading" class="empty">Chargement...</div>
     <div *ngIf="!loading && error" class="error">{{ error }}</div>
-    <div *ngIf="!loading && !error && events.length === 0" class="empty">Aucun événement trouvé</div>
+    <div *ngIf="!loading && !error && events.length === 0" class="empty">Aucun Ã©vÃ©nement trouvÃ©</div>
 
     <div class="events-grid" *ngIf="!loading && !error && events.length > 0">
       <div *ngFor="let event of events" class="event-card">
         <div class="event-header">
           <div>
             <h3>{{ event.name }}</h3>
-            <p>{{ formatDate(event.start_date) }} → {{ formatDate(event.end_date) }}</p>
+            <p>{{ formatDate(event.start_date) }} â†’ {{ formatDate(event.end_date) }}</p>
             <small>{{ event.location || '-' }}</small>
           </div>
           <span class="status">{{ statusLabels[event.status] || event.status }}</span>
         </div>
 
         <div *ngIf="event.status === 'completed'" class="review-section">
-          <h4>⭐ Avis client</h4>
+          <h4>â­ Avis client</h4>
 
           <div *ngIf="hasReview(event.id); else reviewForm" class="already-reviewed">
-            <p><strong>Vous avez déjà laissé un avis pour cet événement.</strong></p>
+            <p><strong>Vous avez dÃ©jÃ  laissÃ© un avis pour cet Ã©vÃ©nement.</strong></p>
             <p>Statut : {{ reviewStatusLabels[getReviewByEvent(event.id)?.status || 'pending'] }}</p>
             <p>Note : {{ getReviewByEvent(event.id)?.rating }}/5</p>
             <p *ngIf="getReviewByEvent(event.id)?.comment">Commentaire : {{ getReviewByEvent(event.id)?.comment }}</p>
@@ -36,7 +36,7 @@
 
               <label>Note</label>
               <select [(ngModel)]="reviewRating[event.id]">
-                <option [ngValue]="0">Sélectionner...</option>
+                <option [ngValue]="0">SÃ©lectionner...</option>
                 <option [ngValue]="1">1</option>
                 <option [ngValue]="2">2</option>
                 <option [ngValue]="3">3</option>
@@ -57,8 +57,8 @@
     </div>
 
     <section class="my-reviews-section">
-      <h2>📝 Mes avis</h2>
-      <div *ngIf="myReviews.length === 0" class="empty">Vous n'avez pas encore laissé d'avis.</div>
+      <h2>ðŸ“ Mes avis</h2>
+      <div *ngIf="myReviews.length === 0" class="empty">Vous n'avez pas encore laissÃ© d'avis.</div>
 
       <div class="my-reviews-list" *ngIf="myReviews.length > 0">
         <div class="review-item" *ngFor="let review of myReviews">
@@ -66,7 +66,7 @@
             <strong>{{ review.event_name }}</strong>
             <span class="review-status">{{ reviewStatusLabels[review.status] || review.status }}</span>
           </div>
-          <p class="review-meta">Note : {{ review.rating }}/5 · {{ formatDate(review.created_at) }}</p>
+          <p class="review-meta">Note : {{ review.rating }}/5 Â· {{ formatDate(review.created_at) }}</p>
           <p *ngIf="review.comment">{{ review.comment }}</p>
         </div>
       </div>

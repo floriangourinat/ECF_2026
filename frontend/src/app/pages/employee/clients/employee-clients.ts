@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -13,16 +13,16 @@ import { EmployeeLayoutComponent } from '../../../components/employee-layout/emp
     <app-employee-layout>
       <div class="page">
         <header class="page-header">
-          <h1>👥 Clients</h1>
+          <h1>ðŸ‘¥ Clients</h1>
           <div class="search-box">
             <input type="text" [(ngModel)]="searchTerm" (keyup.enter)="loadClients()" placeholder="Rechercher un client...">
-            <button type="button" (click)="loadClients()" aria-label="Rechercher un client"><span aria-hidden="true">🔍</span></button>
+            <button type="button" (click)="loadClients()" aria-label="Rechercher un client"><span aria-hidden="true">ðŸ”</span></button>
           </div>
         </header>
         <div *ngIf="loading" class="loading">Chargement...</div>
         <table *ngIf="!loading && clients.length > 0" class="data-table">
           <thead>
-            <tr><th>Entreprise</th><th>Contact</th><th>Email</th><th>Événements</th><th></th></tr>
+            <tr><th>Entreprise</th><th>Contact</th><th>Email</th><th>Ã‰vÃ©nements</th><th></th></tr>
           </thead>
           <tbody>
             <tr *ngFor="let c of filteredClients">
@@ -34,7 +34,7 @@ import { EmployeeLayoutComponent } from '../../../components/employee-layout/emp
             </tr>
           </tbody>
         </table>
-        <div *ngIf="!loading && clients.length === 0" class="empty">Aucun client trouvé</div>
+        <div *ngIf="!loading && clients.length === 0" class="empty">Aucun client trouvÃ©</div>
       </div>
     </app-employee-layout>
   `,
@@ -51,7 +51,7 @@ export class EmployeeClientsComponent implements OnInit {
 
   loadClients(): void {
     this.loading = true;
-    let url = 'http://localhost:8080/api/clients/read.php';
+    let url = '/api/clients/read.php';
     if (this.searchTerm) url += `?search=${encodeURIComponent(this.searchTerm)}`;
     this.http.get<any>(url).subscribe({
       next: (r) => { this.clients = r.data || []; this.loading = false; },

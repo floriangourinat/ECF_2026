@@ -1,10 +1,10 @@
-<div class="reviews-container">
+﻿<div class="reviews-container">
   <app-header></app-header>
 
   <!-- Hero -->
   <section class="hero">
     <h1>Avis Clients</h1>
-    <p>Découvrez ce que nos clients pensent de nos services</p>
+    <p>DÃ©couvrez ce que nos clients pensent de nos services</p>
     <div class="average-rating" *ngIf="reviews.length > 0">
       <span class="stars">
         <span *ngFor="let star of getStars(getAverageRating())">{{ star }}</span>
@@ -26,7 +26,7 @@
 
     <div *ngIf="!loading && reviews.length === 0" class="no-reviews">
       <p>Aucun avis pour le moment.</p>
-      <p>Soyez le premier à partager votre expérience avec Innov'Events !</p>
+      <p>Soyez le premier Ã  partager votre expÃ©rience avec Innov'Events !</p>
     </div>
 
     <div class="reviews-grid" *ngIf="!loading && reviews.length > 0">
@@ -57,8 +57,8 @@
 
   <!-- CTA -->
   <section class="cta-section">
-    <h2>Prêt à vivre une expérience exceptionnelle ?</h2>
-    <p>Rejoignez nos clients satisfaits et créez votre événement sur mesure.</p>
+    <h2>PrÃªt Ã  vivre une expÃ©rience exceptionnelle ?</h2>
+    <p>Rejoignez nos clients satisfaits et crÃ©ez votre Ã©vÃ©nement sur mesure.</p>
     <a routerLink="/quote-request" class="btn-cta">Demander un Devis</a>
   </section>
 

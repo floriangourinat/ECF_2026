@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -35,8 +35,8 @@ export class AdminReviewsListComponent implements OnInit {
 
   statusLabels: { [key: string]: string } = {
     'pending': 'En attente',
-    'approved': 'Approuvé',
-    'rejected': 'Rejeté'
+    'approved': 'ApprouvÃ©',
+    'rejected': 'RejetÃ©'
   };
 
   constructor(
@@ -50,7 +50,7 @@ export class AdminReviewsListComponent implements OnInit {
 
   loadReviews(): void {
     this.loading = true;
-    let url = 'http://localhost:8080/api/reviews/read_all.php';
+    let url = '/api/reviews/read_all.php';
     
     if (this.filterStatus) {
       url += `?status=${this.filterStatus}`;
@@ -87,7 +87,7 @@ export class AdminReviewsListComponent implements OnInit {
   updateStatus(review: Review, status: string): void {
     const currentUser = this.authService.currentUserValue;
     
-    this.http.put<any>('http://localhost:8080/api/reviews/update_status.php', {
+    this.http.put<any>('/api/reviews/update_status.php', {
       id: review.id,
       status: status,
       reviewed_by: currentUser?.id
@@ -96,17 +96,17 @@ export class AdminReviewsListComponent implements OnInit {
         review.status = status;
       },
       error: () => {
-        alert('Erreur lors de la modération');
+        alert('Erreur lors de la modÃ©ration');
       }
     });
   }
 
   deleteReview(review: Review): void {
-    if (!confirm('Supprimer définitivement cet avis ?')) {
+    if (!confirm('Supprimer dÃ©finitivement cet avis ?')) {
       return;
     }
 
-    this.http.delete<any>('http://localhost:8080/api/reviews/delete.php', { body: { id: review.id } })
+    this.http.delete<any>('/api/reviews/delete.php', { body: { id: review.id } })
       .subscribe({
         next: () => {
           this.reviews = this.reviews.filter(r => r.id !== review.id);
@@ -122,7 +122,7 @@ export class AdminReviewsListComponent implements OnInit {
   }
 
   getStars(rating: number): string {
-    return '★'.repeat(rating) + '☆'.repeat(5 - rating);
+    return 'â˜…'.repeat(rating) + 'â˜†'.repeat(5 - rating);
   }
 
   getStatusClass(status: string): string {

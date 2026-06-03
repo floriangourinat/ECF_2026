@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -42,7 +42,7 @@ export class ClientEditComponent implements OnInit {
   }
 
   loadClient(): void {
-    this.http.get<any>(`http://localhost:8080/api/clients/read_one.php?id=${this.clientId}`)
+    this.http.get<any>(`/api/clients/read_one.php?id=${this.clientId}`)
     .subscribe({
       next: (response) => {
         if (response.success && response.data && response.data.client) {
@@ -60,7 +60,7 @@ export class ClientEditComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.error = 'Client non trouvé';
+        this.error = 'Client non trouvÃ©';
         this.loading = false;
             }
         });
@@ -68,7 +68,7 @@ export class ClientEditComponent implements OnInit {
 
   saveClient(): void {
     if (!this.client.first_name || !this.client.last_name || !this.client.email) {
-      this.error = 'Prénom, nom et email sont requis';
+      this.error = 'PrÃ©nom, nom et email sont requis';
       return;
     }
 
@@ -76,11 +76,11 @@ export class ClientEditComponent implements OnInit {
     this.error = '';
     this.success = '';
 
-    this.http.put<any>('http://localhost:8080/api/clients/update.php', this.client)
+    this.http.put<any>('/api/clients/update.php', this.client)
       .subscribe({
         next: (response) => {
           if (response.success) {
-            this.success = 'Client modifié avec succès';
+            this.success = 'Client modifiÃ© avec succÃ¨s';
             setTimeout(() => {
               this.router.navigate(['/admin/clients', this.clientId]);
             }, 1500);

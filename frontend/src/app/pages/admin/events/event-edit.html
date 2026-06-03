@@ -1,13 +1,13 @@
-<app-admin-layout>
+﻿<app-admin-layout>
   <div class="event-edit-page">
-    <a routerLink="/admin/events" class="btn-back">← Retour à la liste</a>
+    <a routerLink="/admin/events" class="btn-back">â† Retour Ã  la liste</a>
 
     <div *ngIf="loading" class="loading">Chargement...</div>
     <div *ngIf="error && !event.id" class="error">{{ error }}</div>
 
     <div *ngIf="!loading && event.id" class="edit-form">
       <header class="page-header">
-        <h1>Modifier l'événement</h1>
+        <h1>Modifier l'Ã©vÃ©nement</h1>
         <p>{{ event.name }}</p>
       </header>
 
@@ -16,10 +16,10 @@
 
       <form (ngSubmit)="saveEvent()">
         <section class="form-section">
-          <h3>Informations générales</h3>
+          <h3>Informations gÃ©nÃ©rales</h3>
           
           <div class="form-group">
-            <label>Nom de l'événement *</label>
+            <label>Nom de l'Ã©vÃ©nement *</label>
             <input type="text" [(ngModel)]="event.name" name="name" required>
           </div>
 
@@ -30,16 +30,16 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label>Type d'événement</label>
+              <label>Type d'Ã©vÃ©nement</label>
               <select [(ngModel)]="event.event_type" name="event_type" required>
-                <option value="">-- Sélectionner --</option>
+                <option value="">-- SÃ©lectionner --</option>
                 <option *ngFor="let type of eventTypes" [value]="type">{{ type }}</option>
               </select>
             </div>
             <div class="form-group">
-              <label>Thème</label>
+              <label>ThÃ¨me</label>
               <select [(ngModel)]="event.theme" name="theme" required>
-                <option value="">-- Sélectionner --</option>
+                <option value="">-- SÃ©lectionner --</option>
                 <option *ngFor="let theme of themes" [value]="theme">{{ theme }}</option>
               </select>
             </div>
@@ -47,32 +47,32 @@
         </section>
 
         <section class="form-section">
-          <h3>Image de l'événement</h3>
+          <h3>Image de l'Ã©vÃ©nement</h3>
           
           <div class="form-group">
             <div class="image-upload">
               <div class="current-image" *ngIf="event.image_path && !imagePreview">
                 <img [src]="getImageUrl(event.image_path)" alt="Image actuelle">
-                <button type="button" class="btn-remove-image" (click)="removeCurrentImage()">✕ Supprimer</button>
+                <button type="button" class="btn-remove-image" (click)="removeCurrentImage()">âœ• Supprimer</button>
               </div>
               <input type="file" id="eventImageEdit" (change)="onImageSelected($event)" accept="image/*" #fileInput>
               <label for="eventImageEdit" class="upload-label">
-                <span *ngIf="!imagePreview && !event.image_path">📷 Choisir une image</span>
-                <span *ngIf="!imagePreview && event.image_path">📷 Changer l'image</span>
-                <img *ngIf="imagePreview" [src]="imagePreview" alt="Aperçu" class="image-preview">
+                <span *ngIf="!imagePreview && !event.image_path">ðŸ“· Choisir une image</span>
+                <span *ngIf="!imagePreview && event.image_path">ðŸ“· Changer l'image</span>
+                <img *ngIf="imagePreview" [src]="imagePreview" alt="AperÃ§u" class="image-preview">
               </label>
-              <button *ngIf="imagePreview" type="button" class="btn-remove-image" (click)="removeImage(fileInput)">✕ Annuler</button>
+              <button *ngIf="imagePreview" type="button" class="btn-remove-image" (click)="removeImage(fileInput)">âœ• Annuler</button>
             </div>
             <small class="hint">JPG, PNG, WebP ou GIF. Max 5 Mo.</small>
           </div>
         </section>
 
         <section class="form-section">
-          <h3>Détails</h3>
+          <h3>DÃ©tails</h3>
           
           <div class="form-row">
             <div class="form-group">
-              <label>Date de début</label>
+              <label>Date de dÃ©but</label>
               <input type="datetime-local" [(ngModel)]="event.start_date" name="start_date">
             </div>
             <div class="form-group">
@@ -94,14 +94,14 @@
               <input type="number" [(ngModel)]="event.attendees_count" name="attendees_count" min="0">
             </div>
             <div class="form-group">
-              <label>Budget (€)</label>
+              <label>Budget (â‚¬)</label>
               <input type="number" [(ngModel)]="event.budget" name="budget" min="0" step="0.01">
             </div>
           </div>
         </section>
 
         <section class="form-section">
-          <h3>Visibilité</h3>
+          <h3>VisibilitÃ©</h3>
           
           <div class="visibility-toggle">
             <label class="toggle-switch">
@@ -109,8 +109,8 @@
               <span class="slider"></span>
             </label>
             <div class="toggle-label">
-              <div class="toggle-title">{{ event.is_visible ? 'Visible sur le site public' : 'Masqué du site public' }}</div>
-              <div class="toggle-desc">Les événements visibles apparaissent sur la page publique des événements</div>
+              <div class="toggle-title">{{ event.is_visible ? 'Visible sur le site public' : 'MasquÃ© du site public' }}</div>
+              <div class="toggle-desc">Les Ã©vÃ©nements visibles apparaissent sur la page publique des Ã©vÃ©nements</div>
             </div>
           </div>
         </section>

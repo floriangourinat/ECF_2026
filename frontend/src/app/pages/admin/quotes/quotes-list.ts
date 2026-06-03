@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -36,10 +36,10 @@ export class QuotesListComponent implements OnInit {
 
   statusLabels: { [key: string]: string } = {
     'draft': 'Brouillon',
-    'pending': 'Étude côté client',
-    'modification': 'Modification demandée',
-    'accepted': 'Accepté',
-    'refused': 'Refusé'
+    'pending': 'Ã‰tude cÃ´tÃ© client',
+    'modification': 'Modification demandÃ©e',
+    'accepted': 'AcceptÃ©',
+    'refused': 'RefusÃ©'
   };
 
   constructor(private http: HttpClient) {}
@@ -50,7 +50,7 @@ export class QuotesListComponent implements OnInit {
 
   loadQuotes(): void {
     this.loading = true;
-    let url = 'http://localhost:8080/api/quotes/read.php';
+    let url = '/api/quotes/read.php';
     
     if (this.filterStatus) {
       url += `?status=${this.filterStatus}`;
@@ -73,7 +73,7 @@ export class QuotesListComponent implements OnInit {
   }
 
   downloadPdf(quote: Quote): void {
-    window.open(`http://localhost:8080/api/quotes/generate_pdf.php?id=${quote.id}`, '_blank');
+    window.open(`/api/quotes/generate_pdf.php?id=${quote.id}`, '_blank');
   }
 
   deleteQuote(quote: Quote): void {
@@ -81,7 +81,7 @@ export class QuotesListComponent implements OnInit {
       return;
     }
 
-    this.http.delete<any>('http://localhost:8080/api/quotes/delete.php', { body: { id: quote.id } })
+    this.http.delete<any>('/api/quotes/delete.php', { body: { id: quote.id } })
       .subscribe({
         next: () => {
           this.quotes = this.quotes.filter(q => q.id !== quote.id);
