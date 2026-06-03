@@ -1,6 +1,8 @@
 name: CI/CD Pipeline Innov'Events
 
-# Déclenchement du pipeline
+# Pipeline CI/CD du projet Innov'Events.
+# Les étapes de validation se lancent sur main et develop.
+# Le déploiement automatique réel se lance uniquement lors d'un push sur main.
 on:
   push:
     branches: [main, develop]
@@ -9,12 +11,12 @@ on:
 
 jobs:
   # ===================================
-  # JOB 1 : Tests Frontend (Angular)
+  # JOB 1 : Tests et build Frontend Angular
   # ===================================
   test-frontend:
-    name: 🧪 Tests Frontend Angular
+    name: 🧪 Tests et build Frontend Angular
     runs-on: ubuntu-latest
-    
+
     defaults:
       run:
         working-directory: ./frontend
@@ -30,21 +32,21 @@ jobs:
           cache: 'npm'
           cache-dependency-path: frontend/package-lock.json
 
-      - name: 📚 Installation des dépendances
+      - name: 📚 Installation des dépendances frontend
         run: npm ci
 
-      - name: 🔍 Linting du code
+      - name: 🔍 Vérification lint frontend
         run: npm run lint --if-present
         continue-on-error: true
 
-      - name: 🧪 Exécution des tests unitaires
+      - name: 🧪 Tests unitaires frontend
         run: npm run test -- --watch=false --browsers=ChromeHeadless --code-coverage
         continue-on-error: true
 
-      - name: 🏗️ Build de production
+      - name: 🏗️ Build frontend de production
         run: npm run build -- --configuration=production
 
-      - name: 📊 Upload rapport de couverture
+      - name: 📊 Publication du rapport de couverture frontend
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -52,11 +54,64 @@ jobs:
           path: frontend/coverage/
           retention-days: 30
 
+      - name: 📦 Publication du build frontend
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: frontend/dist/
+          retention-days: 7
+
   # ===================================
-  # JOB 2 : Tests Backend (PHP)
+  # JOB 2 : Tests et build Mobile Ionic
+  # ===================================
+  test-mobile:
+    name: 🧪 Tests et build Mobile Ionic
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./mobile
+
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: 📦 Installation Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: mobile/package-lock.json
+
+      - name: 📚 Installation des dépendances mobile
+        run: npm ci
+
+      - name: 🧪 Tests unitaires et fonctionnels mobile
+        run: npm test
+
+      - name: 🏗️ Build mobile de production
+        run: npm run build
+
+      - name: 📊 Publication du rapport de couverture mobile
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report-mobile
+          path: mobile/coverage/
+          retention-days: 30
+
+      - name: 📦 Publication du build mobile
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-build
+          path: mobile/dist/
+          retention-days: 7
+
+  # ===================================
+  # JOB 3 : Vérifications Backend PHP
   # ===================================
   test-backend:
-    name: 🧪 Tests Backend PHP
+    name: 🧪 Vérifications Backend PHP
     runs-on: ubuntu-latest
 
     services:
@@ -90,50 +145,32 @@ jobs:
 
       - name: 📋 Vérification de la syntaxe PHP
         run: |
-          find . -name "*.php" -exec php -l {} \; | grep -v "No syntax errors"
+          find . -name "*.php" -print0 | xargs -0 -n1 php -l
         continue-on-error: true
 
-      - name: 📚 Installation Composer (si présent)
+      - name: 📚 Installation Composer si présent
         run: |
           if [ -f composer.json ]; then
             composer install --no-progress --prefer-dist --no-interaction
           else
-            echo "Pas de composer.json trouvé, skip installation Composer"
+            echo "Aucun composer.json trouvé : installation Composer ignorée."
           fi
 
-      - name: 🧪 Tests PHPUnit (si présent)
+      - name: 🧪 Tests PHPUnit si présents
         run: |
           if [ -f vendor/bin/phpunit ]; then
             vendor/bin/phpunit --coverage-text
           else
-            echo "PHPUnit non installé, skip tests"
+            echo "PHPUnit non installé : tests backend automatisés ignorés."
           fi
         continue-on-error: true
 
   # ===================================
-  # JOB 3 : Analyse de sécurité
+  # JOB 4 : Analyse de sécurité
   # ===================================
   security-check:
     name: 🔒 Analyse de sécurité
     runs-on: ubuntu-latest
-    
-    steps:
-      - name: 📥 Checkout du code
-        uses: actions/checkout@v4
-
-      - name: 🔍 Audit des dépendances npm
-        working-directory: ./frontend
-        run: npm audit --audit-level=high
-        continue-on-error: true
-
-  # ===================================
-  # JOB 4 : Déploiement Production
-  # ===================================
-  deploy:
-    name: 🚀 Déploiement Production
-    runs-on: ubuntu-latest
-    needs: [test-frontend, test-backend]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
       - name: 📥 Checkout du code
@@ -144,37 +181,141 @@ jobs:
         with:
           node-version: '20'
 
-      - name: 🏗️ Build Frontend Production
+      - name: 🔍 Audit des dépendances frontend
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npm audit --audit-level=high
+        continue-on-error: true
+
+      - name: 🔍 Audit des dépendances mobile
+        working-directory: ./mobile
+        run: |
+          npm ci
+          npm audit --audit-level=high
+        continue-on-error: true
+
+  # ===================================
+  # JOB 5 : Déploiement automatique Production
+  # ===================================
+  deploy:
+    name: 🚀 Déploiement automatique Production
+    runs-on: ubuntu-latest
+    needs: [test-frontend, test-mobile, test-backend]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    env:
+      PROD_HOST: ${{ secrets.PROD_HOST }}
+      PROD_USER: ${{ secrets.PROD_USER }}
+      PROD_PORT: ${{ secrets.PROD_PORT }}
+      PROD_PATH: ${{ secrets.PROD_PATH }}
+      FRONTEND_DIR: /var/www/innovevents-front/browser
+      MOBILE_DIR: /var/www/innovevents-mobile/browser
+
+    steps:
+      - name: 📥 Checkout du code
+        uses: actions/checkout@v4
+
+      - name: 📦 Installation Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 🏗️ Build frontend production avant déploiement
         working-directory: ./frontend
         run: |
           npm ci
           npm run build -- --configuration=production
 
-      - name: 📁 Liste des fichiers buildés
+      - name: 🏗️ Build mobile production avant déploiement
+        working-directory: ./mobile
         run: |
-          echo "📁 Contenu du build :"
-          ls -la frontend/dist/ || echo "Dossier dist non trouvé"
+          npm ci
+          npm run build
 
-      - name: 🚀 Déploiement
+      - name: 🔐 Configuration SSH pour le VPS
         run: |
-          echo "============================================"
-          echo "🚀 DÉPLOIEMENT EN PRODUCTION"
-          echo "============================================"
-          echo "📅 Date : $(date)"
-          echo "📦 Commit : ${{ github.sha }}"
-          echo "👤 Auteur : ${{ github.actor }}"
-          echo "============================================"
-          echo ""
-          echo "✅ Build réussi !"
-          echo "📁 Les fichiers sont prêts dans frontend/dist/"
-          echo ""
-          echo "🔧 Pour un déploiement réel, ajoutez ici :"
-          echo "   - rsync vers votre serveur"
-          echo "   - ou fly.io / Vercel / Netlify deploy"
-          echo "   - ou docker push + kubectl apply"
-          echo "============================================"
+          mkdir -p ~/.ssh
+          echo "${{ secrets.PROD_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p "${PROD_PORT:-22}" "$PROD_HOST" >> ~/.ssh/known_hosts
 
-      - name: 📢 Notification de succès
+      - name: 📁 Préparation des dossiers sur le VPS
         run: |
-          echo "✅ Pipeline terminé avec succès !"
-          echo "🌐 L'application est prête pour la production."
+          ssh -p "${PROD_PORT:-22}" "$PROD_USER@$PROD_HOST" "
+            mkdir -p $FRONTEND_DIR &&
+            mkdir -p $MOBILE_DIR &&
+            mkdir -p $PROD_PATH/backend &&
+            mkdir -p $PROD_PATH/backend/uploads/events &&
+            mkdir -p $PROD_PATH/backend/uploads/prospects
+          "
+
+      - name: 🚀 Synchronisation du frontend vers le VPS
+        run: |
+          FRONT_DIST=$(find frontend/dist -type f -name index.html -printf '%h\n' | head -n 1)
+
+          if [ -z "$FRONT_DIST" ]; then
+            echo "Aucun build frontend trouvé."
+            exit 1
+          fi
+
+          echo "Déploiement du frontend depuis : $FRONT_DIST"
+
+          rsync -az --delete -e "ssh -p ${PROD_PORT:-22}" \
+            "$FRONT_DIST/" \
+            "$PROD_USER@$PROD_HOST:$FRONTEND_DIR/"
+
+      - name: 🚀 Synchronisation de l'application mobile vers le VPS
+        run: |
+          MOBILE_DIST=$(find mobile/dist -type f -name index.html -printf '%h\n' | head -n 1)
+
+          if [ -z "$MOBILE_DIST" ]; then
+            echo "Aucun build mobile trouvé."
+            exit 1
+          fi
+
+          echo "Déploiement mobile depuis : $MOBILE_DIST"
+
+          rsync -az --delete -e "ssh -p ${PROD_PORT:-22}" \
+            "$MOBILE_DIST/" \
+            "$PROD_USER@$PROD_HOST:$MOBILE_DIR/"
+
+      - name: 🚀 Synchronisation du backend vers le VPS
+        run: |
+          rsync -az --delete -e "ssh -p ${PROD_PORT:-22}" \
+            --exclude "uploads/" \
+            --exclude ".env" \
+            --exclude "vendor/" \
+            backend/ \
+            "$PROD_USER@$PROD_HOST:$PROD_PATH/backend/"
+
+      - name: 🚀 Synchronisation Docker Compose vers le VPS
+        run: |
+          rsync -az -e "ssh -p ${PROD_PORT:-22}" \
+            docker-compose.yml \
+            "$PROD_USER@$PROD_HOST:$PROD_PATH/docker-compose.yml"
+
+      - name: 🐳 Redémarrage des services Docker sur le VPS
+        run: |
+          ssh -p "${PROD_PORT:-22}" "$PROD_USER@$PROD_HOST" "
+            cd $PROD_PATH &&
+            docker compose up -d --build backend db mongo &&
+            docker compose ps
+          "
+
+      - name: 🔁 Vérification et rechargement Nginx
+        run: |
+          ssh -p "${PROD_PORT:-22}" "$PROD_USER@$PROD_HOST" "
+            nginx -t &&
+            systemctl reload nginx
+          "
+
+      - name: ✅ Vérification HTTP du déploiement
+        run: |
+          curl -I "http://$PROD_HOST"
+
+      - name: 📢 Confirmation du déploiement
+        run: |
+          echo "Déploiement automatique terminé avec succès."
+          echo "Commit déployé : ${{ github.sha }}"
+          echo "Auteur : ${{ github.actor }}"
