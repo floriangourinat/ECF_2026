@@ -21,7 +21,11 @@ describe('EventDetailPage', () => {
     }
   };
 
-  const mockDetail = {
+  /**
+   * Génère un jeu de données neuf pour chaque test.
+   * Cela évite qu'un test modifie le tableau des notes utilisé par un autre test.
+   */
+  const createMockDetail = () => ({
     success: true,
     data: {
       event: {
@@ -46,7 +50,7 @@ describe('EventDetailPage', () => {
         }
       ]
     }
-  };
+  });
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -123,7 +127,7 @@ describe('EventDetailPage', () => {
   it('should load event detail', () => {
     fixture.detectChanges();
 
-    httpMock.expectOne('/api/events/read_detail.php?id=1').flush(mockDetail);
+    httpMock.expectOne('/api/events/read_detail.php?id=1').flush(createMockDetail());
 
     expect(component.loading).toBeFalse();
     expect(component.event.name).toBe('Séminaire');
@@ -210,7 +214,7 @@ describe('EventDetailPage', () => {
   it('should not add empty note', () => {
     fixture.detectChanges();
 
-    httpMock.expectOne('/api/events/read_detail.php?id=1').flush(mockDetail);
+    httpMock.expectOne('/api/events/read_detail.php?id=1').flush(createMockDetail());
 
     component.newNote = '   ';
     component.addNote();
@@ -222,7 +226,7 @@ describe('EventDetailPage', () => {
   it('should add a note successfully', () => {
     fixture.detectChanges();
 
-    httpMock.expectOne('/api/events/read_detail.php?id=1').flush(mockDetail);
+    httpMock.expectOne('/api/events/read_detail.php?id=1').flush(createMockDetail());
 
     const notesBefore = component.notes.length;
 
@@ -260,7 +264,7 @@ describe('EventDetailPage', () => {
   it('should keep note text when API returns success=false', () => {
     fixture.detectChanges();
 
-    httpMock.expectOne('/api/events/read_detail.php?id=1').flush(mockDetail);
+    httpMock.expectOne('/api/events/read_detail.php?id=1').flush(createMockDetail());
 
     const notesBefore = component.notes.length;
 
@@ -282,7 +286,7 @@ describe('EventDetailPage', () => {
   it('should handle API error while adding note', () => {
     fixture.detectChanges();
 
-    httpMock.expectOne('/api/events/read_detail.php?id=1').flush(mockDetail);
+    httpMock.expectOne('/api/events/read_detail.php?id=1').flush(createMockDetail());
 
     const notesBefore = component.notes.length;
 
