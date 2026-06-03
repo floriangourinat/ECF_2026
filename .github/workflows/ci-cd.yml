@@ -2,7 +2,7 @@ name: CI/CD Pipeline Innov'Events
 
 # Pipeline CI/CD du projet Innov'Events.
 # Les étapes de validation se lancent sur main et develop.
-# Le déploiement automatique réel se lance uniquement lors d'un push sur main.
+# Le déploiement automatique réel se lance uniquement lors d'un push sur main. 
 on:
   push:
     branches: [main, develop]
