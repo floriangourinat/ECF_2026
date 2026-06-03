@@ -3,7 +3,9 @@ describe('Innov\'Events Mobile - Parcours Complet E2E', () => {
   const adminEmail = Cypress.env('ADMIN_EMAIL');
   const adminPassword = Cypress.env('ADMIN_PASSWORD');
 
-  beforeEach(() => { cy.clearLocalStorage(); });
+  beforeEach(() => {
+    cy.clearLocalStorage();
+  });
 
   describe('Page de connexion', () => {
     it('should display login page', () => {
@@ -68,15 +70,43 @@ describe('Innov\'Events Mobile - Parcours Complet E2E', () => {
 
     it('should open event detail', () => {
       cy.get('ion-item.event-card', { timeout: 10000 }).first().click();
-      cy.contains('Détail événement').should('be.visible');
+
+      cy.contains('Détail événement', { timeout: 10000 }).should('be.visible');
       cy.contains('Voir fiche client').should('be.visible');
     });
 
     it('should add a note', () => {
+      const noteContent = 'Note test E2E Cypress';
+
       cy.get('ion-item.event-card', { timeout: 10000 }).first().click();
-      cy.get('ion-textarea textarea').type('Note test E2E Cypress');
-      cy.contains('Ajouter la note').click();
-      cy.contains('Note test E2E Cypress', { timeout: 5000 }).should('be.visible');
+
+      cy.contains('Détail événement', { timeout: 10000 }).should('be.visible');
+
+      cy.contains('Ajouter une note')
+        .should('be.visible')
+        .click();
+
+      cy.get('ion-textarea', { timeout: 10000 })
+        .should('be.visible')
+        .then(($textarea) => {
+          const textareaElement = $textarea[0] as HTMLElement;
+
+          const nativeTextarea =
+            textareaElement.shadowRoot?.querySelector('textarea') ||
+            textareaElement.querySelector('textarea');
+
+          expect(nativeTextarea, 'champ textarea interne').to.exist;
+
+          cy.wrap(nativeTextarea)
+            .clear({ force: true })
+            .type(noteContent, { force: true });
+        });
+
+      cy.contains('Enregistrer la note')
+        .should('be.visible')
+        .click();
+
+      cy.contains(noteContent, { timeout: 10000 }).should('be.visible');
     });
   });
 
