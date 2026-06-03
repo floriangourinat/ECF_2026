@@ -1,6 +1,6 @@
-﻿<app-admin-layout>
+<app-admin-layout>
   <div class="quote-detail-page">
-    <a routerLink="/admin/quotes" class="btn-back">â† Retour Ã  la liste</a>
+    <a routerLink="/admin/quotes" class="btn-back">← Retour à la liste</a>
 
     <div *ngIf="loading" class="loading">Chargement...</div>
     <div *ngIf="error" class="error">{{ error }}</div>
@@ -12,21 +12,21 @@
             {{ statusLabels[quote.status] }}
           </span>
           <h1>Devis #{{ quote.id }}</h1>
-          <p class="quote-date">Ã‰mis le {{ formatDate(quote.issue_date) }}</p>
+          <p class="quote-date">Émis le {{ formatDate(quote.issue_date) }}</p>
         </div>
         <div class="header-actions">
-          <button (click)="downloadPdf()" class="btn btn-primary">ðŸ“„ TÃ©lÃ©charger PDF</button>
+          <button (click)="downloadPdf()" class="btn btn-primary">📄 Télécharger PDF</button>
           <button (click)="sendByEmail()" class="btn btn-success" [disabled]="sending">
-            {{ sending ? 'ðŸ“§ Envoi...' : 'ðŸ“§ Envoyer par email' }}
+            {{ sending ? '📧 Envoi...' : '📧 Envoyer par email' }}
           </button>
-          <button (click)="deleteQuote()" class="btn btn-danger">ðŸ—‘ï¸ Supprimer</button>
+          <button (click)="deleteQuote()" class="btn btn-danger">🗑️ Supprimer</button>
         </div>
       </header>
 
-      <!-- Infos client et Ã©vÃ©nement -->
+      <!-- Infos client et événement -->
       <div class="details-grid">
         <section class="detail-card">
-          <h3>ðŸ‘¤ Client</h3>
+          <h3>👤 Client</h3>
           <div class="detail-row">
             <span class="label">Nom</span>
             <span class="value">{{ quote.company_name || quote.first_name + ' ' + quote.last_name }}</span>
@@ -36,13 +36,13 @@
             <span class="value">{{ quote.client_email }}</span>
           </div>
           <div class="detail-row">
-            <span class="label">TÃ©lÃ©phone</span>
+            <span class="label">Téléphone</span>
             <span class="value">{{ quote.client_phone || '-' }}</span>
           </div>
         </section>
 
         <section class="detail-card">
-          <h3>ðŸŽ‰ Ã‰vÃ©nement</h3>
+          <h3>🎉 Événement</h3>
           <div class="detail-row">
             <span class="label">Nom</span>
             <span class="value">
@@ -62,7 +62,7 @@
 
       <!-- Prestations -->
       <section class="services-section">
-        <h3>ðŸ“‹ Prestations</h3>
+        <h3>📋 Prestations</h3>
         <table class="services-table">
           <thead>
             <tr>
@@ -97,12 +97,12 @@
 
       <!-- Motif de modification -->
       <section class="modification-section" *ngIf="quote.modification_reason || quote.counter_proposal">
-        <h3>ðŸ“ Demande de modification</h3>
+        <h3>📝 Demande de modification</h3>
         <p *ngIf="getClientModificationReason(quote.modification_reason)">
           <strong>Motif client :</strong> {{ getClientModificationReason(quote.modification_reason) }}
         </p>
         <p *ngIf="getCounterProposal(quote.modification_reason)">
-          <strong>DerniÃ¨re contreproposition :</strong> {{ getCounterProposal(quote.modification_reason) }}
+          <strong>Dernière contreproposition :</strong> {{ getCounterProposal(quote.modification_reason) }}
         </p>
         <p *ngIf="getCounterProposalDate(quote.modification_reason)">
           <strong>Date :</strong> {{ getCounterProposalDate(quote.modification_reason) }}
@@ -110,9 +110,9 @@
       </section>
 
       <section class="counter-proposal-section" *ngIf="quote.status === 'modification'">
-        <h3>â†”ï¸ Contreproposition client</h3>
-        <p>RÃ©pondez Ã  la demande de modification du client. Le devis repassera en Ã©tude cÃ´tÃ© client.</p>
-        <textarea rows="4" [(ngModel)]="counterProposalText" placeholder="Ex: Nous proposons une nouvelle formule Ã  2 450â‚¬ TTC incluant ..."></textarea>
+        <h3>↔️ Contreproposition client</h3>
+        <p>Répondez à la demande de modification du client. Le devis repassera en étude côté client.</p>
+        <textarea rows="4" [(ngModel)]="counterProposalText" placeholder="Ex: Nous proposons une nouvelle formule à 2 450€ TTC incluant ..."></textarea>
         <button (click)="sendCounterProposal()" class="btn btn-primary" [disabled]="sendingCounterProposal">
           {{ sendingCounterProposal ? 'Envoi...' : 'Envoyer la contreproposition' }}
         </button>
@@ -120,10 +120,10 @@
 
       <!-- Actions sur le statut -->
       <section class="status-actions" *ngIf="quote.status === 'pending' || quote.status === 'modification'">
-        <h3>ðŸ”„ Actions</h3>
+        <h3>🔄 Actions</h3>
         <div class="action-buttons">
-          <button (click)="updateStatus('accepted')" class="btn btn-success">âœ… Marquer comme acceptÃ©</button>
-          <button (click)="updateStatus('refused')" class="btn btn-outline">âŒ Marquer comme refusÃ©</button>
+          <button (click)="updateStatus('accepted')" class="btn btn-success">✅ Marquer comme accepté</button>
+          <button (click)="updateStatus('refused')" class="btn btn-outline">❌ Marquer comme refusé</button>
         </div>
       </section>
     </div>

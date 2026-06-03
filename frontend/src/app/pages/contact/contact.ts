@@ -1,4 +1,4 @@
-﻿import { Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -58,7 +58,7 @@ export class ContactComponent {
           this.contactForm.reset();
         },
         error: (error) => {
-          this.errorMessage = error.error?.message || 'Une erreur est survenue. Veuillez rÃ©essayer.';
+          this.errorMessage = error.error?.message || 'Une erreur est survenue. Veuillez réessayer.';
           this.loading = false;
         }
       });

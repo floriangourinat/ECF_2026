@@ -1,6 +1,6 @@
-﻿<app-admin-layout>
+<app-admin-layout>
   <div class="employee-detail-page">
-    <a routerLink="/admin/employees" class="btn-back">â† Retour Ã  la liste</a>
+    <a routerLink="/admin/employees" class="btn-back">← Retour à la liste</a>
 
     <div *ngIf="loading" class="loading">Chargement...</div>
     <div *ngIf="error" class="error">{{ error }}</div>
@@ -26,13 +26,13 @@
 
       <div class="details-grid">
         <section class="detail-card">
-          <h3>ðŸ“‹ Informations</h3>
+          <h3>📋 Informations</h3>
           <div class="detail-row">
             <span class="label">Email</span>
             <span class="value"><a href="mailto:{{ employee.email }}">{{ employee.email }}</a></span>
           </div>
           <div class="detail-row">
-            <span class="label">RÃ´le</span>
+            <span class="label">Rôle</span>
             <span class="value">{{ getRoleLabel(employee.role) }}</span>
           </div>
           <div class="detail-row">
@@ -42,30 +42,30 @@
         </section>
 
         <section class="detail-card">
-          <h3>ðŸ“Š Statistiques</h3>
+          <h3>📊 Statistiques</h3>
           <div class="stats-grid">
             <div class="stat">
               <span class="stat-value">{{ tasks.length }}</span>
-              <span class="stat-label">TÃ¢ches assignÃ©es</span>
+              <span class="stat-label">Tâches assignées</span>
             </div>
             <div class="stat">
               <span class="stat-value">{{ notes.length }}</span>
-              <span class="stat-label">Notes crÃ©Ã©es</span>
+              <span class="stat-label">Notes créées</span>
             </div>
           </div>
         </section>
       </div>
 
-      <!-- TÃ¢ches -->
+      <!-- Tâches -->
       <section class="section-table">
-        <h3>âœ… TÃ¢ches assignÃ©es</h3>
-        <div *ngIf="tasks.length === 0" class="empty">Aucune tÃ¢che assignÃ©e</div>
+        <h3>✅ Tâches assignées</h3>
+        <div *ngIf="tasks.length === 0" class="empty">Aucune tâche assignée</div>
         <table *ngIf="tasks.length > 0">
           <thead>
             <tr>
-              <th>TÃ¢che</th>
-              <th>Ã‰vÃ©nement</th>
-              <th>Ã‰chÃ©ance</th>
+              <th>Tâche</th>
+              <th>Événement</th>
+              <th>Échéance</th>
               <th>Statut</th>
             </tr>
           </thead>
@@ -82,8 +82,8 @@
 
       <!-- Notes -->
       <section class="section-table">
-        <h3>ðŸ“ Notes rÃ©centes</h3>
-        <div *ngIf="notes.length === 0" class="empty">Aucune note crÃ©Ã©e</div>
+        <h3>📝 Notes récentes</h3>
+        <div *ngIf="notes.length === 0" class="empty">Aucune note créée</div>
         <div class="notes-list" *ngIf="notes.length > 0">
           <div class="note-item" *ngFor="let note of notes">
             <div class="note-header">

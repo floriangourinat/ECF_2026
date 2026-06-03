@@ -1,29 +1,29 @@
-﻿<div class="events-container">
+<div class="events-container">
   <app-header></app-header>
 
   <section class="hero">
-    <h1>Nos Ã‰vÃ©nements</h1>
-    <p>DÃ©couvrez les Ã©vÃ©nements exceptionnels rÃ©alisÃ©s par Innov'Events</p>
+    <h1>Nos Événements</h1>
+    <p>Découvrez les événements exceptionnels réalisés par Innov'Events</p>
   </section>
 
   <section class="filters-section">
     <div class="filters">
       <div class="filter-group">
-        <label for="filterType">Type d'Ã©vÃ©nement</label>
+        <label for="filterType">Type d'événement</label>
         <select id="filterType" [(ngModel)]="filterType" (change)="applyFilters()">
           <option *ngFor="let type of eventTypes" [value]="type.value">{{ type.label }}</option>
         </select>
       </div>
 
       <div class="filter-group">
-        <label for="filterTheme">ThÃ¨me</label>
+        <label for="filterTheme">Thème</label>
         <select id="filterTheme" [(ngModel)]="filterTheme" (change)="applyFilters()">
           <option *ngFor="let theme of themes" [value]="theme.value">{{ theme.label }}</option>
         </select>
       </div>
 
       <div class="filter-group">
-        <label for="filterDateStart">Date dÃ©but</label>
+        <label for="filterDateStart">Date début</label>
         <input type="date" id="filterDateStart" [(ngModel)]="filterDateStart" (change)="applyFilters()">
       </div>
 
@@ -35,18 +35,18 @@
       <div class="filter-group">
         <label for="sortOrder">Tri par date</label>
         <select id="sortOrder" [(ngModel)]="sortOrder" (change)="applySorting()">
-          <option value="desc">Plus rÃ©cents</option>
+          <option value="desc">Plus récents</option>
           <option value="asc">Plus anciens</option>
         </select>
       </div>
 
-      <button class="btn-reset" (click)="resetFilters()">RÃ©initialiser</button>
+      <button class="btn-reset" (click)="resetFilters()">Réinitialiser</button>
     </div>
   </section>
 
   <section class="events-section">
     <div *ngIf="loading" class="loading">
-      <p>Chargement des Ã©vÃ©nements...</p>
+      <p>Chargement des événements...</p>
     </div>
 
     <div *ngIf="error" class="error">
@@ -54,7 +54,7 @@
     </div>
 
     <div *ngIf="!loading && filteredEvents.length === 0" class="no-events">
-      <p>Aucun Ã©vÃ©nement trouvÃ© avec ces critÃ¨res.</p>
+      <p>Aucun événement trouvé avec ces critères.</p>
     </div>
 
     <div class="events-grid" *ngIf="!loading && filteredEvents.length > 0">
@@ -65,10 +65,10 @@
         </div>
         <div class="event-content">
           <h3>{{ event.name }}</h3>
-          <p class="event-date">ðŸ“… {{ formatDate(event.start_date) }}</p>
-          <p class="event-location">ðŸ“ {{ event.location }}</p>
-          <p class="event-theme" *ngIf="event.theme">ðŸŽ¨ {{ event.theme }}</p>
-          <a [routerLink]="['/events', event.id]" class="btn-details">Voir les dÃ©tails</a>
+          <p class="event-date">📅 {{ formatDate(event.start_date) }}</p>
+          <p class="event-location">📍 {{ event.location }}</p>
+          <p class="event-theme" *ngIf="event.theme">🎨 {{ event.theme }}</p>
+          <a [routerLink]="['/events', event.id]" class="btn-details">Voir les détails</a>
         </div>
       </article>
     </div>

@@ -1,6 +1,6 @@
-﻿<app-admin-layout>
+<app-admin-layout>
   <div class="prospect-detail-page">
-    <a routerLink="/admin/prospects" class="btn-back">â† Retour Ã  la liste</a>
+    <a routerLink="/admin/prospects" class="btn-back">← Retour à la liste</a>
 
     <div *ngIf="loading" class="loading">
       <p>Chargement...</p>
@@ -29,31 +29,31 @@
           <button *ngIf="prospect.status === 'qualification'" 
                   (click)="convertToClient()" 
                   class="btn btn-success">
-            âœ… Convertir en client
+            ✅ Convertir en client
           </button>
           <button *ngIf="prospect.status !== 'failed'" 
                   (click)="updateStatus('failed')" 
                   class="btn btn-danger">
-            Marquer comme Ã©chouÃ©
+            Marquer comme échoué
           </button>
         </div>
 
         <div class="header-actions" *ngIf="prospect.status === 'converted'">
           <button (click)="createPrefilledEvent()" class="btn btn-primary">
-            âž• CrÃ©er un Ã©vÃ©nement prÃ©rempli
+            ➕ Créer un événement prérempli
           </button>
         </div>
       </header>
 
       <!-- Image d'inspiration -->
       <section class="inspiration-image-section" *ngIf="prospect.image_path">
-        <h3>ðŸ“· Image d'inspiration</h3>
+        <h3>📷 Image d'inspiration</h3>
         <img [src]="getImageUrl(prospect.image_path)" [alt]="'Image de ' + prospect.company_name" class="inspiration-image" (error)="onImageError($event)">
       </section>
 
       <div class="details-grid">
         <section class="detail-card">
-          <h3>ðŸ“‹ Informations gÃ©nÃ©rales</h3>
+          <h3>📋 Informations générales</h3>
           <div class="detail-row">
             <span class="label">Entreprise</span>
             <span class="value">{{ prospect.company_name || '-' }}</span>
@@ -63,17 +63,17 @@
             <span class="value">{{ prospect.last_name }}</span>
           </div>
           <div class="detail-row">
-            <span class="label">PrÃ©nom</span>
+            <span class="label">Prénom</span>
             <span class="value">{{ prospect.first_name }}</span>
           </div>
           <div class="detail-row">
-            <span class="label">Date de crÃ©ation</span>
+            <span class="label">Date de création</span>
             <span class="value">{{ formatDate(prospect.created_at) }}</span>
           </div>
         </section>
 
         <section class="detail-card">
-          <h3>ðŸ“ž Contact</h3>
+          <h3>📞 Contact</h3>
           <div class="detail-row">
             <span class="label">Email</span>
             <span class="value">
@@ -81,7 +81,7 @@
             </span>
           </div>
           <div class="detail-row">
-            <span class="label">TÃ©lÃ©phone</span>
+            <span class="label">Téléphone</span>
             <span class="value">
               <a href="tel:{{ prospect.phone }}">{{ prospect.phone || '-' }}</a>
             </span>
@@ -93,23 +93,23 @@
         </section>
 
         <section class="detail-card">
-          <h3>ðŸŽ‰ Projet Ã©vÃ©nement</h3>
+          <h3>🎉 Projet événement</h3>
           <div class="detail-row">
-            <span class="label">Type d'Ã©vÃ©nement</span>
+            <span class="label">Type d'événement</span>
             <span class="value">{{ prospect.event_type || '-' }}</span>
           </div>
           <div class="detail-row">
-            <span class="label">Date souhaitÃ©e</span>
+            <span class="label">Date souhaitée</span>
             <span class="value">{{ formatDate(prospect.planned_date) }}</span>
           </div>
           <div class="detail-row">
-            <span class="label">Participants estimÃ©s</span>
+            <span class="label">Participants estimés</span>
             <span class="value">{{ prospect.estimated_participants || '-' }}</span>
           </div>
         </section>
 
         <section class="detail-card full-width">
-          <h3>ðŸ“ Description du besoin</h3>
+          <h3>📝 Description du besoin</h3>
           <p class="needs-description">{{ prospect.needs_description || 'Aucune description fournie.' }}</p>
         </section>
       </div>

@@ -1,11 +1,11 @@
-﻿<app-admin-layout>
+<app-admin-layout>
   <div class="events-page">
     <header class="page-header">
       <div class="header-title">
-        <h1>Gestion des Ã‰vÃ©nements</h1>
-        <p>{{ events.length }} Ã©vÃ©nement(s) au total</p>
+        <h1>Gestion des Événements</h1>
+        <p>{{ events.length }} événement(s) au total</p>
       </div>
-      <button class="btn-create" (click)="openCreateModal()" aria-haspopup="dialog" [attr.aria-expanded]="showCreateModal">+ Nouvel Ã©vÃ©nement</button>
+      <button class="btn-create" (click)="openCreateModal()" aria-haspopup="dialog" [attr.aria-expanded]="showCreateModal">+ Nouvel événement</button>
     </header>
 
     <section class="filters-section">
@@ -18,7 +18,7 @@
           (keyup.enter)="onSearch()"
           placeholder="Rechercher par nom, lieu, client..."
         >
-        <button type="button" (click)="onSearch()" aria-label="Lancer la recherche"><span aria-hidden="true">ðŸ”</span></button>
+        <button type="button" (click)="onSearch()" aria-label="Lancer la recherche"><span aria-hidden="true">🔍</span></button>
       </div>
 
       <div class="filter-box">
@@ -27,10 +27,10 @@
           <option value="">Tous les statuts</option>
           <option value="draft">Brouillon</option>
           <option value="client_review">En attente client</option>
-          <option value="accepted">AcceptÃ©</option>
+          <option value="accepted">Accepté</option>
           <option value="in_progress">En cours</option>
-          <option value="completed">TerminÃ©</option>
-          <option value="cancelled">AnnulÃ©</option>
+          <option value="completed">Terminé</option>
+          <option value="cancelled">Annulé</option>
         </select>
       </div>
     </section>
@@ -38,7 +38,7 @@
     <section class="events-list">
       <div *ngIf="loading" class="loading">Chargement...</div>
       <div *ngIf="error" class="error">{{ error }}</div>
-      <div *ngIf="!loading && events.length === 0" class="empty">Aucun Ã©vÃ©nement trouvÃ©</div>
+      <div *ngIf="!loading && events.length === 0" class="empty">Aucun événement trouvé</div>
 
       <table *ngIf="!loading && events.length > 0" class="events-table">
         <thead>
@@ -62,7 +62,7 @@
                    [alt]="event.name"
                    class="event-thumbnail"
                    (error)="onImageError($event)">
-              <span *ngIf="!event.image_path" class="no-image" aria-hidden="true">ðŸ“·</span>
+              <span *ngIf="!event.image_path" class="no-image" aria-hidden="true">📷</span>
             </td>
             <td class="event-name">
               <strong>{{ event.name }}</strong>
@@ -78,14 +78,14 @@
             </td>
             <td>
               <span [class.visible]="event.is_visible" [class.hidden]="!event.is_visible">
-                {{ event.is_visible ? 'âœ…' : 'âŒ' }}
+                {{ event.is_visible ? '✅' : '❌' }}
               </span>
             </td>
             <td class="action-cell">
               <div class="actions">
-                <a [routerLink]="['/admin/events', event.id]" class="btn-icon" title="Voir" [attr.aria-label]="'Voir l\'Ã©vÃ©nement ' + event.name"><span aria-hidden="true">ðŸ‘ï¸</span></a>
-                <a [routerLink]="['/admin/events', event.id, 'edit']" class="btn-icon" title="Modifier" [attr.aria-label]="'Modifier l\'Ã©vÃ©nement ' + event.name"><span aria-hidden="true">âœï¸</span></a>
-                <button (click)="deleteEvent(event)" class="btn-icon btn-danger" title="Supprimer" [attr.aria-label]="'Supprimer l\'Ã©vÃ©nement ' + event.name"><span aria-hidden="true">ðŸ—‘ï¸</span></button>
+                <a [routerLink]="['/admin/events', event.id]" class="btn-icon" title="Voir" [attr.aria-label]="'Voir l\'événement ' + event.name"><span aria-hidden="true">👁️</span></a>
+                <a [routerLink]="['/admin/events', event.id, 'edit']" class="btn-icon" title="Modifier" [attr.aria-label]="'Modifier l\'événement ' + event.name"><span aria-hidden="true">✏️</span></a>
+                <button (click)="deleteEvent(event)" class="btn-icon btn-danger" title="Supprimer" [attr.aria-label]="'Supprimer l\'événement ' + event.name"><span aria-hidden="true">🗑️</span></button>
               </div>
             </td>
           </tr>
@@ -96,21 +96,21 @@
     <div class="modal-overlay" *ngIf="showCreateModal" (click)="closeCreateModal()" (keydown.escape)="closeCreateModal()">
       <div class="modal modal-large" role="dialog" aria-modal="true" aria-labelledby="create-event-title" (click)="$event.stopPropagation()">
         <div class="modal-header">
-          <h2 id="create-event-title">Nouvel Ã‰vÃ©nement</h2>
-          <button class="btn-close" aria-label="Fermer la fenÃªtre" (click)="closeCreateModal()">Ã—</button>
+          <h2 id="create-event-title">Nouvel Événement</h2>
+          <button class="btn-close" aria-label="Fermer la fenêtre" (click)="closeCreateModal()">×</button>
         </div>
         <div class="modal-body">
           <div *ngIf="createError" class="alert alert-danger">{{ createError }}</div>
 
           <div class="form-group">
-            <label for="new-event-name">Nom de l'Ã©vÃ©nement *</label>
-            <input id="new-event-name" type="text" [(ngModel)]="newEvent.name" placeholder="Ex: SÃ©minaire annuel 2026">
+            <label for="new-event-name">Nom de l'événement *</label>
+            <input id="new-event-name" type="text" [(ngModel)]="newEvent.name" placeholder="Ex: Séminaire annuel 2026">
           </div>
 
           <div class="form-group">
             <label for="new-event-client">Client *</label>
             <select id="new-event-client" [(ngModel)]="newEvent.client_id">
-              <option value="">SÃ©lectionner un client</option>
+              <option value="">Sélectionner un client</option>
               <option *ngFor="let client of clients" [value]="client.id">
                 {{ client.company_name || client.first_name + ' ' + client.last_name }}
               </option>
@@ -119,7 +119,7 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label for="new-event-start-date">Date et heure de dÃ©but *</label>
+              <label for="new-event-start-date">Date et heure de début *</label>
               <input id="new-event-start-date" type="datetime-local" [(ngModel)]="newEvent.start_date">
             </div>
             <div class="form-group">
@@ -130,35 +130,35 @@
 
           <div class="form-group">
             <label for="new-event-location">Lieu</label>
-            <input id="new-event-location" type="text" [(ngModel)]="newEvent.location" placeholder="Ex: Paris, Palais des CongrÃ¨s">
+            <input id="new-event-location" type="text" [(ngModel)]="newEvent.location" placeholder="Ex: Paris, Palais des Congrès">
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label for="new-event-type">Type d'Ã©vÃ©nement *</label>
+              <label for="new-event-type">Type d'événement *</label>
               <select id="new-event-type" [(ngModel)]="newEvent.event_type">
-                <option value="">SÃ©lectionner</option>
+                <option value="">Sélectionner</option>
                 <option *ngFor="let type of eventTypes" [value]="type">{{ type }}</option>
               </select>
             </div>
             <div class="form-group">
-              <label for="new-event-theme">ThÃ¨me *</label>
+              <label for="new-event-theme">Thème *</label>
               <select id="new-event-theme" [(ngModel)]="newEvent.theme">
-                <option value="">SÃ©lectionner</option>
+                <option value="">Sélectionner</option>
                 <option *ngFor="let theme of themes" [value]="theme">{{ theme }}</option>
               </select>
             </div>
           </div>
 
           <div class="form-group">
-            <label>Image de l'Ã©vÃ©nement</label>
+            <label>Image de l'événement</label>
             <div class="image-upload">
               <input type="file" id="eventImage" (change)="onImageSelected($event)" accept="image/*" #fileInput>
               <label for="eventImage" class="upload-label">
-                <span *ngIf="!imagePreview">ðŸ“· Choisir une image</span>
-                <img *ngIf="imagePreview" [src]="imagePreview" alt="AperÃ§u" class="image-preview">
+                <span *ngIf="!imagePreview">📷 Choisir une image</span>
+                <img *ngIf="imagePreview" [src]="imagePreview" alt="Aperçu" class="image-preview">
               </label>
-              <button *ngIf="imagePreview" type="button" class="btn-remove-image" (click)="removeImage(fileInput)" aria-label="Supprimer l'image sÃ©lectionnÃ©e">âœ• Supprimer</button>
+              <button *ngIf="imagePreview" type="button" class="btn-remove-image" (click)="removeImage(fileInput)" aria-label="Supprimer l'image sélectionnée">✕ Supprimer</button>
             </div>
             <small class="hint">JPG, PNG, WebP ou GIF. Max 5 Mo.</small>
           </div>
@@ -169,7 +169,7 @@
               <select id="new-event-status" [(ngModel)]="newEvent.status">
                 <option value="draft">Brouillon</option>
                 <option value="client_review">En attente client</option>
-                <option value="accepted">AcceptÃ©</option>
+                <option value="accepted">Accepté</option>
                 <option value="in_progress">En cours</option>
               </select>
             </div>
@@ -184,7 +184,7 @@
         <div class="modal-footer">
           <button class="btn btn-secondary" (click)="closeCreateModal()">Annuler</button>
           <button class="btn btn-primary" (click)="createEvent()" [disabled]="createLoading">
-            {{ createLoading ? 'CrÃ©ation...' : 'CrÃ©er l\'Ã©vÃ©nement' }}
+            {{ createLoading ? 'Création...' : 'Créer l\'événement' }}
           </button>
         </div>
       </div>

@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -34,9 +34,9 @@ export class ProspectDetailComponent implements OnInit {
   error = '';
 
   statusLabels: { [key: string]: string } = {
-    'to_contact': 'Ã€ contacter',
+    'to_contact': 'À contacter',
     'qualification': 'Qualification',
-    'failed': 'Ã‰chouÃ©',
+    'failed': 'Échoué',
     'converted': 'Converti'
   };
 
@@ -61,7 +61,7 @@ export class ProspectDetailComponent implements OnInit {
           this.loading = false;
         },
         error: () => {
-          this.error = 'Prospect non trouvÃ©';
+          this.error = 'Prospect non trouvé';
           this.loading = false;
         }
       });
@@ -84,9 +84,9 @@ export class ProspectDetailComponent implements OnInit {
     let failureMessage: string | null = null;
 
     if (newStatus === 'failed') {
-      failureMessage = prompt('Message Ã  envoyer au prospect (obligatoire) :', 'AprÃ¨s qualification, votre besoin nâ€™est pas rÃ©alisable dans les dÃ©lais demandÃ©s.');
+      failureMessage = prompt('Message à envoyer au prospect (obligatoire) :', 'Après qualification, votre besoin n’est pas réalisable dans les délais demandés.');
       if (!failureMessage || !failureMessage.trim()) {
-        alert('Le message dâ€™Ã©chec est obligatoire.');
+        alert('Le message d’échec est obligatoire.');
         return;
       }
     }
@@ -102,7 +102,7 @@ export class ProspectDetailComponent implements OnInit {
         }
       },
       error: (err) => {
-        alert(err.error?.message || 'Erreur lors de la mise Ã  jour du statut');
+        alert(err.error?.message || 'Erreur lors de la mise à jour du statut');
       }
     });
   }
@@ -121,9 +121,9 @@ export class ProspectDetailComponent implements OnInit {
         const clientId = response?.data?.client_id;
 
         if (response?.data?.already_existing) {
-          alert('Un utilisateur avec cet email existe dÃ©jÃ . Le prospect est marquÃ© comme converti.');
+          alert('Un utilisateur avec cet email existe déjà. Le prospect est marqué comme converti.');
         } else {
-          alert(`Client crÃ©Ã© avec succÃ¨s !\n\nMot de passe temporaire : ${response.data.temp_password}\n\nCommuniquez ce mot de passe au client.`);
+          alert(`Client créé avec succès !\n\nMot de passe temporaire : ${response.data.temp_password}\n\nCommuniquez ce mot de passe au client.`);
         }
 
         if (this.prospect) {

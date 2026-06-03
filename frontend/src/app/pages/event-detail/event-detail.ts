@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -34,10 +34,10 @@ export class EventDetailComponent implements OnInit {
   statusLabels: Record<string, string> = {
     draft: 'Brouillon',
     client_review: 'En attente client',
-    accepted: 'AcceptÃ©',
+    accepted: 'Accepté',
     in_progress: 'En cours',
-    completed: 'TerminÃ©',
-    cancelled: 'AnnulÃ©'
+    completed: 'Terminé',
+    cancelled: 'Annulé'
   };
 
   constructor(
@@ -60,7 +60,7 @@ export class EventDetailComponent implements OnInit {
           this.loading = false;
         },
         error: () => {
-          this.error = 'Ã‰vÃ©nement non trouvÃ©';
+          this.error = 'Événement non trouvé';
           this.loading = false;
         }
       });

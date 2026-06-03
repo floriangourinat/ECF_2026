@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -18,7 +18,7 @@ export class AdminSettingsComponent implements OnInit {
   success = '';
 
   quoteSuccessMessage = '';
-  readonly defaultMessage = 'Merci pour votre demande. ChloÃ© vous recontactera dans les plus brefs dÃ©lais pour discuter de votre projet.';
+  readonly defaultMessage = 'Merci pour votre demande. Chloé vous recontactera dans les plus brefs délais pour discuter de votre projet.';
 
   constructor(private http: HttpClient) {}
 
@@ -45,7 +45,7 @@ export class AdminSettingsComponent implements OnInit {
 
   save(): void {
     if (!this.quoteSuccessMessage || this.quoteSuccessMessage.trim().length < 10) {
-      this.error = 'Le message doit contenir au moins 10 caractÃ¨res.';
+      this.error = 'Le message doit contenir au moins 10 caractères.';
       return;
     }
 
@@ -57,7 +57,7 @@ export class AdminSettingsComponent implements OnInit {
       message: this.quoteSuccessMessage.trim()
     }).subscribe({
       next: (response) => {
-        this.success = response?.message || 'Message enregistrÃ©.';
+        this.success = response?.message || 'Message enregistré.';
         this.saving = false;
       },
       error: (err) => {

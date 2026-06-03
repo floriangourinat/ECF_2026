@@ -1,4 +1,4 @@
-﻿import { Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { authGuard, guestGuard, adminGuard, employeeGuard, clientGuard } from './_guards/auth.guard';
 
 export const routes: Routes = [
@@ -34,7 +34,7 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/quote-request/quote-request').then(m => m.QuoteRequestComponent)
   },
 
-  // ========== PAGES LÃ‰GALES ==========
+  // ========== PAGES LÉGALES ==========
   { 
     path: 'legal-notice', 
     loadComponent: () => import('./pages/legal-notice/legal-notice').then(m => m.LegalNoticeComponent)
@@ -70,7 +70,7 @@ export const routes: Routes = [
     canActivate: [guestGuard]
   },
 
-  // ========== ESPACE CONNECTÃ‰ (Redirection selon rÃ´le) ==========
+  // ========== ESPACE CONNECTÉ (Redirection selon rôle) ==========
   { 
     path: 'dashboard', 
     loadComponent: () => import('./pages/dashboard/dashboard').then(m => m.DashboardComponent),
@@ -104,7 +104,7 @@ export const routes: Routes = [
     canActivate: [clientGuard]
   },
 
-  // ========== ESPACE EMPLOYÃ‰ ==========
+  // ========== ESPACE EMPLOYÉ ==========
   { 
     path: 'employee/dashboard', 
     loadComponent: () => import('./pages/employee/dashboard/employee-dashboard').then(m => m.EmployeeDashboardComponent),

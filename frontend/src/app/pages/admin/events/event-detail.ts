@@ -1,4 +1,4 @@
-﻿import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink, Router } from '@angular/router';
@@ -28,7 +28,7 @@ export class AdminEventDetailComponent implements OnInit {
   editingNoteId: number | null = null;
   editNoteContent = '';
 
-  // TÃ¢ches
+  // Tâches
   showTaskModal = false;
   taskLoading = false;
   taskError = '';
@@ -39,14 +39,14 @@ export class AdminEventDetailComponent implements OnInit {
   defaultImage = 'assets/images/event-default.jpg';
 
   statusLabels: { [key: string]: string } = {
-    'draft': 'Brouillon', 'client_review': 'En attente client', 'accepted': 'AcceptÃ©',
-    'in_progress': 'En cours', 'completed': 'TerminÃ©', 'cancelled': 'AnnulÃ©'
+    'draft': 'Brouillon', 'client_review': 'En attente client', 'accepted': 'Accepté',
+    'in_progress': 'En cours', 'completed': 'Terminé', 'cancelled': 'Annulé'
   };
   taskStatusLabels: { [key: string]: string } = {
-    'todo': 'Ã€ faire', 'in_progress': 'En cours', 'done': 'TerminÃ©'
+    'todo': 'À faire', 'in_progress': 'En cours', 'done': 'Terminé'
   };
   quoteStatusLabels: { [key: string]: string } = {
-    'pending': 'En attente', 'modification': 'Modification demandÃ©e', 'accepted': 'AcceptÃ©', 'refused': 'RefusÃ©'
+    'pending': 'En attente', 'modification': 'Modification demandée', 'accepted': 'Accepté', 'refused': 'Refusé'
   };
 
   constructor(
@@ -75,7 +75,7 @@ export class AdminEventDetailComponent implements OnInit {
           this.loading = false;
         },
         error: () => {
-          this.error = 'Ã‰vÃ©nement non trouvÃ©';
+          this.error = 'Événement non trouvé';
           this.loading = false;
         }
       });
@@ -102,12 +102,12 @@ export class AdminEventDetailComponent implements OnInit {
       ...this.event, status: newStatus
     }).subscribe({
       next: () => { this.event.status = newStatus; },
-      error: () => { alert('Erreur lors de la mise Ã  jour du statut'); }
+      error: () => { alert('Erreur lors de la mise à jour du statut'); }
     });
   }
 
   deleteEvent(): void {
-    if (!confirm(`Supprimer l'Ã©vÃ©nement "${this.event.name}" ?\n\nCette action est irrÃ©versible.`)) return;
+    if (!confirm(`Supprimer l'événement "${this.event.name}" ?\n\nCette action est irréversible.`)) return;
     this.http.delete<any>('/api/events/delete.php', { body: { id: this.event.id } })
       .subscribe({
         next: () => { this.router.navigate(['/admin/events']); },
@@ -115,7 +115,7 @@ export class AdminEventDetailComponent implements OnInit {
       });
   }
 
-  // ===== TÃ‚CHES =====
+  // ===== TÂCHES =====
 
   openTaskModal(): void {
     this.showTaskModal = true;
@@ -166,7 +166,7 @@ export class AdminEventDetailComponent implements OnInit {
   }
 
   deleteTask(task: any): void {
-    if (!confirm(`Supprimer la tÃ¢che "${task.title}" ?`)) return;
+    if (!confirm(`Supprimer la tâche "${task.title}" ?`)) return;
     this.http.delete<any>('/api/tasks/delete.php', { body: { id: task.id } }).subscribe({
       next: () => { this.tasks = this.tasks.filter(t => t.id !== task.id); },
       error: () => { alert('Erreur lors de la suppression'); }
@@ -178,7 +178,7 @@ export class AdminEventDetailComponent implements OnInit {
   addNote(): void {
     if (!this.newNoteContent.trim()) return;
     const currentUser = this.authService.currentUserValue;
-    if (!currentUser) { alert('Vous devez Ãªtre connectÃ©'); return; }
+    if (!currentUser) { alert('Vous devez être connecté'); return; }
 
     this.addingNote = true;
     this.http.post<any>('/api/notes/create.php', {

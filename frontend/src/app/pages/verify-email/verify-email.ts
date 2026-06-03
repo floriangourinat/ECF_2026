@@ -1,4 +1,4 @@
-﻿import { Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../_services/auth.service';
@@ -23,7 +23,7 @@ export class VerifyEmailComponent {
     if (!token) {
       this.loading = false;
       this.isSuccess = false;
-      this.message = "Token manquant. VÃ©rifiez le lien reÃ§u par email.";
+      this.message = "Token manquant. Vérifiez le lien reçu par email.";
       return;
     }
 
@@ -31,12 +31,12 @@ export class VerifyEmailComponent {
       next: (res) => {
         this.loading = false;
         this.isSuccess = true;
-        this.message = res?.message || "Email vÃ©rifiÃ©. Vous pouvez vous connecter.";
+        this.message = res?.message || "Email vérifié. Vous pouvez vous connecter.";
       },
       error: (err) => {
         this.loading = false;
         this.isSuccess = false;
-        this.message = err?.error?.message || "Lien invalide ou expirÃ©.";
+        this.message = err?.error?.message || "Lien invalide ou expiré.";
       }
     });
   }

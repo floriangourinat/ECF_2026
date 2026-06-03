@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -36,9 +36,9 @@ export class ClientDashboardComponent implements OnInit {
 
   statusLabels: { [key: string]: string } = {
     'pending': 'En attente',
-    'modification': 'Modification demandÃ©e',
-    'accepted': 'AcceptÃ©',
-    'refused': 'RefusÃ©'
+    'modification': 'Modification demandée',
+    'accepted': 'Accepté',
+    'refused': 'Refusé'
   };
 
   constructor(private http: HttpClient, public authService: AuthService) {}

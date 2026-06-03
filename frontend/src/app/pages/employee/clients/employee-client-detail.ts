@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -11,7 +11,7 @@ import { EmployeeLayoutComponent } from '../../../components/employee-layout/emp
   template: `
     <app-employee-layout>
       <div class="page">
-        <a routerLink="/employee/clients" class="btn-back">â† Retour aux clients</a>
+        <a routerLink="/employee/clients" class="btn-back">← Retour aux clients</a>
         <div *ngIf="loading" class="loading">Chargement...</div>
         <div *ngIf="!loading && client" class="detail">
           <header class="detail-header">
@@ -19,16 +19,16 @@ import { EmployeeLayoutComponent } from '../../../components/employee-layout/emp
           </header>
           <div class="info-grid">
             <div class="info-card">
-              <h3>ðŸ“‹ Informations</h3>
+              <h3>📋 Informations</h3>
               <p><strong>Contact :</strong> {{ client.first_name }} {{ client.last_name }}</p>
               <p><strong>Email :</strong> {{ client.email }}</p>
-              <p><strong>TÃ©lÃ©phone :</strong> {{ client.phone || '-' }}</p>
+              <p><strong>Téléphone :</strong> {{ client.phone || '-' }}</p>
               <p><strong>Adresse :</strong> {{ client.address || '-' }}</p>
             </div>
           </div>
           <section class="section">
-            <h3>ðŸŽ‰ Ã‰vÃ©nements du client</h3>
-            <div *ngIf="events.length === 0" class="empty">Aucun Ã©vÃ©nement</div>
+            <h3>🎉 Événements du client</h3>
+            <div *ngIf="events.length === 0" class="empty">Aucun événement</div>
             <table *ngIf="events.length > 0" class="data-table">
               <thead><tr><th>Nom</th><th>Date</th><th>Lieu</th><th>Statut</th><th></th></tr></thead>
               <tbody>
@@ -53,7 +53,7 @@ export class EmployeeClientDetailComponent implements OnInit {
   events: any[] = [];
   loading = true;
 
-  statusLabels: any = { 'draft': 'Brouillon', 'client_review': 'En attente', 'accepted': 'AcceptÃ©', 'in_progress': 'En cours', 'completed': 'TerminÃ©', 'cancelled': 'AnnulÃ©' };
+  statusLabels: any = { 'draft': 'Brouillon', 'client_review': 'En attente', 'accepted': 'Accepté', 'in_progress': 'En cours', 'completed': 'Terminé', 'cancelled': 'Annulé' };
 
   constructor(private route: ActivatedRoute, private http: HttpClient) {}
 

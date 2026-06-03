@@ -1,22 +1,22 @@
-﻿<div class="quote-request-container">
+<div class="quote-request-container">
   <app-header></app-header>
 
   <!-- Hero -->
   <section class="hero">
     <h2>Demande de Devis</h2>
-    <p>DÃ©crivez votre projet et recevez une proposition personnalisÃ©e sous 48h</p>
+    <p>Décrivez votre projet et recevez une proposition personnalisée sous 48h</p>
   </section>
 
   <!-- Formulaire -->
   <section class="form-section">
     <div class="form-container">
       
-      <!-- Message de succÃ¨s -->
+      <!-- Message de succès -->
       <div *ngIf="submitted" class="success-container">
-        <div class="success-icon">âœ…</div>
-        <h3>Demande envoyÃ©e avec succÃ¨s !</h3>
+        <div class="success-icon">✅</div>
+        <h3>Demande envoyée avec succès !</h3>
         <p class="info">{{ successMessage }}</p>
-        <a routerLink="/home" class="btn-primary">Retour Ã  l'accueil</a>
+        <a routerLink="/home" class="btn-primary">Retour à l'accueil</a>
       </div>
 
       <!-- Formulaire -->
@@ -27,7 +27,7 @@
         </div>
 
         <div class="form-section-title">
-          <span class="icon">ðŸ¢</span>
+          <span class="icon">🏢</span>
           <h3>Informations entreprise</h3>
         </div>
 
@@ -45,13 +45,13 @@
             Le nom de l'entreprise est requis
           </small>
           <small *ngIf="f['company_name'].errors?.['minlength'] && f['company_name'].touched" class="text-danger">
-            Minimum 2 caractÃ¨res
+            Minimum 2 caractères
           </small>
         </div>
 
         <div class="form-section-title">
-          <span class="icon">ðŸ‘¤</span>
-          <h3>Vos coordonnÃ©es</h3>
+          <span class="icon">👤</span>
+          <h3>Vos coordonnées</h3>
         </div>
 
         <div class="form-row">
@@ -69,12 +69,12 @@
               Le nom est requis
             </small>
             <small *ngIf="f['last_name'].errors?.['minlength'] && f['last_name'].touched" class="text-danger">
-              Minimum 2 caractÃ¨res
+              Minimum 2 caractères
             </small>
           </div>
 
           <div class="form-group half">
-            <label for="first_name">PrÃ©nom *</label>
+            <label for="first_name">Prénom *</label>
             <input
               type="text"
               id="first_name"
@@ -84,10 +84,10 @@
               placeholder="Jean"
             >
             <small *ngIf="f['first_name'].errors?.['required'] && f['first_name'].touched" class="text-danger">
-              Le prÃ©nom est requis
+              Le prénom est requis
             </small>
             <small *ngIf="f['first_name'].errors?.['minlength'] && f['first_name'].touched" class="text-danger">
-              Minimum 2 caractÃ¨res
+              Minimum 2 caractères
             </small>
           </div>
         </div>
@@ -112,7 +112,7 @@
           </div>
 
           <div class="form-group half">
-            <label for="phone">TÃ©lÃ©phone *</label>
+            <label for="phone">Téléphone *</label>
             <input
               type="tel"
               id="phone"
@@ -122,33 +122,33 @@
               placeholder="01 23 45 67 89"
             >
             <small *ngIf="f['phone'].errors?.['required'] && f['phone'].touched" class="text-danger">
-              Le tÃ©lÃ©phone est requis
+              Le téléphone est requis
             </small>
             <small *ngIf="f['phone'].errors?.['pattern'] && f['phone'].touched" class="text-danger">
-              Format de tÃ©lÃ©phone invalide (min 10 chiffres)
+              Format de téléphone invalide (min 10 chiffres)
             </small>
           </div>
         </div>
 
         <div class="form-section-title">
-          <span class="icon">ðŸŽ‰</span>
-          <h3>Votre Ã©vÃ©nement</h3>
+          <span class="icon">🎉</span>
+          <h3>Votre événement</h3>
         </div>
 
         <div class="form-row">
           <div class="form-group half">
-            <label for="event_type">Type d'Ã©vÃ©nement *</label>
+            <label for="event_type">Type d'événement *</label>
             <select
               id="event_type"
               formControlName="event_type"
               class="form-control"
               [class.is-invalid]="f['event_type'].invalid && f['event_type'].touched"
             >
-              <option value="">-- SÃ©lectionnez --</option>
+              <option value="">-- Sélectionnez --</option>
               <option *ngFor="let type of eventTypes" [value]="type.value">{{ type.label }}</option>
             </select>
             <small *ngIf="f['event_type'].errors?.['required'] && f['event_type'].touched" class="text-danger">
-              Le type d'Ã©vÃ©nement est requis
+              Le type d'événement est requis
             </small>
           </div>
 
@@ -178,7 +178,7 @@
 
         <div class="form-row">
           <div class="form-group half">
-            <label for="planned_date">Date souhaitÃ©e *</label>
+            <label for="planned_date">Date souhaitée *</label>
             <input
               type="date"
               id="planned_date"
@@ -205,7 +205,7 @@
               Le lieu est requis
             </small>
             <small *ngIf="f['location'].errors?.['minlength'] && f['location'].touched" class="text-danger">
-              Minimum 2 caractÃ¨res
+              Minimum 2 caractères
             </small>
           </div>
         </div>
@@ -215,22 +215,22 @@
           <div class="image-upload">
             <input type="file" id="inspirationImage" (change)="onImageSelected($event)" accept="image/*" #fileInput>
             <label for="inspirationImage" class="upload-label">
-              <span *ngIf="!imagePreview">ðŸ“· Ajouter une image d'inspiration</span>
-              <img *ngIf="imagePreview" [src]="imagePreview" alt="AperÃ§u" class="image-preview">
+              <span *ngIf="!imagePreview">📷 Ajouter une image d'inspiration</span>
+              <img *ngIf="imagePreview" [src]="imagePreview" alt="Aperçu" class="image-preview">
             </label>
-            <button *ngIf="imagePreview" type="button" class="btn-remove-image" (click)="removeImage(fileInput)">âœ• Supprimer</button>
+            <button *ngIf="imagePreview" type="button" class="btn-remove-image" (click)="removeImage(fileInput)">✕ Supprimer</button>
           </div>
-          <small class="hint">JPG, PNG, WebP ou GIF. Max 5 Mo. Cette image nous aidera Ã  comprendre vos attentes.</small>
+          <small class="hint">JPG, PNG, WebP ou GIF. Max 5 Mo. Cette image nous aidera à comprendre vos attentes.</small>
         </div>
 
         <div class="form-group">
-          <label for="needs_description">DÃ©crivez votre projet *</label>
+          <label for="needs_description">Décrivez votre projet *</label>
           <textarea
             id="needs_description"
             formControlName="needs_description"
             class="form-control"
             rows="5"
-            placeholder="DÃ©crivez votre Ã©vÃ©nement : objectifs, ambiance souhaitÃ©e, budget estimÃ©..."
+            placeholder="Décrivez votre événement : objectifs, ambiance souhaitée, budget estimé..."
             [class.is-invalid]="f['needs_description'].invalid && f['needs_description'].touched"
           ></textarea>
           <small class="char-count">{{ quoteForm.get('needs_description')?.value?.length || 0 }} / 2000</small>
@@ -238,15 +238,15 @@
             La description est requise
           </small>
           <small *ngIf="f['needs_description'].errors?.['minlength'] && f['needs_description'].touched" class="text-danger">
-            Minimum 20 caractÃ¨res
+            Minimum 20 caractères
           </small>
           <small *ngIf="f['needs_description'].errors?.['maxlength'] && f['needs_description'].touched" class="text-danger">
-            Maximum 2000 caractÃ¨res
+            Maximum 2000 caractères
           </small>
         </div>
 
         <button type="submit" [disabled]="loading" class="btn-submit">
-          {{ loading ? 'â³ Envoi en cours...' : 'ðŸ“© Envoyer ma demande' }}
+          {{ loading ? '⏳ Envoi en cours...' : '📩 Envoyer ma demande' }}
         </button>
       </form>
     </div>

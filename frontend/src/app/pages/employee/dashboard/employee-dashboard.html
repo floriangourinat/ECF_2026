@@ -1,41 +1,41 @@
-﻿<app-employee-layout>
+<app-employee-layout>
   <div class="dashboard">
     <header class="page-header">
-      <h1>Bienvenue, {{ currentUser?.first_name }} ðŸ‘‹</h1>
+      <h1>Bienvenue, {{ currentUser?.first_name }} 👋</h1>
       <p>Votre espace de travail Innov'Events</p>
     </header>
 
     <div class="widgets-grid">
-      <!-- Mes tÃ¢ches -->
+      <!-- Mes tâches -->
       <section class="widget">
         <div class="widget-header">
-          <h3>âœ… Mes tÃ¢ches en cours</h3>
+          <h3>✅ Mes tâches en cours</h3>
           <span class="badge">{{ myTasks.length }}</span>
         </div>
-        <div *ngIf="myTasks.length === 0" class="empty">Aucune tÃ¢che en attente</div>
+        <div *ngIf="myTasks.length === 0" class="empty">Aucune tâche en attente</div>
         <div class="task-list">
           <div *ngFor="let task of myTasks" class="task-item">
             <div class="task-info">
               <strong>{{ task.title }}</strong>
-              <small>{{ task.event_name }} Â· {{ formatDate(task.due_date) }}</small>
+              <small>{{ task.event_name }} · {{ formatDate(task.due_date) }}</small>
             </div>
             <span class="status-badge status-{{ task.status }}">{{ taskStatusLabels[task.status] }}</span>
           </div>
         </div>
       </section>
 
-      <!-- Prochains Ã©vÃ©nements -->
+      <!-- Prochains événements -->
       <section class="widget">
         <div class="widget-header">
-          <h3>ðŸŽ‰ Ã‰vÃ©nements en cours</h3>
-          <a routerLink="/employee/events" class="link">Voir tout â†’</a>
+          <h3>🎉 Événements en cours</h3>
+          <a routerLink="/employee/events" class="link">Voir tout →</a>
         </div>
-        <div *ngIf="upcomingEvents.length === 0" class="empty">Aucun Ã©vÃ©nement en cours</div>
+        <div *ngIf="upcomingEvents.length === 0" class="empty">Aucun événement en cours</div>
         <div class="event-list">
           <a *ngFor="let event of upcomingEvents" [routerLink]="['/employee/events', event.id]" class="event-item">
             <div class="event-info">
               <strong>{{ event.name }}</strong>
-              <small>{{ event.client_company || '-' }} Â· {{ formatDate(event.start_date) }}</small>
+              <small>{{ event.client_company || '-' }} · {{ formatDate(event.start_date) }}</small>
             </div>
           </a>
         </div>
@@ -44,14 +44,14 @@
       <!-- Avis en attente -->
       <section class="widget">
         <div class="widget-header">
-          <h3>â­ Avis en attente de modÃ©ration</h3>
-          <a routerLink="/employee/reviews" class="link">GÃ©rer â†’</a>
+          <h3>⭐ Avis en attente de modération</h3>
+          <a routerLink="/employee/reviews" class="link">Gérer →</a>
         </div>
         <div *ngIf="pendingReviews.length === 0" class="empty">Aucun avis en attente</div>
         <div class="review-list">
           <div *ngFor="let review of pendingReviews.slice(0, 3)" class="review-item">
             <strong>{{ review.author_name }}</strong>
-            <small>{{ review.event_name }} Â· {{ 'â­'.repeat(review.rating) }}</small>
+            <small>{{ review.event_name }} · {{ '⭐'.repeat(review.rating) }}</small>
           </div>
         </div>
       </section>

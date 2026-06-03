@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -62,16 +62,16 @@ export class EventsListComponent implements OnInit {
   selectedImage: File | null = null;
   imagePreview: string | null = null;
 
-  eventTypes = ['SÃ©minaire', 'ConfÃ©rence', 'SoirÃ©e d\'entreprise', 'Team Building', 'Autre'];
-  themes = ['Ã‰lÃ©gant', 'Tropical', 'RÃ©tro', 'High-Tech', 'Nature', 'Industriel'];
+  eventTypes = ['Séminaire', 'Conférence', 'Soirée d\'entreprise', 'Team Building', 'Autre'];
+  themes = ['Élégant', 'Tropical', 'Rétro', 'High-Tech', 'Nature', 'Industriel'];
 
   statusLabels: { [key: string]: string } = {
     'draft': 'Brouillon',
     'client_review': 'En attente client',
-    'accepted': 'AcceptÃ©',
+    'accepted': 'Accepté',
     'in_progress': 'En cours',
-    'completed': 'TerminÃ©',
-    'cancelled': 'AnnulÃ©'
+    'completed': 'Terminé',
+    'cancelled': 'Annulé'
   };
 
   constructor(private http: HttpClient, private route: ActivatedRoute) {}
@@ -104,7 +104,7 @@ export class EventsListComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.error = 'Impossible de charger les Ã©vÃ©nements';
+        this.error = 'Impossible de charger les événements';
         this.loading = false;
       }
     });
@@ -156,13 +156,13 @@ export class EventsListComponent implements OnInit {
       .join(' ');
 
     this.newEvent = {
-      name: params['event_type'] ? `${params['event_type']} - ${prospectName}` : `Ã‰vÃ©nement - ${prospectName}`,
+      name: params['event_type'] ? `${params['event_type']} - ${prospectName}` : `Événement - ${prospectName}`,
       client_id: params['client_id'] || '',
       start_date: startDate,
       end_date: endDate,
       location: params['location'] || '',
       event_type: params['event_type'] || '',
-      theme: 'Ã‰lÃ©gant',
+      theme: 'Élégant',
       status: 'draft',
       is_visible: false
     };
@@ -183,7 +183,7 @@ export class EventsListComponent implements OnInit {
       }
 
       if (!file.type.startsWith('image/')) {
-        this.createError = 'Le fichier doit Ãªtre une image.';
+        this.createError = 'Le fichier doit être une image.';
         return;
       }
 
@@ -223,7 +223,7 @@ export class EventsListComponent implements OnInit {
       !this.newEvent.event_type ||
       !this.newEvent.theme
     ) {
-      this.createError = 'Nom, client, dates, type et thÃ¨me sont requis';
+      this.createError = 'Nom, client, dates, type et thème sont requis';
       return;
     }
 
@@ -244,7 +244,7 @@ export class EventsListComponent implements OnInit {
           }
         },
         error: (err) => {
-          this.createError = err.error?.message || 'Erreur lors de la crÃ©ation';
+          this.createError = err.error?.message || 'Erreur lors de la création';
           this.createLoading = false;
         }
       });
@@ -273,7 +273,7 @@ export class EventsListComponent implements OnInit {
   }
 
   deleteEvent(event: Event): void {
-    if (!confirm(`Supprimer l'Ã©vÃ©nement "${event.name}" ?\n\nCette action supprimera Ã©galement tous les devis, notes et tÃ¢ches associÃ©s.`)) {
+    if (!confirm(`Supprimer l'événement "${event.name}" ?\n\nCette action supprimera également tous les devis, notes et tâches associés.`)) {
       return;
     }
 

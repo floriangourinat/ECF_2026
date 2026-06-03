@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -78,7 +78,7 @@ export class AdminDashboardComponent implements OnInit {
         this.savingGlobalNote = false;
       },
       error: () => {
-        alert('Erreur lors de la crÃ©ation de la note globale');
+        alert('Erreur lors de la création de la note globale');
         this.savingGlobalNote = false;
       }
     });
@@ -109,10 +109,10 @@ export class AdminDashboardComponent implements OnInit {
           this.cancelEditGlobalNote();
           return;
         }
-        alert(response?.message || 'Erreur lors de la mise Ã  jour');
+        alert(response?.message || 'Erreur lors de la mise à jour');
       },
       error: () => {
-        alert('Erreur lors de la mise Ã  jour');
+        alert('Erreur lors de la mise à jour');
       }
     });
   }
@@ -153,10 +153,10 @@ export class AdminDashboardComponent implements OnInit {
     const labels: { [key: string]: string } = {
       'draft': 'Brouillon',
       'client_review': 'En attente client',
-      'accepted': 'AcceptÃ©',
+      'accepted': 'Accepté',
       'in_progress': 'En cours',
-      'completed': 'TerminÃ©',
-      'cancelled': 'AnnulÃ©'
+      'completed': 'Terminé',
+      'cancelled': 'Annulé'
     };
     return labels[status] || status;
   }

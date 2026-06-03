@@ -1,6 +1,6 @@
-﻿<app-employee-layout>
+<app-employee-layout>
   <div class="page">
-    <a routerLink="/employee/events" class="btn-back">â† Retour aux Ã©vÃ©nements</a>
+    <a routerLink="/employee/events" class="btn-back">← Retour aux événements</a>
     <div *ngIf="loading" class="loading">Chargement...</div>
 
     <div *ngIf="!loading && event" class="event-detail">
@@ -8,29 +8,29 @@
       <header class="detail-header">
         <div>
           <h1>{{ event.name }}</h1>
-          <p class="meta">{{ event.client_company || '-' }} Â· {{ formatDate(event.start_date) }} Â· {{ event.location || '-' }}</p>
+          <p class="meta">{{ event.client_company || '-' }} · {{ formatDate(event.start_date) }} · {{ event.location || '-' }}</p>
         </div>
         <span class="status-badge status-{{ event.status }}">{{ statusLabels[event.status] }}</span>
       </header>
 
       <!-- Infos -->
       <section class="info-section" *ngIf="event.description">
-        <h3>ðŸ“ Description</h3>
+        <h3>📝 Description</h3>
         <p>{{ event.description }}</p>
       </section>
 
-      <!-- TÃ¢ches -->
+      <!-- Tâches -->
       <section class="section">
-        <h3>âœ… TÃ¢ches ({{ tasks.length }})</h3>
-        <div *ngIf="tasks.length === 0" class="empty">Aucune tÃ¢che pour cet Ã©vÃ©nement</div>
+        <h3>✅ Tâches ({{ tasks.length }})</h3>
+        <div *ngIf="tasks.length === 0" class="empty">Aucune tâche pour cet événement</div>
         <div class="tasks-list" *ngIf="tasks.length > 0">
           <div *ngFor="let task of tasks" class="task-card" [class.my-task]="isMyTask(task)">
             <div class="task-info">
               <strong>{{ task.title }}</strong>
               <small *ngIf="task.description">{{ task.description }}</small>
               <small class="meta">
-                AssignÃ©e Ã  : {{ task.assigned_first_name }} {{ task.assigned_last_name }}
-                <span *ngIf="task.due_date"> Â· Ã‰chÃ©ance : {{ formatDate(task.due_date) }}</span>
+                Assignée à : {{ task.assigned_first_name }} {{ task.assigned_last_name }}
+                <span *ngIf="task.due_date"> · Échéance : {{ formatDate(task.due_date) }}</span>
               </small>
             </div>
             <div class="task-actions">
@@ -38,7 +38,7 @@
               <button *ngIf="isMyTask(task) && getNextStatus(task.status)" 
                       class="btn-advance" 
                       (click)="onAdvanceTask(task)">
-                â†’ {{ taskStatusLabels[getNextStatus(task.status) || ''] }}
+                → {{ taskStatusLabels[getNextStatus(task.status) || ''] }}
               </button>
             </div>
           </div>
@@ -47,7 +47,7 @@
 
       <!-- Notes -->
       <section class="section">
-        <h3>ðŸ’¬ Notes ({{ notes.length }})</h3>
+        <h3>💬 Notes ({{ notes.length }})</h3>
 
         <!-- Ajouter une note -->
         <div class="add-note">
@@ -68,7 +68,7 @@
             <!-- Mode lecture -->
             <p *ngIf="editingNoteId !== note.id" class="note-content">{{ note.content }}</p>
 
-            <!-- Mode Ã©dition -->
+            <!-- Mode édition -->
             <div *ngIf="editingNoteId === note.id" class="note-edit">
               <textarea [(ngModel)]="editNoteContent" rows="3"></textarea>
               <div class="edit-actions">
@@ -79,8 +79,8 @@
 
             <!-- Actions (seulement mes notes) -->
             <div *ngIf="isMyNote(note) && editingNoteId !== note.id" class="note-actions">
-              <button (click)="startEditNote(note)" class="btn-edit" aria-label="Modifier la note">âœï¸</button>
-              <button (click)="deleteNote(note)" class="btn-delete" aria-label="Supprimer la note">ðŸ—‘ï¸</button>
+              <button (click)="startEditNote(note)" class="btn-edit" aria-label="Modifier la note">✏️</button>
+              <button (click)="deleteNote(note)" class="btn-delete" aria-label="Supprimer la note">🗑️</button>
             </div>
           </div>
         </div>

@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -36,10 +36,10 @@ export class QuotesListComponent implements OnInit {
 
   statusLabels: { [key: string]: string } = {
     'draft': 'Brouillon',
-    'pending': 'Ã‰tude cÃ´tÃ© client',
-    'modification': 'Modification demandÃ©e',
-    'accepted': 'AcceptÃ©',
-    'refused': 'RefusÃ©'
+    'pending': 'Étude côté client',
+    'modification': 'Modification demandée',
+    'accepted': 'Accepté',
+    'refused': 'Refusé'
   };
 
   constructor(private http: HttpClient) {}

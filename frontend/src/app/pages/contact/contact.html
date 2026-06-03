@@ -1,10 +1,10 @@
-﻿<div class="contact-container">
+<div class="contact-container">
   <app-header></app-header>
 
   <!-- Hero -->
   <section class="hero">
     <h1>Contactez-nous</h1>
-    <p>Une question ? Un problÃ¨me ? Notre Ã©quipe est lÃ  pour vous aider.</p>
+    <p>Une question ? Un problème ? Notre équipe est là pour vous aider.</p>
   </section>
 
   <!-- Contenu -->
@@ -13,26 +13,26 @@
       
       <!-- Informations de contact -->
       <div class="contact-info">
-        <h2>Nos coordonnÃ©es</h2>
+        <h2>Nos coordonnées</h2>
         
         <div class="info-item">
-          <span class="icon">ðŸ“</span>
+          <span class="icon">📍</span>
           <div>
             <strong>Adresse</strong>
-            <p>123 Avenue des Champs-Ã‰lysÃ©es<br>75008 Paris, France</p>
+            <p>123 Avenue des Champs-Élysées<br>75008 Paris, France</p>
           </div>
         </div>
 
         <div class="info-item">
-          <span class="icon">ðŸ“ž</span>
+          <span class="icon">📞</span>
           <div>
-            <strong>TÃ©lÃ©phone</strong>
+            <strong>Téléphone</strong>
             <p><a href="tel:+33123456789">01 23 45 67 89</a></p>
           </div>
         </div>
 
         <div class="info-item">
-          <span class="icon">âœ‰ï¸</span>
+          <span class="icon">✉️</span>
           <div>
             <strong>Email</strong>
             <p><a href="mailto:contact@innovevents.com">contact&#64;innovevents.com</a></p>
@@ -40,7 +40,7 @@
         </div>
 
         <div class="info-item">
-          <span class="icon">ðŸ•</span>
+          <span class="icon">🕐</span>
           <div>
             <strong>Horaires</strong>
             <p>Lundi - Vendredi : 9h - 18h<br>Samedi : 10h - 16h</p>
@@ -51,12 +51,12 @@
       <!-- Formulaire -->
       <div class="contact-form-wrapper">
         
-        <!-- Message de succÃ¨s -->
+        <!-- Message de succès -->
         <div *ngIf="submitted" class="success-container">
-          <div class="success-icon">âœ…</div>
-          <h3>Message envoyÃ© !</h3>
+          <div class="success-icon">✅</div>
+          <h3>Message envoyé !</h3>
           <p>{{ successMessage }}</p>
-          <a routerLink="/home" class="btn-primary">Retour Ã  l'accueil</a>
+          <a routerLink="/home" class="btn-primary">Retour à l'accueil</a>
         </div>
 
         <!-- Formulaire -->
@@ -93,7 +93,7 @@
               Le titre est requis
             </small>
             <small *ngIf="f['title'].errors?.['minlength'] && f['title'].touched" class="text-danger">
-              Minimum 5 caractÃ¨res
+              Minimum 5 caractères
             </small>
           </div>
 
@@ -101,21 +101,21 @@
             <label for="description">Votre message *</label>
             <textarea id="description" formControlName="description" class="form-control" rows="6"
               [class.is-invalid]="f['description'].invalid && f['description'].touched"
-              placeholder="DÃ©crivez votre demande en dÃ©tail..."></textarea>
+              placeholder="Décrivez votre demande en détail..."></textarea>
             <small class="char-count">{{ contactForm.get('description')?.value?.length || 0 }} / 2000</small>
             <small *ngIf="f['description'].errors?.['required'] && f['description'].touched" class="text-danger">
               Le message est requis
             </small>
             <small *ngIf="f['description'].errors?.['minlength'] && f['description'].touched" class="text-danger">
-              Minimum 20 caractÃ¨res
+              Minimum 20 caractères
             </small>
             <small *ngIf="f['description'].errors?.['maxlength'] && f['description'].touched" class="text-danger">
-              Maximum 2000 caractÃ¨res
+              Maximum 2000 caractères
             </small>
           </div>
 
           <button type="submit" [disabled]="loading" class="btn-submit">
-            {{ loading ? 'â³ Envoi en cours...' : 'ðŸ“© Envoyer le message' }}
+            {{ loading ? '⏳ Envoi en cours...' : '📩 Envoyer le message' }}
           </button>
         </form>
       </div>

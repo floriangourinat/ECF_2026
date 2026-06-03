@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -52,7 +52,7 @@ export class ReviewsComponent implements OnInit {
   getStars(rating: number): string[] {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
-      stars.push(i <= rating ? 'â˜…' : 'â˜†');
+      stars.push(i <= rating ? '★' : '☆');
     }
     return stars;
   }

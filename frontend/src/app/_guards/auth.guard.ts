@@ -1,8 +1,8 @@
-﻿import { inject } from '@angular/core';
+import { inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
 import { AuthService } from '../_services/auth.service';
 
-// Guard pour les pages protÃ©gÃ©es (nÃ©cessite connexion)
+// Guard pour les pages protégées (nécessite connexion)
 export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
@@ -23,7 +23,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   return false;
 };
 
-// Guard pour les pages invitÃ©s (login, register)
+// Guard pour les pages invités (login, register)
 export const guestGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);
@@ -36,7 +36,7 @@ export const guestGuard: CanActivateFn = () => {
   return false;
 };
 
-// Guard spÃ©cifique pour les admins
+// Guard spécifique pour les admins
 export const adminGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
@@ -53,7 +53,7 @@ export const adminGuard: CanActivateFn = (route, state) => {
   return false;
 };
 
-// Guard spÃ©cifique pour les employÃ©s (employÃ© OU admin)
+// Guard spécifique pour les employés (employé OU admin)
 export const employeeGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
@@ -71,7 +71,7 @@ export const employeeGuard: CanActivateFn = (route, state) => {
   return false;
 };
 
-// Guard spÃ©cifique pour les clients
+// Guard spécifique pour les clients
 export const clientGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);

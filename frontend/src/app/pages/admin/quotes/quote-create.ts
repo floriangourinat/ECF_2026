@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -44,7 +44,7 @@ export class QuoteCreateComponent implements OnInit {
   ngOnInit(): void {
     this.loadEvents();
     
-    // PrÃ©-sÃ©lectionner l'Ã©vÃ©nement si passÃ© en paramÃ¨tre
+    // Pré-sélectionner l'événement si passé en paramètre
     this.route.queryParams.subscribe(params => {
       if (params['event_id']) {
         this.selectedEventId = params['event_id'];
@@ -84,13 +84,13 @@ export class QuoteCreateComponent implements OnInit {
 
   createQuote(): void {
     if (!this.selectedEventId) {
-      this.error = 'Veuillez sÃ©lectionner un Ã©vÃ©nement';
+      this.error = 'Veuillez sélectionner un événement';
       return;
     }
 
     const validServices = this.services.filter(s => s.label && s.unit_price_ht > 0);
     if (validServices.length === 0) {
-      this.error = 'Ajoutez au moins une prestation avec un libellÃ© et un montant';
+      this.error = 'Ajoutez au moins une prestation avec un libellé et un montant';
       return;
     }
 
@@ -106,7 +106,7 @@ export class QuoteCreateComponent implements OnInit {
         this.router.navigate(['/admin/quotes', response.data.id]);
       },
       error: (err) => {
-        this.error = err.error?.message || 'Erreur lors de la crÃ©ation';
+        this.error = err.error?.message || 'Erreur lors de la création';
         this.loading = false;
       }
     });

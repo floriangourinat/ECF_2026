@@ -1,4 +1,4 @@
-﻿import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HeaderComponent } from './header';
@@ -49,7 +49,7 @@ describe('HeaderComponent', () => {
     const linksText = Array.from(navLinks).map((el: HTMLAnchorElement) => el.textContent?.trim());
 
     expect(linksText).toContain('Accueil');
-    expect(linksText).toContain('Ã‰vÃ©nements');
+    expect(linksText).toContain('Événements');
     expect(linksText).toContain('Avis');
     expect(linksText).toContain('Contact');
     expect(linksText).toContain('Demande de devis');
@@ -61,7 +61,7 @@ describe('HeaderComponent', () => {
 
     const navText = fixture.nativeElement.querySelector('.nav')?.textContent ?? '';
     expect(navText).toContain('Se connecter');
-    expect(navText).not.toContain('DÃ©connexion');
+    expect(navText).not.toContain('Déconnexion');
   });
 
   it('should show logout when user is logged in', () => {
@@ -69,7 +69,7 @@ describe('HeaderComponent', () => {
     fixture.detectChanges();
 
     const navText = fixture.nativeElement.querySelector('.nav')?.textContent ?? '';
-    expect(navText).toContain('DÃ©connexion');
+    expect(navText).toContain('Déconnexion');
     expect(navText).not.toContain('Se connecter');
   });
 

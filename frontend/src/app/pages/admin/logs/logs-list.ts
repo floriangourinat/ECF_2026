@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -42,20 +42,20 @@ export class LogsListComponent implements OnInit {
   filterDateTo = '';
 
   actionLabels: { [key: string]: string } = {
-    'CONNEXION_REUSSIE': 'Connexion rÃ©ussie',
-    'CONNEXION_ECHOUEE': 'Connexion Ã©chouÃ©e',
-    'CREATION_CLIENT': 'CrÃ©ation client',
+    'CONNEXION_REUSSIE': 'Connexion réussie',
+    'CONNEXION_ECHOUEE': 'Connexion échouée',
+    'CREATION_CLIENT': 'Création client',
     'MODIFICATION_CLIENT': 'Modification client',
     'SUPPRESSION_CLIENT': 'Suppression client',
-    'CREATION_EVENEMENT': 'CrÃ©ation Ã©vÃ©nement',
-    'MODIFICATION_STATUT_EVENEMENT': 'Modification statut Ã©vÃ©nement',
-    'GENERATION_DEVIS_PDF': 'GÃ©nÃ©ration PDF devis'
+    'CREATION_EVENEMENT': 'Création événement',
+    'MODIFICATION_STATUT_EVENEMENT': 'Modification statut événement',
+    'GENERATION_DEVIS_PDF': 'Génération PDF devis'
   };
 
   entityLabels: { [key: string]: string } = {
     'user': 'Utilisateur',
     'client': 'Client',
-    'event': 'Ã‰vÃ©nement',
+    'event': 'Événement',
     'quote': 'Devis'
   };
 
@@ -132,16 +132,16 @@ export class LogsListComponent implements OnInit {
 
   getActionIcon(action: string): string {
     const icons: { [key: string]: string } = {
-      'CONNEXION_REUSSIE': 'ðŸ”‘',
-      'CONNEXION_ECHOUEE': 'ðŸš«',
-      'CREATION_CLIENT': 'âž•',
-      'MODIFICATION_CLIENT': 'âœï¸',
-      'SUPPRESSION_CLIENT': 'ðŸ—‘ï¸',
-      'CREATION_EVENEMENT': 'ðŸŽ‰',
-      'MODIFICATION_STATUT_EVENEMENT': 'ðŸ”„',
-      'GENERATION_DEVIS_PDF': 'ðŸ“„'
+      'CONNEXION_REUSSIE': '🔑',
+      'CONNEXION_ECHOUEE': '🚫',
+      'CREATION_CLIENT': '➕',
+      'MODIFICATION_CLIENT': '✏️',
+      'SUPPRESSION_CLIENT': '🗑️',
+      'CREATION_EVENEMENT': '🎉',
+      'MODIFICATION_STATUT_EVENEMENT': '🔄',
+      'GENERATION_DEVIS_PDF': '📄'
     };
-    return icons[action] || 'ðŸ“';
+    return icons[action] || '📝';
   }
 
   private countActions(predicate: (actionKey: string) => boolean): number {

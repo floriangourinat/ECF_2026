@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -21,17 +21,17 @@ export class ClientDetailComponent implements OnInit {
   statusLabels: { [key: string]: string } = {
     'draft': 'Brouillon',
     'client_review': 'En attente',
-    'accepted': 'AcceptÃ©',
+    'accepted': 'Accepté',
     'in_progress': 'En cours',
-    'completed': 'TerminÃ©',
-    'cancelled': 'AnnulÃ©'
+    'completed': 'Terminé',
+    'cancelled': 'Annulé'
   };
 
   quoteStatusLabels: { [key: string]: string } = {
     'pending': 'En attente',
-    'modification': 'Modification demandÃ©e',
-    'accepted': 'AcceptÃ©',
-    'refused': 'RefusÃ©'
+    'modification': 'Modification demandée',
+    'accepted': 'Accepté',
+    'refused': 'Refusé'
   };
 
   constructor(
@@ -56,7 +56,7 @@ export class ClientDetailComponent implements OnInit {
           this.loading = false;
         },
         error: () => {
-          this.error = 'Client non trouvÃ©';
+          this.error = 'Client non trouvé';
           this.loading = false;
         }
       });

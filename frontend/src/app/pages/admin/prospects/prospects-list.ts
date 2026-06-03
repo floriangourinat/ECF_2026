@@ -1,4 +1,4 @@
-﻿import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -38,9 +38,9 @@ export class ProspectsListComponent implements OnInit {
   openDropdownProspectId: number | null = null;
 
   statusLabels: { [key: string]: string } = {
-    'to_contact': 'Ã€ contacter',
+    'to_contact': 'À contacter',
     'qualification': 'Qualification',
-    'failed': 'Ã‰chouÃ©',
+    'failed': 'Échoué',
     'converted': 'Converti'
   };
 
@@ -114,9 +114,9 @@ export class ProspectsListComponent implements OnInit {
     let failureMessage: string | null = null;
 
     if (newStatus === 'failed') {
-      failureMessage = prompt('Message Ã  envoyer au prospect (obligatoire) :', 'AprÃ¨s qualification, votre besoin nâ€™est pas rÃ©alisable dans les dÃ©lais demandÃ©s.');
+      failureMessage = prompt('Message à envoyer au prospect (obligatoire) :', 'Après qualification, votre besoin n’est pas réalisable dans les délais demandés.');
       if (!failureMessage || !failureMessage.trim()) {
-        alert('Le message dâ€™Ã©chec est obligatoire.');
+        alert('Le message d’échec est obligatoire.');
         return;
       }
     }
@@ -131,7 +131,7 @@ export class ProspectsListComponent implements OnInit {
         this.closeDropdown();
       },
       error: (err) => {
-        alert(err.error?.message || 'Erreur lors de la mise Ã  jour du statut');
+        alert(err.error?.message || 'Erreur lors de la mise à jour du statut');
       }
     });
   }
@@ -146,9 +146,9 @@ export class ProspectsListComponent implements OnInit {
     }).subscribe({
       next: (response) => {
         if (response?.data?.already_existing) {
-          alert('Compte existant trouvÃ© pour cet email. Le prospect est marquÃ© comme converti.');
+          alert('Compte existant trouvé pour cet email. Le prospect est marqué comme converti.');
         } else {
-          alert(`Client crÃ©Ã© avec succÃ¨s !\nMot de passe temporaire : ${response.data.temp_password}`);
+          alert(`Client créé avec succès !\nMot de passe temporaire : ${response.data.temp_password}`);
         }
         prospect.status = 'converted';
         this.closeDropdown();

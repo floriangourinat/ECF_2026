@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -37,10 +37,10 @@ export class ClientQuotesComponent implements OnInit {
   private readonly counterProposalMarker = '[CONTREPROPOSITION_INNOV_EVENTS]';
 
   statusLabels: { [key: string]: string } = {
-    'pending': 'Ã‰tude cÃ´tÃ© client',
-    'modification': 'Modification demandÃ©e',
-    'accepted': 'AcceptÃ©',
-    'refused': 'RefusÃ©'
+    'pending': 'Étude côté client',
+    'modification': 'Modification demandée',
+    'accepted': 'Accepté',
+    'refused': 'Refusé'
   };
 
   constructor(private http: HttpClient, private authService: AuthService) {}
@@ -71,7 +71,7 @@ export class ClientQuotesComponent implements OnInit {
     if (!userId) return;
 
     if (status === 'modification' && !this.modificationReason[quote.id]) {
-      alert('Veuillez prÃ©ciser un motif de modification.');
+      alert('Veuillez préciser un motif de modification.');
       return;
     }
 
@@ -89,7 +89,7 @@ export class ClientQuotesComponent implements OnInit {
         this.actionLoading[quote.id] = false;
       },
       error: (err) => {
-        alert(err?.error?.message || 'Erreur lors de la mise Ã  jour');
+        alert(err?.error?.message || 'Erreur lors de la mise à jour');
         this.actionLoading[quote.id] = false;
       }
     });

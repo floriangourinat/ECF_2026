@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -29,18 +29,18 @@ export class EventsComponent implements OnInit {
 
   eventTypes = [
     { value: '', label: 'Tous les types' },
-    { value: 'SÃ©minaire', label: 'SÃ©minaire' },
-    { value: 'ConfÃ©rence', label: 'ConfÃ©rence' },
-    { value: 'SoirÃ©e d\'entreprise', label: 'SoirÃ©e d\'entreprise' },
+    { value: 'Séminaire', label: 'Séminaire' },
+    { value: 'Conférence', label: 'Conférence' },
+    { value: 'Soirée d\'entreprise', label: 'Soirée d\'entreprise' },
     { value: 'Team Building', label: 'Team Building' },
     { value: 'Autre', label: 'Autre' }
   ];
 
   themes = [
-    { value: '', label: 'Tous les thÃ¨mes' },
-    { value: 'Ã‰lÃ©gant', label: 'Ã‰lÃ©gant' },
+    { value: '', label: 'Tous les thèmes' },
+    { value: 'Élégant', label: 'Élégant' },
     { value: 'Tropical', label: 'Tropical' },
-    { value: 'RÃ©tro', label: 'RÃ©tro' },
+    { value: 'Rétro', label: 'Rétro' },
     { value: 'High-Tech', label: 'High-Tech' },
     { value: 'Nature', label: 'Nature' },
     { value: 'Industriel', label: 'Industriel' }
@@ -81,7 +81,7 @@ export class EventsComponent implements OnInit {
           this.loading = false;
         },
         error: () => {
-          this.error = 'Impossible de charger les Ã©vÃ©nements';
+          this.error = 'Impossible de charger les événements';
           this.loading = false;
         }
       });

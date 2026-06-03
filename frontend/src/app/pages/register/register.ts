@@ -1,4 +1,4 @@
-﻿import { Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -24,7 +24,7 @@ export class RegisterComponent {
     private authService: AuthService,
     private router: Router
   ) {
-    // 8+ / 1 minuscule / 1 majuscule / 1 chiffre / 1 spÃ©cial (non alphanum)
+    // 8+ / 1 minuscule / 1 majuscule / 1 chiffre / 1 spécial (non alphanum)
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/;
 
     this.registerForm = this.fb.group({
@@ -48,17 +48,17 @@ export class RegisterComponent {
 
     this.authService.register(this.registerForm.value).subscribe({
       next: (response) => {
-        this.successMessage = response.message || "Compte crÃ©Ã©. VÃ©rifiez vos emails pour confirmer votre adresse.";
+        this.successMessage = response.message || "Compte créé. Vérifiez vos emails pour confirmer votre adresse.";
         this.loading = false;
 
-        // Redirection vers login avec email prÃ©-rempli
+        // Redirection vers login avec email pré-rempli
         const email = this.registerForm.value.email;
         setTimeout(() => {
           this.router.navigate(['/login'], { queryParams: { email } });
         }, 1500);
       },
       error: (error) => {
-        this.errorMessage = error.error?.message || "Erreur lors de la crÃ©ation du compte";
+        this.errorMessage = error.error?.message || "Erreur lors de la création du compte";
         this.loading = false;
       }
     });

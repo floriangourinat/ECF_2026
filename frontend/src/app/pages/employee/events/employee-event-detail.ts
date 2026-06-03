@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -25,8 +25,8 @@ export class EmployeeEventDetailComponent implements OnInit {
   editingNoteId: number | null = null;
   editNoteContent = '';
 
-  statusLabels: any = { 'draft': 'Brouillon', 'client_review': 'En attente', 'accepted': 'AcceptÃ©', 'in_progress': 'En cours', 'completed': 'TerminÃ©', 'cancelled': 'AnnulÃ©' };
-  taskStatusLabels: any = { 'todo': 'Ã€ faire', 'in_progress': 'En cours', 'done': 'TerminÃ©' };
+  statusLabels: any = { 'draft': 'Brouillon', 'client_review': 'En attente', 'accepted': 'Accepté', 'in_progress': 'En cours', 'completed': 'Terminé', 'cancelled': 'Annulé' };
+  taskStatusLabels: any = { 'todo': 'À faire', 'in_progress': 'En cours', 'done': 'Terminé' };
 
   constructor(private route: ActivatedRoute, private http: HttpClient, private authService: AuthService) {}
 
@@ -49,7 +49,7 @@ export class EmployeeEventDetailComponent implements OnInit {
     });
   }
 
-  // ===== NOTES CRUD (inchangÃ©) =====
+  // ===== NOTES CRUD (inchangé) =====
   addNote(): void {
     if (!this.newNoteContent.trim()) return;
     this.addingNote = true;
@@ -100,12 +100,12 @@ export class EmployeeEventDetailComponent implements OnInit {
     return String(note.author_id) === String(this.currentUser?.id);
   }
 
-  // ===== TÃ‚CHES =====
+  // ===== TÂCHES =====
   onAdvanceTask(task: any): void {
     const next = this.getNextStatus(task.status);
     if (!next) return;
 
-    // POST au lieu de PUT pour Ã©viter le blocage CORS preflight
+    // POST au lieu de PUT pour éviter le blocage CORS preflight
     this.http.post<any>('/api/tasks/update_status.php', {
       id: Number(task.id),
       status: next,
@@ -115,7 +115,7 @@ export class EmployeeEventDetailComponent implements OnInit {
         if (r.success) {
           task.status = next;
         } else {
-          alert(r.message || 'Impossible de mettre Ã  jour');
+          alert(r.message || 'Impossible de mettre à jour');
         }
       },
       error: (err) => {

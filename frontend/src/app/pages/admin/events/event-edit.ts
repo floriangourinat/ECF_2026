@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -29,8 +29,8 @@ export class EventEditComponent implements OnInit {
     image_path: '',
     is_visible: false
   };
-  eventTypes: string[] = ['SÃ©minaire', 'ConfÃ©rence', 'SoirÃ©e d\'entreprise', 'Team Building', 'Autre'];
-  themes: string[] = ['Ã‰lÃ©gant', 'Tropical', 'RÃ©tro', 'High-Tech', 'Nature', 'Industriel'];
+  eventTypes: string[] = ['Séminaire', 'Conférence', 'Soirée d\'entreprise', 'Team Building', 'Autre'];
+  themes: string[] = ['Élégant', 'Tropical', 'Rétro', 'High-Tech', 'Nature', 'Industriel'];
   loading = true;
   saving = false;
   error = '';
@@ -77,7 +77,7 @@ export class EventEditComponent implements OnInit {
           this.loading = false;
         },
         error: () => {
-          this.error = 'Ã‰vÃ©nement non trouvÃ©';
+          this.error = 'Événement non trouvé';
           this.loading = false;
         }
       });
@@ -91,7 +91,7 @@ export class EventEditComponent implements OnInit {
         return;
       }
       if (!file.type.startsWith('image/')) {
-        this.error = 'Le fichier doit Ãªtre une image.';
+        this.error = 'Le fichier doit être une image.';
         return;
       }
       this.selectedImage = file;
@@ -120,17 +120,17 @@ export class EventEditComponent implements OnInit {
 
   saveEvent(): void {
     if (!this.event.name) {
-      this.error = 'Le nom de l\'Ã©vÃ©nement est requis';
+      this.error = 'Le nom de l\'événement est requis';
       return;
     }
 
     if (!this.event.event_type) {
-      this.error = 'Le type d\'Ã©vÃ©nement est requis';
+      this.error = 'Le type d\'événement est requis';
       return;
     }
 
     if (!this.event.theme) {
-      this.error = 'Le thÃ¨me est requis';
+      this.error = 'Le thème est requis';
       return;
     }
 
@@ -151,7 +151,7 @@ export class EventEditComponent implements OnInit {
             if (this.selectedImage) {
               this.uploadImage();
             } else {
-              this.success = 'Ã‰vÃ©nement modifiÃ© avec succÃ¨s';
+              this.success = 'Événement modifié avec succès';
               setTimeout(() => { this.router.navigate(['/admin/events', this.eventId]); }, 1500);
               this.saving = false;
             }
@@ -177,12 +177,12 @@ export class EventEditComponent implements OnInit {
     this.http.post<any>('/api/events/upload_image.php', formData)
       .subscribe({
         next: () => {
-          this.success = 'Ã‰vÃ©nement et image modifiÃ©s avec succÃ¨s';
+          this.success = 'Événement et image modifiés avec succès';
           setTimeout(() => { this.router.navigate(['/admin/events', this.eventId]); }, 1500);
           this.saving = false;
         },
         error: () => {
-          this.success = 'Ã‰vÃ©nement modifiÃ© (erreur upload image)';
+          this.success = 'Événement modifié (erreur upload image)';
           this.saving = false;
         }
       });

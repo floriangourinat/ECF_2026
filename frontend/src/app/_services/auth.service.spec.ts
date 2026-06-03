@@ -1,4 +1,4 @@
-﻿import { TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { AuthService } from './auth.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
@@ -33,7 +33,7 @@ describe('AuthService', () => {
   // Test login
   it('should login successfully', () => {
     const mockResponse = {
-      message: 'Connexion rÃ©ussie',
+      message: 'Connexion réussie',
       token: 'fake-jwt-token',
       user: {
         id: 1,
@@ -70,7 +70,7 @@ describe('AuthService', () => {
 
   // Test register
   it('should register a new user', () => {
-    const mockResponse = { message: 'Compte crÃ©Ã© avec succÃ¨s', user_id: 2 };
+    const mockResponse = { message: 'Compte créé avec succès', user_id: 2 };
     const userData = {
       email: 'new@test.com',
       password: 'Password123!',
@@ -80,7 +80,7 @@ describe('AuthService', () => {
     };
 
     service.register(userData).subscribe(response => {
-      expect(response.message).toBe('Compte crÃ©Ã© avec succÃ¨s');
+      expect(response.message).toBe('Compte créé avec succès');
     });
 
     const req = httpMock.expectOne('/api/auth/register.php');
@@ -90,7 +90,7 @@ describe('AuthService', () => {
 
   // Test forgot password
   it('should send forgot password request', () => {
-    const mockResponse = { message: 'Email envoyÃ©' };
+    const mockResponse = { message: 'Email envoyé' };
 
     service.forgotPassword('test@test.com').subscribe(response => {
       expect(response.message).toBeTruthy();

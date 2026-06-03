@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -27,10 +27,10 @@ export class QuoteDetailComponent implements OnInit {
 
   statusLabels: { [key: string]: string } = {
     'draft': 'Brouillon',
-    'pending': 'Ã‰tude cÃ´tÃ© client',
-    'modification': 'Modification demandÃ©e',
-    'accepted': 'AcceptÃ©',
-    'refused': 'RefusÃ©'
+    'pending': 'Étude côté client',
+    'modification': 'Modification demandée',
+    'accepted': 'Accepté',
+    'refused': 'Refusé'
   };
 
   constructor(
@@ -56,7 +56,7 @@ export class QuoteDetailComponent implements OnInit {
           this.loading = false;
         },
         error: () => {
-          this.error = 'Devis non trouvÃ©';
+          this.error = 'Devis non trouvé';
           this.loading = false;
         }
       });
@@ -71,7 +71,7 @@ export class QuoteDetailComponent implements OnInit {
         this.quote.status = newStatus;
       },
       error: () => {
-        alert('Erreur lors de la mise Ã  jour');
+        alert('Erreur lors de la mise à jour');
       }
     });
   }
@@ -86,7 +86,7 @@ export class QuoteDetailComponent implements OnInit {
 
     const adminUserId = Number(this.authService.currentUserValue?.id || 0);
     if (!adminUserId) {
-      alert('Utilisateur non connectÃ©');
+      alert('Utilisateur non connecté');
       return;
     }
 
@@ -103,7 +103,7 @@ export class QuoteDetailComponent implements OnInit {
         this.quote.counter_proposed_at = response?.data?.counter_proposed_at || this.quote.counter_proposed_at;
         this.counterProposalText = '';
         this.sendingCounterProposal = false;
-        alert(response?.message || 'Contreproposition envoyÃ©e');
+        alert(response?.message || 'Contreproposition envoyée');
       },
       error: (err) => {
         alert(err?.error?.message || 'Erreur lors de l\'envoi de la contreproposition');
@@ -125,7 +125,7 @@ export class QuoteDetailComponent implements OnInit {
     }).subscribe({
       next: (response) => {
         this.quote.status = response?.data?.status || 'pending';
-        alert(response.message || 'Email envoyÃ© avec succÃ¨s !');
+        alert(response.message || 'Email envoyé avec succès !');
         this.sending = false;
       },
       error: (err) => {

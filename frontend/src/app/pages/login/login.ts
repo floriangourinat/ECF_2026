@@ -1,4 +1,4 @@
-﻿import { Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../_services/auth.service';
 import { FormsModule } from '@angular/forms';
@@ -43,14 +43,14 @@ export class LoginComponent {
     private router: Router,
     private route: ActivatedRoute
   ) {
-    // PrÃ©-remplissage email si on arrive depuis register
+    // Pré-remplissage email si on arrive depuis register
     const emailParam = this.route.snapshot.queryParamMap.get('email');
     if (emailParam) {
       this.email = emailParam;
-      this.infoMessage = "Si vous venez de crÃ©er votre compte, pensez Ã  confirmer votre email avant de vous connecter.";
+      this.infoMessage = "Si vous venez de créer votre compte, pensez à confirmer votre email avant de vous connecter.";
     }
 
-    // âœ… ReturnUrl : si l'utilisateur a tentÃ© d'accÃ©der Ã  une page protÃ©gÃ©e
+    // ✅ ReturnUrl : si l'utilisateur a tenté d'accéder à une page protégée
     const ru = this.route.snapshot.queryParamMap.get('returnUrl');
     if (ru && typeof ru === 'string' && ru.trim().length > 0) {
       this.returnUrl = ru;
@@ -72,7 +72,7 @@ export class LoginComponent {
       next: (user) => {
         this.loading = false;
 
-        // âœ… Si le backend force le changement de mot de passe (cas mot de passe oubliÃ©)
+        // ✅ Si le backend force le changement de mot de passe (cas mot de passe oublié)
         if (user?.must_change_password) {
           const role = user.role;
           const target =
@@ -80,12 +80,12 @@ export class LoginComponent {
             : role === 'employee' ? '/employee/change-password'
             : '/client/profile';
 
-          // On conserve le returnUrl pour revenir ensuite (si tu veux lâ€™exploiter dans ces pages)
+          // On conserve le returnUrl pour revenir ensuite (si tu veux l’exploiter dans ces pages)
           this.router.navigate([target], { queryParams: { returnUrl: this.returnUrl } });
           return;
         }
 
-        // âœ… ConformitÃ© Ã©noncÃ© : redirection vers lâ€™action initiale
+        // ✅ Conformité énoncé : redirection vers l’action initiale
         this.router.navigateByUrl(this.returnUrl || '/dashboard');
       },
       error: (err) => {
@@ -98,9 +98,9 @@ export class LoginComponent {
         }
 
         if (err.status === 403) {
-          // 2 cas : suspendu ou email non vÃ©rifiÃ©
-          this.errorMessage = apiMessage || "AccÃ¨s refusÃ©.";
-          if ((apiMessage || '').toLowerCase().includes('email non vÃ©rifiÃ©')) {
+          // 2 cas : suspendu ou email non vérifié
+          this.errorMessage = apiMessage || "Accès refusé.";
+          if ((apiMessage || '').toLowerCase().includes('email non vérifié')) {
             this.showResendVerification = true;
           }
           return;
@@ -120,7 +120,7 @@ export class LoginComponent {
     this.authService.resendVerification(this.email).subscribe({
       next: (res) => {
         this.resendLoading = false;
-        this.resendMessage = res?.message || "Email de vÃ©rification renvoyÃ© (si un compte existe).";
+        this.resendMessage = res?.message || "Email de vérification renvoyé (si un compte existe).";
       },
       error: () => {
         this.resendLoading = false;

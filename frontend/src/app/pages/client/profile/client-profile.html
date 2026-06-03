@@ -1,8 +1,8 @@
-﻿<app-client-layout>
+<app-client-layout>
   <div class="page">
     <header class="page-header">
-      <h1>ðŸ‘¤ Mon profil</h1>
-      <p>Mettez Ã  jour vos informations personnelles.</p>
+      <h1>👤 Mon profil</h1>
+      <p>Mettez à jour vos informations personnelles.</p>
     </header>
 
     <div *ngIf="loading" class="empty">Chargement...</div>
@@ -11,7 +11,7 @@
       <div *ngIf="error" class="error">{{ error }}</div>
 
       <form (ngSubmit)="saveProfile()" class="form">
-        <label>PrÃ©nom</label>
+        <label>Prénom</label>
         <input type="text" [(ngModel)]="profile.first_name" name="first_name" required />
 
         <label>Nom</label>
@@ -20,10 +20,10 @@
         <label>Email</label>
         <input type="email" [(ngModel)]="profile.email" name="email" required />
 
-        <label>SociÃ©tÃ©</label>
+        <label>Société</label>
         <input type="text" [(ngModel)]="profile.company_name" name="company_name" />
 
-        <label>TÃ©lÃ©phone</label>
+        <label>Téléphone</label>
         <input type="text" [(ngModel)]="profile.phone" name="phone" />
 
         <label>Adresse</label>
@@ -47,7 +47,7 @@
           <label>Confirmer le nouveau mot de passe</label>
           <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required />
 
-          <p class="hint">8 caractÃ¨res min, 1 majuscule, 1 minuscule, 1 chiffre, 1 spÃ©cial.</p>
+          <p class="hint">8 caractères min, 1 majuscule, 1 minuscule, 1 chiffre, 1 spécial.</p>
 
           <button class="btn">Changer le mot de passe</button>
         </form>
@@ -55,7 +55,7 @@
 
       <div class="danger-zone">
         <h3>Suppression du compte</h3>
-        <p>Cette action supprimera dÃ©finitivement toutes vos informations.</p>
+        <p>Cette action supprimera définitivement toutes vos informations.</p>
         <button type="button" class="btn danger" (click)="deleteAccount()">Supprimer mon compte</button>
       </div>
     </div>

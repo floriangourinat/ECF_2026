@@ -1,4 +1,4 @@
-﻿import { Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -29,7 +29,7 @@ export class EmployeeChangePasswordComponent {
     this.errorMessage = '';
 
     if (!this.auth.currentUserValue?.id) {
-      this.errorMessage = 'Utilisateur non connectÃ©.';
+      this.errorMessage = 'Utilisateur non connecté.';
       return;
     }
 
@@ -39,7 +39,7 @@ export class EmployeeChangePasswordComponent {
     }
 
     if (!this.passwordPattern.test(this.newPassword)) {
-      this.errorMessage = 'Le mot de passe ne respecte pas les rÃ¨gles.';
+      this.errorMessage = 'Le mot de passe ne respecte pas les règles.';
       return;
     }
 
@@ -51,7 +51,7 @@ export class EmployeeChangePasswordComponent {
       new_password: this.newPassword
     }).subscribe({
       next: (response) => {
-        this.successMessage = response.message || 'Mot de passe modifiÃ©.';
+        this.successMessage = response.message || 'Mot de passe modifié.';
         this.currentPassword = '';
         this.newPassword = '';
         this.confirmPassword = '';

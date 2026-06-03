@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -35,8 +35,8 @@ export class AdminReviewsListComponent implements OnInit {
 
   statusLabels: { [key: string]: string } = {
     'pending': 'En attente',
-    'approved': 'ApprouvÃ©',
-    'rejected': 'RejetÃ©'
+    'approved': 'Approuvé',
+    'rejected': 'Rejeté'
   };
 
   constructor(
@@ -96,13 +96,13 @@ export class AdminReviewsListComponent implements OnInit {
         review.status = status;
       },
       error: () => {
-        alert('Erreur lors de la modÃ©ration');
+        alert('Erreur lors de la modération');
       }
     });
   }
 
   deleteReview(review: Review): void {
-    if (!confirm('Supprimer dÃ©finitivement cet avis ?')) {
+    if (!confirm('Supprimer définitivement cet avis ?')) {
       return;
     }
 
@@ -122,7 +122,7 @@ export class AdminReviewsListComponent implements OnInit {
   }
 
   getStars(rating: number): string {
-    return 'â˜…'.repeat(rating) + 'â˜†'.repeat(5 - rating);
+    return '★'.repeat(rating) + '☆'.repeat(5 - rating);
   }
 
   getStatusClass(status: string): string {

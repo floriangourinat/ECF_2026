@@ -1,4 +1,4 @@
-﻿import { Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter } from 'rxjs';
@@ -17,30 +17,30 @@ export class AppComponent {
 
   private readonly segmentTitles: Record<string, string> = {
     home: 'Accueil',
-    events: 'Ã‰vÃ©nements',
+    events: 'Événements',
     reviews: 'Avis',
     contact: 'Contact',
     'quote-request': 'Demande de devis',
-    'legal-notice': 'Mentions lÃ©gales',
+    'legal-notice': 'Mentions légales',
     cgu: 'CGU',
     cgv: 'CGV',
     login: 'Connexion',
     register: 'Inscription',
-    'forgot-password': 'Mot de passe oubliÃ©',
+    'forgot-password': 'Mot de passe oublié',
     dashboard: 'Tableau de bord',
     client: 'Espace client',
-    employee: 'Espace employÃ©',
+    employee: 'Espace employé',
     admin: 'Espace admin',
     clients: 'Clients',
     prospects: 'Prospects',
     quotes: 'Devis',
-    employees: 'EmployÃ©s',
+    employees: 'Employés',
     logs: 'Logs',
     profile: 'Profil',
     'change-password': 'Changer le mot de passe',
-    create: 'CrÃ©er',
+    create: 'Créer',
     edit: 'Modifier',
-    detail: 'DÃ©tail'
+    detail: 'Détail'
   };
 
   constructor() {

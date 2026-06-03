@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -19,9 +19,9 @@ export class EmployeeDetailComponent implements OnInit {
   error = '';
 
   taskStatusLabels: { [key: string]: string } = {
-    'todo': 'Ã€ faire',
+    'todo': 'À faire',
     'in_progress': 'En cours',
-    'done': 'TerminÃ©'
+    'done': 'Terminé'
   };
 
   constructor(
@@ -46,7 +46,7 @@ export class EmployeeDetailComponent implements OnInit {
           this.loading = false;
         },
         error: () => {
-          this.error = 'EmployÃ© non trouvÃ©';
+          this.error = 'Employé non trouvé';
           this.loading = false;
         }
       });
@@ -63,6 +63,6 @@ export class EmployeeDetailComponent implements OnInit {
   }
 
   getRoleLabel(role: string): string {
-    return role === 'admin' ? 'Administrateur' : 'EmployÃ©';
+    return role === 'admin' ? 'Administrateur' : 'Employé';
   }
 }

@@ -1,4 +1,4 @@
-﻿import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -145,7 +145,7 @@ export class ClientsListComponent implements OnInit {
 
   createClient(): void {
     if (!this.newClient.email || !this.newClient.last_name || !this.newClient.first_name) {
-      this.createError = 'Email, nom et prÃ©nom sont requis';
+      this.createError = 'Email, nom et prénom sont requis';
       return;
     }
 
@@ -155,13 +155,13 @@ export class ClientsListComponent implements OnInit {
     this.http.post<any>('/api/clients/create.php', this.newClient)
       .subscribe({
         next: (response) => {
-          alert(`Client crÃ©Ã© avec succÃ¨s !\n\nMot de passe temporaire : ${response.data.temp_password}`);
+          alert(`Client créé avec succès !\n\nMot de passe temporaire : ${response.data.temp_password}`);
           this.closeCreateModal();
           this.loadClients();
           this.createLoading = false;
         },
         error: (err) => {
-          this.createError = err.error?.message || 'Erreur lors de la crÃ©ation';
+          this.createError = err.error?.message || 'Erreur lors de la création';
           this.createLoading = false;
         }
       });
@@ -185,7 +185,7 @@ export class ClientsListComponent implements OnInit {
   }
 
   deleteClient(client: Client): void {
-    if (!confirm(`Supprimer dÃ©finitivement ${client.company_name || client.first_name + ' ' + client.last_name} ?\n\nCette action supprimera Ã©galement tous les Ã©vÃ©nements et devis associÃ©s.`)) {
+    if (!confirm(`Supprimer définitivement ${client.company_name || client.first_name + ' ' + client.last_name} ?\n\nCette action supprimera également tous les événements et devis associés.`)) {
       return;
     }
 

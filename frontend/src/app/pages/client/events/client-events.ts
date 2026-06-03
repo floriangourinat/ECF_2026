@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -45,16 +45,16 @@ export class ClientEventsComponent implements OnInit {
   statusLabels: Record<string, string> = {
     draft: 'Brouillon',
     client_review: 'En attente client',
-    accepted: 'AcceptÃ©',
+    accepted: 'Accepté',
     in_progress: 'En cours',
-    completed: 'TerminÃ©',
-    cancelled: 'AnnulÃ©'
+    completed: 'Terminé',
+    cancelled: 'Annulé'
   };
 
   reviewStatusLabels: Record<string, string> = {
-    pending: 'En attente de modÃ©ration',
-    approved: 'ApprouvÃ©',
-    rejected: 'RejetÃ©'
+    pending: 'En attente de modération',
+    approved: 'Approuvé',
+    rejected: 'Rejeté'
   };
 
   constructor(private http: HttpClient, private authService: AuthService) {}
@@ -63,7 +63,7 @@ export class ClientEventsComponent implements OnInit {
     const userId = this.authService.currentUserValue?.id;
     if (!userId) {
       this.loading = false;
-      this.error = 'Utilisateur non connectÃ©';
+      this.error = 'Utilisateur non connecté';
       return;
     }
 
@@ -82,7 +82,7 @@ export class ClientEventsComponent implements OnInit {
         this.loadEvents();
       },
       error: () => {
-        this.error = 'Impossible de rÃ©cupÃ©rer le profil client';
+        this.error = 'Impossible de récupérer le profil client';
         this.loading = false;
       }
     });
@@ -111,7 +111,7 @@ export class ClientEventsComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.error = 'Impossible de charger les Ã©vÃ©nements';
+        this.error = 'Impossible de charger les événements';
         this.loading = false;
       }
     });
@@ -132,13 +132,13 @@ export class ClientEventsComponent implements OnInit {
     }
 
     if (this.hasReview(event.id)) {
-      alert('Vous avez dÃ©jÃ  laissÃ© un avis pour cet Ã©vÃ©nement.');
+      alert('Vous avez déjà laissé un avis pour cet événement.');
       return;
     }
 
     const rating = Number(this.reviewRating[event.id] || 0);
     if (!rating || rating < 1 || rating > 5) {
-      alert('Merci de sÃ©lectionner une note entre 1 et 5.');
+      alert('Merci de sélectionner une note entre 1 et 5.');
       return;
     }
 
@@ -168,7 +168,7 @@ export class ClientEventsComponent implements OnInit {
 
         this.reviewRating[event.id] = 0;
         this.reviewComment[event.id] = '';
-        this.reviewSuccessMessage[event.id] = 'âœ… Avis envoyÃ© avec succÃ¨s.';
+        this.reviewSuccessMessage[event.id] = '✅ Avis envoyé avec succès.';
         this.submittingReview[event.id] = false;
       },
       error: (err) => {

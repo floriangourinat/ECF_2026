@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -67,10 +67,10 @@ export class ClientProfileComponent implements OnInit {
       address: this.profile.address
     }).subscribe({
       next: (response) => {
-        this.success = response.message || 'Profil mis Ã  jour';
+        this.success = response.message || 'Profil mis à jour';
       },
       error: (err) => {
-        this.error = err?.error?.message || 'Erreur lors de la mise Ã  jour';
+        this.error = err?.error?.message || 'Erreur lors de la mise à jour';
       }
     });
   }
@@ -88,7 +88,7 @@ export class ClientProfileComponent implements OnInit {
     }
 
     if (!this.passwordPattern.test(this.newPassword)) {
-      this.passwordError = 'Le mot de passe ne respecte pas les rÃ¨gles.';
+      this.passwordError = 'Le mot de passe ne respecte pas les règles.';
       return;
     }
 
@@ -98,7 +98,7 @@ export class ClientProfileComponent implements OnInit {
       new_password: this.newPassword
     }).subscribe({
       next: (response) => {
-        this.passwordSuccess = response.message || 'Mot de passe modifiÃ©.';
+        this.passwordSuccess = response.message || 'Mot de passe modifié.';
         this.currentPassword = '';
         this.newPassword = '';
         this.confirmPassword = '';

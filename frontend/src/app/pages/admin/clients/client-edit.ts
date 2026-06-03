@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -60,7 +60,7 @@ export class ClientEditComponent implements OnInit {
         this.loading = false;
       },
       error: () => {
-        this.error = 'Client non trouvÃ©';
+        this.error = 'Client non trouvé';
         this.loading = false;
             }
         });
@@ -68,7 +68,7 @@ export class ClientEditComponent implements OnInit {
 
   saveClient(): void {
     if (!this.client.first_name || !this.client.last_name || !this.client.email) {
-      this.error = 'PrÃ©nom, nom et email sont requis';
+      this.error = 'Prénom, nom et email sont requis';
       return;
     }
 
@@ -80,7 +80,7 @@ export class ClientEditComponent implements OnInit {
       .subscribe({
         next: (response) => {
           if (response.success) {
-            this.success = 'Client modifiÃ© avec succÃ¨s';
+            this.success = 'Client modifié avec succès';
             setTimeout(() => {
               this.router.navigate(['/admin/clients', this.clientId]);
             }, 1500);

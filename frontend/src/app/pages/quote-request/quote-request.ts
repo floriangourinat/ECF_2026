@@ -1,4 +1,4 @@
-﻿import { Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -18,7 +18,7 @@ export class QuoteRequestComponent {
   loading = false;
   errorMessage = '';
   successMessage = '';
-  readonly defaultSuccessMessage = 'Merci pour votre demande. ChloÃ© vous recontactera dans les plus brefs dÃ©lais pour discuter de votre projet.';
+  readonly defaultSuccessMessage = 'Merci pour votre demande. Chloé vous recontactera dans les plus brefs délais pour discuter de votre projet.';
   runtimeSuccessMessage = this.defaultSuccessMessage;
   submitted = false;
 
@@ -26,9 +26,9 @@ export class QuoteRequestComponent {
   imagePreview: string | null = null;
 
   eventTypes = [
-    { value: 'seminaire', label: 'SÃ©minaire' },
-    { value: 'conference', label: 'ConfÃ©rence' },
-    { value: 'soiree', label: 'SoirÃ©e d\'entreprise' },
+    { value: 'seminaire', label: 'Séminaire' },
+    { value: 'conference', label: 'Conférence' },
+    { value: 'soiree', label: 'Soirée d\'entreprise' },
     { value: 'team_building', label: 'Team Building' },
     { value: 'autre', label: 'Autre' }
   ];
@@ -77,7 +77,7 @@ export class QuoteRequestComponent {
     }
 
     if (!file.type.startsWith('image/')) {
-      this.errorMessage = 'Le fichier doit Ãªtre une image.';
+      this.errorMessage = 'Le fichier doit être une image.';
       return;
     }
 
@@ -124,7 +124,7 @@ export class QuoteRequestComponent {
           }
         },
         error: (error) => {
-          this.errorMessage = error.error?.message || 'Une erreur est survenue. Veuillez rÃ©essayer.';
+          this.errorMessage = error.error?.message || 'Une erreur est survenue. Veuillez réessayer.';
           this.loading = false;
         }
       });
