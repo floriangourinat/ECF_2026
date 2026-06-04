@@ -4,6 +4,8 @@ services:
     container_name: ecf_backend
     ports:
       - "8080:80"
+    env_file:
+      - .env
     volumes:
       - ./backend:/var/www/html
       - backend_vendor:/var/www/html/vendor
