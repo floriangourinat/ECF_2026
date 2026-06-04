@@ -1,6 +1,6 @@
 <?php
 /**
- * API: Détail complet d'un événement (admin/employee)
+ * API: Détail complet d'un événement (admin/employee) 
  * GET /api/events/read_detail.php?id=1
  */
 
