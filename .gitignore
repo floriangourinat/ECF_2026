@@ -1,3 +1,9 @@
+# --- Variables d'environnement sensibles ---
+.env
+.env.local
+.env.production
+.env.*.local
+
 # --- Frontend (Angular) ---
 frontend/node_modules/
 frontend/dist/
