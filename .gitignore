@@ -31,3 +31,24 @@ Thumbs.db
 .idea/
 .vscode/
 *.log
+# Local environment files
+.env
+.env.*
+!.env.example
+
+# Local database backups
+*.sql
+backup_*.sql
+mongo_backup*/
+
+# Generated dependencies and build/cache files
+node_modules/
+**/node_modules/
+.angular/
+**/.angular/
+.vite/
+**/.vite/
+dist/
+**/dist/
+coverage/
+**/coverage/
